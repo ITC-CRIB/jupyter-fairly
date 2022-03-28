@@ -1,0 +1,19 @@
+
+.vscode/
+
+# ipynb
+.ipynb_checkpoints/
+
+# ignore binaries
+example.egg-info
+.env*
+.venv/
+__pycache__
+
+# Auth
+*token
+.notes/
+default-*
+
+# files created for tests
+# tests/fixtures/**
