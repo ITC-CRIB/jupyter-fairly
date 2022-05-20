@@ -1,3 +1,94 @@
+# ===============================
+# Jupyter lab extesion
+# =============================== 
+
+*.bundle.*
+jupyterfair/lib/
+jupyterfair/node_modules/
+jupyterfair/.eslintcache
+jupyterfair/.stylelintcache
+*.egg-info/
+jupyterfair/.ipynb_checkpoints
+*.tsbuildinfo
+jupyterfair/labextension
+
+# Created by https://www.gitignore.io/api/python
+# Edit at https://www.gitignore.io/?templates=python
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+jupyterfair/build/
+jupyterfair/develop-eggs/
+jupyterfair/dist/
+jupyterfair/downloads/
+jupyterfair/eggs/
+jupyterfair/.eggs/
+jupyterfair/lib/
+jupyterfair/lib64/
+jupyterfair/parts/
+jupyterfair/sdist/
+jupyterfair/var/
+jupyterfair/wheels/
+jupyterfair/pip-wheel-metadata/
+jupyterfair/share/python-wheels/
+jupyterfair/.installed.cfg
+*.egg
+jupyterfair/MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+jupyterfair/pip-log.txt
+jupyterfair/pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+jupyterfair/htmlcov/
+jupyterfair/.tox/
+jupyterfair/.nox/
+jupyterfair/.coverage
+jupyterfair/.coverage.*
+jupyterfair/.cache
+jupyterfair/nosetests.xml
+jupyterfair/coverage.xml
+jupyterfair/*.cover
+jupyterfair/.hypothesis/
+jupyterfair/.pytest_cache/
+
+# Translations
+jupyterfair/*.mo
+jupyterfair/*.pot
+
+# Scrapy stuff:
+jupyterfair/.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+jupyterfair/target/
+
+# pyenv
+jupyterfair/.python-version
+
+# celery beat schedule file
+jupyterfair/celerybeat-schedule
+
+# ===============================
+# OTHER
+# ===============================
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -26,6 +117,37 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# End of https://www.gitignore.io/api/python
+
+# OSX files
+.DS_Store
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -128,118 +250,3 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-
-*.bundle.*
-lib/
-node_modules/
-.eslintcache
-.stylelintcache
-*.egg-info/
-.ipynb_checkpoints
-*.tsbuildinfo
-jupyterfair/labextension
-
-# Created by https://www.gitignore.io/api/python
-# Edit at https://www.gitignore.io/?templates=python
-
-### Python ###
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# Translations
-*.mo
-*.pot
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# pyenv
-.python-version
-
-# celery beat schedule file
-celerybeat-schedule
-
-# SageMath parsed files
-*.sage.py
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# End of https://www.gitignore.io/api/python
-
-# OSX files
-.DS_Store
