@@ -1,0 +1,8 @@
+{
+  "jupyter.lab.shortcuts": [],
+  "title": "jupyterfair",
+  "description": "jupyterfair settings.",
+  "type": "object",
+  "properties": {},
+  "additionalProperties": false
+}
