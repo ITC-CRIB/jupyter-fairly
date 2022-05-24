@@ -4,10 +4,10 @@ from requests.utils import requote_uri
 
 class Connection(object):
     '''
-    A class for connecting to a data repository using TOKEN authentification
+    A class for creating HTTP connections to data repositories using TOKEN-based authentification
     '''
 
-    def __init__(self, root_url, token) -> None:
+    def __init__(self, root_url: str, token: str ) -> None:
         """
         Creates and test a connection (Session) to a data repository endpoint.
         Connections use digested credentials, and supports multiple simultaneous connections (requests).
@@ -15,22 +15,18 @@ class Connection(object):
         Params:
             base_url: data repository  base endpoint
             token: authorization token
-            timeout: connection timeout in seconds
         """
 
         self.root_url = root_url
         self.token = token
-        self.header={}
         self.session = Session()
         self.status = "Use test_connection() before checking the connection status"
 
     def __post__init__(self):
+        """Adds token to request header """
         self.session.headers.update({'Authorization': self.token})
 
-    
-    # TODO: CONTINUE HERE
-
-    def test_connection(self):
+    def test_connection(self) -> bool:
         '''
         Tests connection and update the "status" attribute upon success.
         
@@ -39,7 +35,7 @@ class Connection(object):
         '''
         
         try:
-            test_request= Request('GET', self.root_url, headers=self.header)
+            test_request= Request('GET', self.root_url)
             prepare = self.session.prepare_request(test_request)
             response = self.session.send(prepare)
         except ConnectionError:
@@ -49,43 +45,48 @@ class Connection(object):
             print("Test completed! Status code:", self.status)
             return True
 
-
-    def close_connection(self):
+    def close_connection(self) -> None:
         '''
         Ends the connection and closes the connection session.
         '''
 
         self.session.close()
         print("Session for this connector was closed by user")
-    
+        return None
 
-    def get(self, request, stream=False ):
+    def get(self, request:str, stream:bool=False, timeout:int=None, headers:dict={}) -> object:
         '''
-        Implements HTTP-GET method
+        Implements the HTTP-GET method
 
         Args:
-            request (str): a valid URL
-            stream (bolean): set data streaming. Default is FALSE
+            request: a valid URL
+            stream: set data streaming. Default is FALSE
+            hearders: HTTP headers
         
         Returns: requests object
         '''
         encode_request = requote_uri(request)
-        get_request= Request('GET', encode_request, headers=self.header)
+        get_request= Request('GET', encode_request, headers=headers)
         prepare = self.session.prepare_request(get_request)
-        response = self.session.send(prepare, verify=True, stream=stream, timeout=None) # timeout=None, wait forever for a response
+        response = self.session.send(prepare, verify=True, stream=stream, timeout=timeout) # timeout=None, wait forever for a response
+        response.raise_for_status
+        return response
+
+    def post(self, request:str, stream:bool=False, timeout:int=None, headers:dict={}) -> object:
+        '''
+        Implements the HTTP-POST method
+
+        Args:
+            request: a valid URL
+            stream: set data streaming. Default is FALSE
+            hearders: HTTP headers
+        
+        Returns: requests object
+        '''
+        encode_request = requote_uri(request)
+        get_request= Request('GET', encode_request, headers=headers)
+        prepare = self.session.prepare_request(get_request)
+        response = self.session.send(prepare, verify=True, stream=stream, timeout=timeout) # timeout=None, wait forever for a response
         response.raise_for_status
 
         return response
-
-
-class RetainAuthSession(Session):
-    """" """
-    def rebuild_auth(self, prepared_request, response):
-        """
-        No code here means requests will always preserve the Authorization
-        header when redirected.
-        Be careful not to leak your credentials to untrusted hosts!
-        """
-
-if __name__ == '__main__':
-
