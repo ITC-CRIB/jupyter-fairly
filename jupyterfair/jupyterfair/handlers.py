@@ -1,11 +1,17 @@
 import json
-
+import tornado
+import os
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
-import tornado
+from dotenv import load_dotenv
+
+
+DOTENV_FILE = "/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/core/.env"
+load_dotenv(DOTENV_FILE)
+TOKEN = os.getenv('TOKEN')
 
 from jupyterfair.core.connection import Connection
-from jupyterfair.core.four_tu import FourTuResearchData
+from jupyterfair.core.four_tu import TOKEN, FourTuResearchData
 
 class RouteHandler(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
@@ -24,12 +30,11 @@ class TUHandler(APIHandler):
         """"List articles for in an account"""
 
         # TODO: Secure token via config files or env-variables
-        TOKEN="Bearer 824bb04e551a8e66d7764ced7b9562504782d458a73b772b4162c553640e4a47bda6a39b84a78e7ae15d049b161799a56928158a03198480d9aa697beec0c095"
         BASE_URL = "https://api.figshare.com/v2/account"
+        # ===================================================
         connection = Connection(BASE_URL, TOKEN)
         repo_api = FourTuResearchData(connection)
         list_of_articles=repo_api.list_articles()
-
         self.finish(json.dumps(list_of_articles))
 
 
