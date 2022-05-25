@@ -6,17 +6,16 @@ import unittest
 import os
 import requests
 from dotenv import load_dotenv
-
-
 from jupyterfair.core.connection import Connection
 
+load_dotenv('/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/core/.env')
 
-
+# TODO: test connection using mock: https://realpython.com/testing-third-party-apis-with-mocks/
 class TestConnection(unittest.TestCase):
 
     # fixtures
     def setUp(self) -> None:
-        load_dotenv()
+        # load_dotenv('/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/core/.env')
         self.token = os.getenv('TOKEN')
         self.base_url = "https://api.figshare.com/v2/account"
         self.connection = Connection(self.base_url, self.token)
@@ -25,9 +24,8 @@ class TestConnection(unittest.TestCase):
     def test_get(self):
         """ Test if the GET returns retuns a Requests response object and a success status code: 200"""
         response = self.connection.get(self.base_url)
-        print(response.json())
         self.assertIsInstance(response, requests.Response)
-        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.ok)
         
     def test_post(self):
         """ Test if the POST method returns a success status code: 200"""
