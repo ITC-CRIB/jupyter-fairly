@@ -1,8 +1,8 @@
 """Implementation of Data Repository for 4TU Reasearch Data"""
 
 
-from data_repository import DataRepository
-from connection import Connection
+from jupyterfair.core.data_repository import DataRepository
+from jupyterfair.core.connection import Connection
 
 class FourTuResearchData(DataRepository):
 
