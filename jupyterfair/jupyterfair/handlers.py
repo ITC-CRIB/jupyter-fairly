@@ -5,7 +5,7 @@ from jupyter_server.utils import url_path_join
 import tornado
 
 from jupyterfair.core.connection import Connection
-from jupyterfair.four_tu import FourTuResearchData
+from jupyterfair.core.four_tu import FourTuResearchData
 
 class RouteHandler(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
