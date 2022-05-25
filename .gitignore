@@ -11,6 +11,7 @@ jupyterfair/.stylelintcache
 jupyterfair/.ipynb_checkpoints
 *.tsbuildinfo
 jupyterfair/labextension
+jupyterfair/jupyterfair/labextension
 
 # Created by https://www.gitignore.io/api/python
 # Edit at https://www.gitignore.io/?templates=python
@@ -43,6 +44,7 @@ jupyterfair/share/python-wheels/
 jupyterfair/.installed.cfg
 *.egg
 jupyterfair/MANIFEST
+jupyterfair/package-lock.json
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
