@@ -31,6 +31,14 @@ class FourTuResearchData(DataRepository):
         response=self.connection.post(request=request_url, payload=payload)
 
         return response.json()
+
+    def list_articles(self) -> None:
+        """Lists arclitles in an account"""
+        request_url= self.connection.root_url + '/articles'
+        response=self.connection.get(request=request_url)
+
+        return response.json()
+
         
     def upload_data(self)-> None:
         pass
@@ -53,7 +61,7 @@ if __name__ == '__main__':
 
     repo = FourTuResearchData(con)
 
-    r = repo.create_entry(payload=payload)
+    r = repo.list_articles()
     print( r )
 
    
