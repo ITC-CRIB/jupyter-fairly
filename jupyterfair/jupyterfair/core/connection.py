@@ -21,9 +21,6 @@ class Connection(object):
         self.token = token
         self.session = Session()
         self.status = "Use test_connection() before checking the connection status"
-
-    def __post__init__(self):
-        """Adds token to request header """
         self.session.headers.update({'Authorization': self.token})
 
     def test_connection(self) -> bool:
@@ -51,7 +48,7 @@ class Connection(object):
         '''
 
         self.session.close()
-        print("Session for this connector was closed by user")
+        print(f"Session for {self.session} was closed by user")
         return None
 
     def get(self, request:str, stream:bool=False, timeout:int=None, headers:dict={}) -> object:
