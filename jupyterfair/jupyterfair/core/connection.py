@@ -46,9 +46,8 @@ class Connection(object):
         '''
         Ends the connection and closes the connection session.
         '''
-
         self.session.close()
-        print(f"Session for {self.session} was closed by user")
+        print(f"Session for {self.session} was closed!")
         return None
 
     def get(self, request:str, stream:bool=False, timeout:int=None, headers:dict={}) -> object:
@@ -57,7 +56,8 @@ class Connection(object):
 
         Args:
             request: a valid URL
-            stream: set data streaming. Default is FALSE
+            stream: enables data streaming
+            timeout: request timeout
             hearders: HTTP headers
         
         Returns: requests object
@@ -66,24 +66,27 @@ class Connection(object):
         get_request= Request('GET', encode_request, headers=headers)
         prepare = self.session.prepare_request(get_request)
         response = self.session.send(prepare, verify=True, stream=stream, timeout=timeout) # timeout=None, wait forever for a response
-        response.raise_for_status
+        response.raise_for_status()
         return response
 
-    def post(self, request:str, stream:bool=False, timeout:int=None, headers:dict={}) -> object:
+    def post(self, request:str, payload:dict=None, stream:bool=False, timeout:int=None, headers:dict={}) -> object:
         '''
         Implements the HTTP-POST method
 
         Args:
             request: a valid URL
-            stream: set data streaming. Default is FALSE
+            payload: request JSON-line data payload
+            stream: enables data streaming
+            timeout: request timeout
             hearders: HTTP headers
         
         Returns: requests object
         '''
+
         encode_request = requote_uri(request)
-        get_request= Request('GET', encode_request, headers=headers)
-        prepare = self.session.prepare_request(get_request)
+        post_request= Request('POST', encode_request, headers=headers, json=payload)
+        prepare = self.session.prepare_request(post_request)
         response = self.session.send(prepare, verify=True, stream=stream, timeout=timeout) # timeout=None, wait forever for a response
-        response.raise_for_status
+        response.raise_for_status()
 
         return response
