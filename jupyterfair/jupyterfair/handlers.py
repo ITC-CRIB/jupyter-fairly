@@ -6,12 +6,12 @@ from jupyter_server.utils import url_path_join
 from dotenv import load_dotenv
 
 
-DOTENV_FILE = "/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/core/.env"
+DOTENV_FILE = "/<path-to>/.env"
 load_dotenv(DOTENV_FILE)
 TOKEN = os.getenv('TOKEN')
 
 from jupyterfair.core.connection import Connection
-from jupyterfair.core.four_tu import TOKEN, FourTuResearchData
+from jupyterfair.core.four_tu import FourTuResearchData
 
 class RouteHandler(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
