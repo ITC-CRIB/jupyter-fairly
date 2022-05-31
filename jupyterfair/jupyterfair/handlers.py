@@ -20,7 +20,7 @@ class RouteHandler(APIHandler):
     @tornado.web.authenticated
     def get(self):
         self.finish(json.dumps({
-            "data": "This is /jupyterfair/get_example endpoint... Hey!--Manuel"
+            "data": "This is /jupyterfair/get_test endpoint... Hoora! It works!!!"
         }))
 
 class TUHandler(APIHandler):
