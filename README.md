@@ -9,12 +9,11 @@
     ```
 2. Clone repository
 3. Activate conda environment
-4. Create a `.env` file with a TOKEN (for now only 4TU personal tokens). Such as:
+4. Create a `.env` file in  the `jupyterfair/jupyterfair/` subfolder, and add a TOKEN (for now only 4TU personal tokens). Such as:
    ```
    TOKEN="Bearer <token-hash>"
    ```
-5. Modify the path to the `.env` file in ``jupyter/jupyter/handler.py`
-6. Install, activate and build extension
+5. Install, activate and build extension
     ```shell
     # Install package in development mode
     pip install -e .
@@ -25,16 +24,16 @@
     # Rebuild extension Typescript source after making changes
     jlpm run build
     ```
-7. On a new terminal, start the Jupyter Server
+6. On a new terminal, start the Jupyter Server
    ```shell
    jupyter server
    ```
-8. Open the link in the terminal in a browser. Go to `http://127.0.0.1:8888/jupyterfair/get_example`. You whould see the following message:
+7. Open the link in the terminal in a browser. Go to `http://127.0.0.1:8888/jupyterfair/get_example`. You should see the following message:
    ```json
    {"data": "This is /jupyterfair/get_test endpoint... Hoora! It works!!!"}
    ```
 
-    > You will need to re-build the extension with `jlpm run build` and re-start **jupyter server** to changes to the code take effect.
+    > You will need to re-build the extension with `jlpm run build` and re-start **jupyter server** for changes to the soruce code take effect.
 
 ## Testing the communication with 4TU Research Data
 
