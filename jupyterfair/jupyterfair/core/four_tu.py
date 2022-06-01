@@ -45,23 +45,7 @@ class FourTuResearchData(DataRepository):
 
 
 if __name__ == '__main__':
+    pass
 
-    import requests
-    import os
-    from dotenv import load_dotenv
-
-    load_dotenv()
-    TOKEN = os.getenv('TOKEN')
-    BASE_URL = "https://api.figshare.com/v2/account"
-
-    
-    con = Connection(BASE_URL, TOKEN)
-
-    payload={"title": "python test"}
-
-    repo = FourTuResearchData(con)
-
-    r = repo.list_articles()
-    print( r )
 
    
