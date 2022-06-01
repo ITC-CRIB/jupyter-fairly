@@ -5,9 +5,7 @@ from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
 from dotenv import load_dotenv
 
-
-DOTENV_FILE = "/<path-to>/.env"
-load_dotenv(DOTENV_FILE)
+load_dotenv()
 TOKEN = os.getenv('TOKEN')
 
 from jupyterfair.core.connection import Connection
