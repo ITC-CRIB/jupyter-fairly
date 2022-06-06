@@ -1,4 +1,4 @@
-from fairy_pkg.src.client import *
+from jupyterfair.core.client import *
 
 class FourTuData(Client):
     '''
