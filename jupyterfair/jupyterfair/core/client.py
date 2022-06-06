@@ -9,7 +9,7 @@ import json
 import requests
 from requests import Request, Session
 from requests.exceptions import HTTPError
-import fairy_pkg.config as config
+import jupyterfair.config as config
 
 
 class Client(ABC):
