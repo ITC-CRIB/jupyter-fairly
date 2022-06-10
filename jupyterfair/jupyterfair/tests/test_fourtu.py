@@ -91,16 +91,16 @@ def get_article_by_id(article_id):
     if article_id is int: article_id = str(article_id) 
     return issue_request('GET', f'account/articles/{article_id}').content
 
-def get_file_check_data(file_name):
+def get_file_check_data(file_name, chunk_size):
     """md5 checksum and file size for a file"""
     with open(file_name, 'rb') as fin:
         md5 = hashlib.md5()
         size = 0
-        data = fin.read(CHUNK_SIZE)
+        data = fin.read(chunk_size)
         while data:
             size += len(data)
             md5.update(data)
-            data = fin.read(CHUNK_SIZE)
+            data = fin.read(chunk_size)
         return md5.hexdigest(), size   
 
 def initiate_new_upload(article_id, file_name):
