@@ -58,11 +58,11 @@ setup_args = dict(
     packages=setuptools.find_packages(),
     install_requires=[
         "jupyter_server>=1.6,<2",
-        "requests",
-        "python-dotenv",
-        'pytest',
-        "jupyter-packaging",
-        "nodejs"
+        "requests==2.27.1",
+        "python-dotenv==0.20.0",
+        'pytest==7.1.2',
+        "jupyter-packaging==0.12.0",
+        "nodejs==0.1.1"
 
 
     ],
