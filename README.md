@@ -20,7 +20,7 @@
     # Link your development version of the extension with JupyterLab
     jupyter labextension develop . --overwrite
     # Enable the server extension
-    jupyter server extension enable jupyfair
+    jupyter server extension enable jupyterfair
     # Rebuild extension Typescript source after making changes
     jlpm run build
     ```
