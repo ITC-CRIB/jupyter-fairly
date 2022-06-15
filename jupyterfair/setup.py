@@ -57,7 +57,14 @@ setup_args = dict(
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
     install_requires=[
-        "jupyter_server>=1.6,<2"
+        "jupyter_server>=1.6,<2",
+        "requests==2.27.1",
+        "python-dotenv==0.20.0",
+        'pytest==7.1.2',
+        "jupyter-packaging==0.12.0",
+        "nodejs==0.1.1"
+
+
     ],
     zip_safe=False,
     include_package_data=True,

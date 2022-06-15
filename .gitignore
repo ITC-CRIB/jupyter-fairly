@@ -253,3 +253,7 @@ dmypy.json
 .pyre/
 
 dev-notes/
+
+
+# Ignore archive formats
+**.zip
