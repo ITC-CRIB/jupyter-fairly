@@ -1,12 +1,10 @@
 import json
+from jupyterfair.core.four_tu import FourTuData
 import tornado
 import os
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
 from dotenv import load_dotenv
-
-load_dotenv()
-TOKEN = os.getenv('TOKEN')
 
 
 class RouteHandler(APIHandler):
@@ -19,19 +17,18 @@ class RouteHandler(APIHandler):
             "data": "This is /jupyterfair/get_test endpoint... Hoora! It works!!!"
         }))
 
-# class TUHandler(APIHandler):
-#     """Handler for the 4TU research data repository"""
-#     @tornado.web.authenticated
-#     def get(self):
-#         """"List articles for in an account"""
+class TUHandler(APIHandler):
+    """Handler for the 4TU research data repository"""
+    @tornado.web.authenticated
+    def get(self):
+        """"List articles for in an account"""
 
-#         # TODO: Secure token via config files or env-variables
-#         BASE_URL = "https://api.figshare.com/v2/account"
-#         # ===================================================
-#         connection = Connection(BASE_URL, TOKEN)
-#         repo_api = FourTuResearchData(connection)
-#         list_of_articles=repo_api.list_articles()
-#         self.finish(json.dumps(list_of_articles))
+        # ===================================================
+        data_repository = FourTuData()
+        list_of_archives=data_repository.list_my_archives()
+        list = json.loads(list_of_archives)
+        self.finish(json.dumps(list))
+
 
 
 def setup_handlers(web_app):
@@ -39,7 +36,9 @@ def setup_handlers(web_app):
 
     base_url = web_app.settings["base_url"]
     route_pattern = url_path_join(base_url, "jupyterfair", "get_example")
+    route_archives = url_path_join(base_url, "jupyterfair", "archives")
+    
     handlers = [
-        (route_pattern, RouteHandler)
+        (route_pattern, RouteHandler), (route_archives, TUHandler)
     ]
     web_app.add_handlers(host_pattern, handlers)
