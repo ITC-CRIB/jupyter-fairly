@@ -25,9 +25,9 @@ class TUHandler(APIHandler):
 
         # ===================================================
         data_repository = FourTuData()
-        list_of_archives=data_repository.list_my_archives()
-        list = json.loads(list_of_archives)
-        self.finish(json.dumps(list))
+        request=data_repository.list_my_archives() # returns bytes
+        archives = json.loads(request) # decoding 
+        self.finish(json.dumps(archives))
 
 
 
