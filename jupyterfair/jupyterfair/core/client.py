@@ -128,7 +128,7 @@ class Client(ABC):
         pass
 
     @abstractmethod
-    def upload_data_to_archive():
+    def upload_file_to_archive():
         '''
         returns success
         '''
