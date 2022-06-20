@@ -39,11 +39,13 @@ class FourTuData(Client):
         '''
         return self.issue_request('GET', 'account/articles')
 
-    def upload_data_to_archive(self, archive_id, file_path):
+    def upload_file_to_archive(self, archive_id, file_path):
         '''
         archive_id: str containing the id where the archive is located
         returns 
         '''
+        # Turn achive into a string if not string
+        if archive_id is int: archive_id = str(archive_id)
         def initiate_new_upload(self, archive_id, file_path):
             """ 
             Returns a response for initiated upload
@@ -118,7 +120,7 @@ class FourTuData(Client):
         def complete_upload(self, article_id: str, file_id : str):
             """Confirms that the upload has been finished
             """
-            self.issue_request('POST', 'account/articles/{}/files/{}'.format(article_id, file_id))
+            return self.issue_request('POST', 'account/articles/{}/files/{}'.format(article_id, file_id))
 
         
         file_info = json.loads(initiate_new_upload(self, archive_id, file_path).content)
@@ -126,4 +128,4 @@ class FourTuData(Client):
         # Until here we used the figshare API; following lines use the figshare upload service API.
         upload_parts(self, file_info, file_path)
         # We return to the figshare API to complete the file upload process.
-        complete_upload(self, archive_id, file_id)
+        return complete_upload(self, archive_id, file_id)
