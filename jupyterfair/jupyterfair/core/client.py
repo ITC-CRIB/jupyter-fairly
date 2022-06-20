@@ -29,13 +29,7 @@ class Client(ABC):
     @property
     @abstractmethod
     def BASE_URL(cls):
-        raise NotImplementedError
-
-
-    # @abstractmethod
-    # def upload_data(self, **argv):
-    #     """Uploads files to the data repository"""
-        
+        raise NotImplementedError        
     
     def raw_issue_request(self, method, url, data=None, binary=False):
         ''' Private method that implements full request including headers, auth, etc
