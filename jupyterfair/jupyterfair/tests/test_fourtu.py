@@ -193,7 +193,7 @@ def test_requests():
 
     # Check that wrong request throws HTTPError
     with pytest.raises(HTTPError):
-        archive._raw_issue_request('GET','https://api.figshare.com/v2/account/articles/20021168?' )
+        archive.raw_issue_request('GET','https://api.figshare.com/v2/account/articles/20021168?' )
     
     archive.session.close
 
