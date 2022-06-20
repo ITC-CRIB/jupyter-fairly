@@ -10,9 +10,7 @@ class FourTuData(Client):
     # BASE_URL = 'https://api.figsh.com/v2/{endpoint}'
 
     def create_archive(self, article_title):
-        '''
-        
-        '''
+        '''Translates to create an article in 4TU'''
         data = {
             'title': article_title  # You may add any other information about the article here as you wish.
         }
@@ -22,7 +20,10 @@ class FourTuData(Client):
         return response
 
     def get_archive(self, article_id):
-        '''article_id: str or int'''
+        """article_id: str or int
+        - response: a dic like::
+        
+        """
         assert type(article_id) is str, "Article id is not a string"
         if article_id is int: article_id = str(article_id) 
         return self.issue_request('GET', f'account/articles/{article_id}').content
@@ -34,6 +35,8 @@ class FourTuData(Client):
         return self.issue_request('DELETE', f'account/articles/{article_id}?page=&page_size=10').content
 
     def list_my_archives(self):
+        '''
+        '''
         return self.issue_request('GET', 'account/articles')
 
     def upload_data_to_archive(self, archive_id, file_path):
@@ -67,8 +70,10 @@ class FourTuData(Client):
 
         def upload_part(self, upload_url, stream, part):
             """ Uploads one part of a file
-            file_info: dict contains url location of the file to be uploaded
-            {"location" : <url_file_path> }
+            file_info: dict contains url location of the file to be uploaded like
+            {
+                b'{"location": "https://api.figshare.com/v2/account/articles/20047799/files/35857895"}'
+            }
             stream: file stream to be uploaded
             part: dict part of the file to be uploaded
             """
@@ -86,9 +91,10 @@ class FourTuData(Client):
 
         def upload_parts(self, file_info, file_path):
             """
-            - file_info: dict contains url location of the file to be uploaded
-            {"location" : <url_file_path> }
-            
+            - file_info: dict contains url location of the file to be uploaded like:
+            {
+                b'{"location": "https://api.figshare.com/v2/account/articles/20047799/files/35857895"}'
+            }
             - file_path: str
             
             - Returns 201 status code object
