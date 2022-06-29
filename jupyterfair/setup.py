@@ -58,6 +58,8 @@ setup_args = dict(
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
     install_requires=[
+        "aiohttp==3.8.1",
+        "aiofiles==0.8.0",
         "jupyter_server>=1.6,<2",
         "requests==2.27.1",
         "python-dotenv==0.20.0",
@@ -135,7 +137,7 @@ if __name__ == "__main__":
     # if dummy project with dummy files doesnt exists, create it
     if not (HERE / DUMMY_PROJECT).exists():
         # Create small file
-        create_file(10, 100, HERE / DUMMY_PROJECT, "file_1MB.txt"))    
+        create_file(10, 100, HERE / DUMMY_PROJECT, "file_1MB.txt")    
     
         # Create 10 files of 100 MB each
         for i in range(10):
