@@ -1,4 +1,5 @@
 import json
+from urllib import response
 from jupyterfair.core.four_tu import FourTuData
 import tornado
 import os
@@ -17,17 +18,43 @@ class RouteHandler(APIHandler):
             "data": "This is /jupyterfair/get_test endpoint... Hoora! It works!!!"
         }))
 
-class TUHandler(APIHandler):
+
+class Client(APIHandler):
     """Handler for the 4TU research data repository"""
     @tornado.web.authenticated
     def get(self):
-        """"List articles for in an account"""
 
+        pass
+
+
+class Archive(APIHandler):
+    """Handler for the 4TU research data repository"""
+    @tornado.web.authenticated
+    def get(self):
+        """"List articles associated with an account"""
         # ===================================================
         data_repository = FourTuData()
-        request=data_repository.list_my_archives() # returns bytes
-        archives = json.loads(request) # decoding 
+        response=data_repository.list_my_archives() # returns bytes
+        archives = json.loads(response.content) # decoding 
+
+        # handlers shouldn't do any data processing/transformation
         self.finish(json.dumps(archives))
+    
+    @tornado.web.authenticated
+    def post(self):
+        """createsf a record in the data repository"""
+
+        input_data = self.get_json_body() # input data: dict with a key "name"
+        
+        data_repository = FourTuData()
+        response=data_repository.create_archive(input_data["title"])
+
+        archive_meta = json.loads(response.content)
+        data = {"New Archive": "".format(archive_meta["location"])}
+
+        self.finish(json.dumps(data))
+
+        #TODO: CONTINUE HERE 
 
 
 
@@ -36,9 +63,9 @@ def setup_handlers(web_app):
 
     base_url = web_app.settings["base_url"]
     route_pattern = url_path_join(base_url, "jupyterfair", "get_example")
-    route_archives = url_path_join(base_url, "jupyterfair", "archives")
+    route_archives = url_path_join(base_url, "jupyterfair", "archive")
     
     handlers = [
-        (route_pattern, RouteHandler), (route_archives, TUHandler)
+        (route_pattern, RouteHandler), (route_archives, Archive)
     ]
     web_app.add_handlers(host_pattern, handlers)
