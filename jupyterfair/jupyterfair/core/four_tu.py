@@ -34,7 +34,12 @@ class FourTuData(Client):
         return self.issue_request('DELETE', f'account/articles/{article_id}?page=&page_size=10').content
 
     def list_my_archives(self):
-        return self.issue_request('GET', 'account/articles')
+        return self.issue_request('GET', 'account/articles') # resquests object (Request package)
+            # iohttp
+
+            # return status code and http body (as )
+            # return dictionary. 
+            # return exceptions for http errors. 
 
     def upload_data_to_archive(self, archive_id, file_path):
         '''
