@@ -58,6 +58,10 @@ The `jlpm` command is JupyterLab's pinned version of
 # Change directory to the jupyterfair directory
 # Install package in development mode
 pip install -e .
+
+# Generate dummy data for integration tests
+python jupyterfair/post_setup.py
+
 # Link your development version of the extension with JupyterLab
 jupyter labextension develop . --overwrite
 # Server extension must be manually installed in develop mode
