@@ -1,6 +1,5 @@
 import json
 from urllib import response
-from jupyterfair.core.four_tu import FourTuData
 import tornado
 import os
 from jupyter_server.base.handlers import APIHandler
