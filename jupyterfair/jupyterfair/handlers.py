@@ -52,7 +52,7 @@ class Datasets(APIHandler):
     """Handler for datasets in a data repository"""
     @tornado.web.authenticated
     def get(self):
-        """"List items associated with an account from a repository"""
+        """"Returns a list of items associated with an account from a repository"""
         # ===================================================
         account_datasets = _client.get_account_datasets() # returns list of objects (RemoteDataset)
 
@@ -72,7 +72,6 @@ class Datasets(APIHandler):
 
             datasets_metadata.append(metadata)
 
-        # handlers shouldn't do any data processing/transformation
         self.finish(json.dumps(datasets_metadata))
 
     
