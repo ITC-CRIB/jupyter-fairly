@@ -4,11 +4,23 @@
    contain the root `toctree` directive.
 
 JupyterFAIR's Documentation
-=======================================
+############################
 
 .. toctree::
    :maxdepth: 3
    :caption: Fairly Package
 
-   installation.rst
-   tutorial.rst
+   package/installation.rst
+   package/tutorial.rst
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Command Line Interface
+   
+   cli/placeholder
+
+.. toctree::
+   :maxdepth: 3
+   :caption: JupyterLab Extension
+   
+   jupyterlab/placeholder
