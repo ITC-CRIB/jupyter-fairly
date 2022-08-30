@@ -12,6 +12,7 @@ JupyterFAIR's Documentation
 
    package/installation.rst
    package/tutorial.rst
+   package/demo-4tu
 
 .. toctree::
    :maxdepth: 3
