@@ -12,6 +12,8 @@ JupyterFAIR's Documentation
 
    package/installation.rst
    package/tutorial.rst
+   package/demo-4tu
+   package/demo-zenodo
 
 .. toctree::
    :maxdepth: 3

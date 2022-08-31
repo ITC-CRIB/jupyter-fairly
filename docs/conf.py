@@ -17,10 +17,12 @@ release = '1.0.0a'
 extensions = [
     'sphinx_rtd_theme',
     'nbsphinx',
+    'sphinx_copybutton',
+    
 ]
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 
 
 
