@@ -7,6 +7,7 @@ beautifulsoup4==4.11.1
 bleach==5.0.1
 certifi==2022.6.15
 charset-normalizer==2.1.1
+debugpy==1.6.3
 decorator==5.1.1
 defusedxml==0.7.1
 docutils==0.17.1
@@ -15,6 +16,7 @@ executing==1.0.0
 fastjsonschema==2.16.1
 idna==3.3
 imagesize==1.4.1
+ipykernel==6.15.2
 ipython==8.4.0
 jedi==0.18.1
 Jinja2==3.1.2
@@ -37,6 +39,7 @@ parso==0.8.3
 pexpect==4.8.0
 pickleshare==0.7.5
 prompt-toolkit==3.0.30
+psutil==5.9.1
 ptyprocess==0.7.0
 pure-eval==0.2.2
 Pygments==2.13.0
