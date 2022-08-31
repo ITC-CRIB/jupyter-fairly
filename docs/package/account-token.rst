@@ -1,0 +1,49 @@
+.. _access token:
+
+Configuring Access Token
+###########################
+
+
+*fairly* can be used to access datasets owened by a user of a data repository. For 4TU.ReaseachData and Zenodo, we can do data by configuring access tokens.
+
+Creating a personal access token
+=====================================
+
+A personal access toke allows to connect to a user account remotely without the need to a *username* and *password*.
+
+Zenodo
+-------------
+
+1. Register for a Zenodo account if you do not already have one.
+#. Go to your :guilable:`Applications`, and click on :guilable:`New token` under **Personal access tokens**.
+#. Enter a name for your token.
+#. Select the OAuth scopes you need (:guilable:`deposit:write` and :guilable:`deposit:actions`).
+#. Click :guilable:`Create`
+#. An access token will be showned, copy it and store it. **The token will only be showned once.** 
+#. Click on :guilable:`Save`
+
+
+4TU.ReaseachData
+-------------------
+
+1. Register for a Zenodo account if you do not already have one.
+#. Go to your :guilable:`Applications`, and click on :guilable:`Create Personal Token`.
+#. Enter short description for your token, for example a namem, and click on :guilable:`Save`
+#. An access token will be showned, copy it and store it. **The token will only be showned once.** 
+#. Click on :guilable:`Done`
+
+Connecting to an Account
+============================
+
+Connecting to an account is a simple as passign a token when creating a 4TU.ResearchDaata or Zenodo client.
+
+.. code-block:: python
+
+   from fairly import client
+
+   # For 4TU.ReseachData 
+   fourtu = client(id="figshare", token="<my-tu-token>" )
+
+   # For Zenodo
+   fourtu = client(id="zenodo", token="<my-zenodo-token>" )
+

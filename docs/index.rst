@@ -7,22 +7,30 @@ JupyterFAIR's Documentation
 ############################
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :caption: Fairly Package
 
    package/installation.rst
-   package/tutorial.rst
-   package/demo-4tu
-   package/demo-zenodo
+
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
+   :caption: Quick Start
+
+   package/demo-4tu
+   package/demo-zenodo
+   package/account-token
+   package/account-datasets
+   package/archiving-datasets
+
+.. toctree::
+   :maxdepth: 2
    :caption: Command Line Interface
    
    cli/placeholder
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :caption: JupyterLab Extension
    
    jupyterlab/placeholder
