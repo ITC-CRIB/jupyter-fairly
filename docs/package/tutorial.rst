@@ -5,12 +5,12 @@ Quick Start
 Pulling Public Datasets
 =========================
 
-
 Listing Owned Datasets
 ========================
 
 Configuring Access Tokens
 --------------------------
+
 
 Listing Datasets
 -----------------
