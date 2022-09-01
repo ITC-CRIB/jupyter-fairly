@@ -15,22 +15,22 @@ Zenodo
 -------------
 
 1. Register for a Zenodo account if you do not already have one.
-#. Go to your :guilable:`Applications`, and click on :guilable:`New token` under **Personal access tokens**.
+#. Go to your :guilabel:`Applications`, and click on :guilabel:`New token` under **Personal access tokens**.
 #. Enter a name for your token.
-#. Select the OAuth scopes you need (:guilable:`deposit:write` and :guilable:`deposit:actions`).
-#. Click :guilable:`Create`
+#. Select the OAuth scopes you need (:guilabel:`deposit:write` and :guilabel:`deposit:actions`).
+#. Click :guilabel:`Create`
 #. An access token will be showned, copy it and store it. **The token will only be showned once.** 
-#. Click on :guilable:`Save`
+#. Click on :guilabel:`Save`
 
 
 4TU.ReaseachData
 -------------------
 
 1. Register for a Zenodo account if you do not already have one.
-#. Go to your :guilable:`Applications`, and click on :guilable:`Create Personal Token`.
-#. Enter short description for your token, for example a namem, and click on :guilable:`Save`
+#. Go to your :guilabel:`Applications`, and click on :guilabel:`Create Personal Token`.
+#. Enter short description for your token, for example a namem, and click on :guilabel:`Save`
 #. An access token will be showned, copy it and store it. **The token will only be showned once.** 
-#. Click on :guilable:`Done`
+#. Click on :guilabel:`Done`
 
 Connecting to an Account
 ============================
