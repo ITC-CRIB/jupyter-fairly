@@ -1,4 +1,4 @@
-Installing the Extension
+Using the Extension
 ##########################
 
 .. important:: 
