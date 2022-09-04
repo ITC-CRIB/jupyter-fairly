@@ -48,7 +48,7 @@ Connecting to an account is a simple as passign a token when creating a 4TU.Rese
    fourtu = client(id="zenodo", token="<my-zenodo-token>" )
 
 Storing Tokens
---------------------
+================
 
 To store your Tokens, create a JSON file like the one below and store it at `~/.fairly/repositories.json` You can store tokens for other repositories by addding them to this file as `"<repository-ID>": {"token": <the-token>}`
 
