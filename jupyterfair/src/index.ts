@@ -5,12 +5,12 @@ import {
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import { ICommandPalette, MainAreaWidget } from '@jupyterlab/apputils';
+import { ICommandPalette,} from '@jupyterlab/apputils';
 
-import { Widget } from '@lumino/widgets';
+// import { Widget } from '@lumino/widgets';
 
 // import handlers from Jupyter Server extension
-import { requestAPI } from './handler';
+// import { requestAPI } from './handler';
 
 /**
  * Initialization data for the jupyterfair extension.
@@ -21,56 +21,42 @@ const plugin: JupyterFrontEndPlugin<void> = {
   requires : [ICommandPalette],
   optional: [ISettingRegistry],
   activate: (app: JupyterFrontEnd, palette: ICommandPalette, settingRegistry: ISettingRegistry | null) => {
-    console.log('JupyterLab extension jupyterfair is activated!');
-    console.log('ICommandPalette:', palette);
-
-    //Add command example
-    const {commands} = app;
-
-    const command = 'jlab-examples:command';
-
-    // add command
-    commands.addCommand(command, {
-      label: 'Execute jlab-examples:command Command',
-      caption: 'Execute jlab-examples:command Command',
-      execute: (args: any) => {
-        const orig = args['origin'];
-        console.log(`jlab-examples:command has been called from ${orig}.`);
-        if (orig !== 'init') {
-          window.alert(`jlab-examples:command has been called from ${orig}.`);
-        }
-      },
-    });
-
-    //call command execution
-    commands.execute(command, {origin: 'init'}).catch((reason) => {
-      console.error(
-        `An error occurred during the execution of jlab:examples:command.\n${reason}.`
-      );
-    });
+    console.log('JupyterLab extension jupyterfair widget is activated! 07-11');
+    // console.log('IcommandPalette:', palette);
     
-    // End of add command example
+    // Declare command
+    const commandCreateDataset = 'Create Dataset';
+    let toggled = false;
 
-    if (settingRegistry) {
-      settingRegistry
-        .load(plugin.id)
-        .then(settings => {
-          console.log('jupyterfair settings loaded:', settings.composite);
-        })
-        .catch(reason => {
-          console.error('Failed to load settings for jupyterfair.', reason);
-        });
-    }
+    // add command to registry
+    app.commands.addCommand(commandCreateDataset, {
+      label: 'Create Dataset...',
+      isEnabled: () => true,
+      isVisible: () => true,
+      isToggled: () => toggled,
+      execute: () => {
+        console.log(`Executed ${commandCreateDataset}`);
+        toggled = !toggled;
+      }
+    });
 
-    requestAPI<any>('datasets')
-      .then(data => {
-        console.log(data);
-      })
-      .catch(reason => {
-        console.error(
-          `The jupyterfair server extension appears to be missing.\n${reason}`
-        );
-      });
+    // append command to GUI elements
+    // Ex. To command palette
+    palette.addItem({
+      command: commandCreateDataset,
+      category: 'Fairly',
+      args: {} 
+    });
+
+    // ex. To context menu
+    app.contextMenu.addItem({
+      command: commandCreateDataset,
+      selector: '.jp-DirListing-item[data-isdir="false"]',
+      rank: 100
+    });
+
+    // for examples: https://discourse.jupyter.org/t/add-entries-to-the-filebrowser-contextmenu/1651/2
+  
   }
 };
 
