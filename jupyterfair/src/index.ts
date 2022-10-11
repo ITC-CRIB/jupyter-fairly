@@ -34,6 +34,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       isEnabled: () => true,
       isVisible: () => true,
       isToggled: () => toggled,
+      iconClass: '',
       execute: () => {
         console.log(`Executed ${commandCreateDataset}`);
         toggled = !toggled;
@@ -51,7 +52,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
     // ex. To context menu
     app.contextMenu.addItem({
       command: commandCreateDataset,
-      selector: '.jp-DirListing-item[data-isdir="false"]',
+      // matches anywhere in the filebrowser
+      selector: '.jp-DirListing-content',
       rank: 100
     });
 
