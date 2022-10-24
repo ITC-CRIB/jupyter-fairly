@@ -1,13 +1,19 @@
 import {requestAPI} from './handler';
+import {
+showErrorMessage
+} from '@jupyterlab/apputils';
 
 export function initDataset(rootPath:string, template?: any) {
 
-  let templateMeta = 'default';
+  let templateMeta = '';
   if(template === '4TU.Research' || template === 'Figshare') {
     templateMeta = 'figshare';
   }
   else if (template === 'Zenodo'){
     templateMeta = 'zenodo'
+  }
+  else if (template == null || template === 'Default'){
+    templateMeta = 'default'
   }
 
   requestAPI<any>('newdataset', {
@@ -24,6 +30,7 @@ export function initDataset(rootPath:string, template?: any) {
     console.error(
       `${reason}`
     );
+    showErrorMessage("Dataset already initialized", reason)
   });
 }
 
