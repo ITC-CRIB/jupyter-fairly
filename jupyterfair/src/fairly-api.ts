@@ -4,7 +4,13 @@ showErrorMessage
 } from '@jupyterlab/apputils';
 
 export function initDataset(rootPath:string, template?: any) {
+  /**
+   * Initializes a Fairly dataset
+   * @param rootPath - path to dataset root directory
+   * @param template - alias of temmplate for manifest.yalm
+   */
 
+  // name of the template for manifest.yalm
   let templateMeta = '';
   if(template === '4TU.Research' || template === 'Figshare') {
     templateMeta = 'figshare';
@@ -30,6 +36,7 @@ export function initDataset(rootPath:string, template?: any) {
     console.error(
       `${reason}`
     );
+    // show error when manifest.yalm already exist in rootPath
     showErrorMessage("Dataset already initialized", reason)
   });
 }
