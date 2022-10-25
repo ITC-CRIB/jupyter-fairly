@@ -28,6 +28,9 @@ import {
 // Icons
 import {
   addIcon,
+  editIcon,
+  fileUploadIcon,
+  // textEditorIcon,
   // closeIcon,
   // copyIcon,
   // cutIcon,
@@ -70,7 +73,7 @@ const newDataset: JupyterFrontEndPlugin<void> = {
     // console.log('IcommandPalette:', palette);
 
     // Declare command
-    const commandCreateDataset = 'New Fairly Dataset';
+    const commandCreateDataset = 'fairly: create';
    
     
     
@@ -86,13 +89,15 @@ const newDataset: JupyterFrontEndPlugin<void> = {
     
         InputDialog.getItem({
           title: 'Select format for new dataset\'s metadata',
-          items: ['Default', '4TU.Research',  'Zenodo', 'Figshare']
+          items: ['Default', '4TU.Research',  'Zenodo', 'Figshare'],
+          okLabel: 'Create',
         }).then(value => {
           console.log('item ' + value.value);
           // TODO: create manifest in current directory
           // Might find a way by analysing this code:
           // https://github.com/jupyterlab/jupyterlab/blob/621ae2a760331d08edceac31754633358a0c9018/packages/filebrowser-extension/src/index.ts#L823
           const root_path = './'
+          // TODO: dataset is initialized when cancel is clicked.
           initDataset(root_path , value.value);
 
         });
@@ -100,13 +105,52 @@ const newDataset: JupyterFrontEndPlugin<void> = {
     });
   
     // Add to context menu
+      // for examples: https://discourse.jupyter.org/t/add-entries-to-the-filebrowser-contextmenu/1651/2
     app.contextMenu.addItem({
       command: commandCreateDataset,
       // matches anywhere in the filebrowser
       selector: '.jp-DirListing-content',
       rank: 100
     });
-    // for examples: https://discourse.jupyter.org/t/add-entries-to-the-filebrowser-contextmenu/1651/2
+
+    const commandEditMetadata = 'fairly:edit-metadata'
+    // Opens the manifest.yalm file in the file editor
+    app.commands.addCommand(commandEditMetadata, {
+      label: 'Edit Dataset Metadata',
+      isEnabled: () => true,
+      isVisible: () => true,
+      icon: editIcon,
+      execute: () => {
+        console.log(`Executed ${commandEditMetadata}`);
+      }
+    });
+
+    app.contextMenu.addItem({
+      command: commandEditMetadata,
+      // matches anywhere in the filebrowser
+      selector: '.jp-DirListing-content',
+      rank: 101
+    });
+
+    const commandArchiveDataset = 'fairly:archive'
+    // Archives dataset to selected Data repository
+    app.commands.addCommand(commandArchiveDataset, {
+      label: 'Archive Dataset',
+      isEnabled: () => true,
+      isVisible: () => true,
+      icon: fileUploadIcon,
+      execute: () => {
+        console.log(`Executed ${commandArchiveDataset}`);
+      }
+    });
+
+    app.contextMenu.addItem({
+      command: commandArchiveDataset,
+      // matches anywhere in the filebrowser
+      selector: '.jp-DirListing-content',
+      rank: 102
+    });
+  
   
   }
 };
