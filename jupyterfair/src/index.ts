@@ -75,32 +75,30 @@ const newDataset: JupyterFrontEndPlugin<void> = {
     // Declare command
     const commandCreateDataset = 'fairly: create';
    
-    
-    
-
     // add command to registry
     app.commands.addCommand(commandCreateDataset, {
       label: 'Create Fairly Dataset',
       isEnabled: () => true,
       isVisible: () => true,
       icon: addIcon,
-      execute: () => {
+      execute: async () => {
         console.log(`Executed ${commandCreateDataset}`);
     
-        InputDialog.getItem({
+        let metadataTemplate = await InputDialog.getItem({
           title: 'Select format for new dataset\'s metadata',
-          items: ['Default', '4TU.Research',  'Zenodo', 'Figshare'],
+          items: ['', 'Default', '4TU.Research',  'Zenodo', 'Figshare'],
           okLabel: 'Create',
-        }).then(value => {
-          console.log('item ' + value.value);
-          // TODO: create manifest in current directory
-          // Might find a way by analysing this code:
-          // https://github.com/jupyterlab/jupyterlab/blob/621ae2a760331d08edceac31754633358a0c9018/packages/filebrowser-extension/src/index.ts#L823
-          const root_path = './'
-          // TODO: dataset is initialized when cancel is clicked.
-          initDataset(root_path , value.value);
-
         });
+        
+        // initialize dataset when accept button is clicked and 
+        // vaule for teamplate is not null
+        if (metadataTemplate.button.accept && metadataTemplate.value) {
+          let root_path = './'
+          initDataset(root_path , metadataTemplate.value);
+        } else{
+          console.log('rejected')
+          return
+        }
       }
     });
   
@@ -120,10 +118,23 @@ const newDataset: JupyterFrontEndPlugin<void> = {
       isEnabled: () => true,
       isVisible: () => true,
       icon: editIcon,
-      execute: () => {
+      execute: async () => {
         console.log(`Executed ${commandEditMetadata}`);
+
+        let metadataTemplate = await InputDialog.getItem({
+          title: 'Select format for new dataset\'s metadata',
+          items: ['Default', '4TU.Research',  'Zenodo', 'Figshare'],
+          okLabel: 'Create',
+        });
+        
+        if (metadataTemplate.button.accept && metadataTemplate.value) {
+          console.log('accepted');
+        } else{
+          console.log('rejected')
+        }
       }
     });
+
 
     app.contextMenu.addItem({
       command: commandEditMetadata,
