@@ -56,6 +56,7 @@ import {
 } from './fairly-api';
 
 
+
 /**
  * Initialization data for the jupyterfair extension.
  */
@@ -82,11 +83,6 @@ const newDataset: JupyterFrontEndPlugin<void> = {
       icon: addIcon,
       execute: () => {
         console.log(`Executed ${commandCreateDataset}`);
-        // const browser = factory.tracker.currentWidget?.model.path;
-        // console.log(browser)
-        // const widget = tracker.currentWidget
-        // const path = widget?.model.path;
-        // console.log(path)
     
         InputDialog.getItem({
           title: 'Select format for new dataset\'s metadata',
@@ -97,17 +93,11 @@ const newDataset: JupyterFrontEndPlugin<void> = {
           // Might find a way by analysing this code:
           // https://github.com/jupyterlab/jupyterlab/blob/621ae2a760331d08edceac31754633358a0c9018/packages/filebrowser-extension/src/index.ts#L823
           const root_path = './'
-          try {
-            initDataset(root_path , value.value);
-          }
-          catch(e){
-            console.log("the error was caught!!");
-          }
+          initDataset(root_path , value.value);
 
         });
       }
     });
-
   
     // Add to context menu
     app.contextMenu.addItem({
