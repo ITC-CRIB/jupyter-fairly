@@ -20,6 +20,6 @@
     "target": "es2017",
     "types": []
   },
-  "include": ["src/*"]
+  "include": ["src/*", "src/widgets/CloneForm.ts"]
 }
 
