@@ -3,12 +3,61 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-import{addIcon} from '@jupyterlab/ui-components'
+import { addIcon } from '@jupyterlab/ui-components'
 import { InputDialog } from '@jupyterlab/apputils';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { showErrorMessage } from '@jupyterlab/apputils';
+
+import { requestAPI } from './handler';
 
 // import handlers from Jupyter Server extension
-import { initDataset } from './fairly-api';
+// import { initDataset } from './fairly-api';
+
+
+function initDataset(path: string, template?: any) {
+  /**
+   * Initializes a Fairly dataset
+   * @param path - path to dataset root directory. Default to current path
+   * @param template - alias of template for manifest.yalm
+   */
+
+  // name of the template for manifest.yalm
+  let templateMeta = '';
+  /* ./ is necessary becaucause defaultBrowser.Model.path
+  * returns an empty string when fileBlowser is on the
+  * jupyterlab root directory     
+  */
+  let rootPath = './'
+  if(template === '4TU.Research' || template === 'Figshare') {
+    templateMeta = 'figshare';
+  }
+  else if (template === 'Zenodo'){
+    templateMeta = 'zenodo'
+  }
+  else if (template == null || template === 'Default'){
+    templateMeta = 'default'
+  }
+
+  console.log(rootPath.concat(path))
+  requestAPI<any>('newdataset', {
+    method: 'POST', 
+    body: JSON.stringify({
+      path: rootPath.concat(path),  // TODO: this might not work in Windows
+      template: templateMeta
+    })
+  }) 
+  .then(data => {
+    console.log(data);
+  })
+  .catch(reason => {
+    console.error(
+      `${reason}`
+    );
+    // show error when manifest.yalm already exist in rootPath
+    showErrorMessage("Error: Has the dataset been initilized already?", reason)
+  });
+}
+
 
 export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterfair:create-dataset',
@@ -62,6 +111,23 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
