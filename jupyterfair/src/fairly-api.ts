@@ -7,7 +7,7 @@ export function initDataset(rootPath:string, template?: any) {
   /**
    * Initializes a Fairly dataset
    * @param rootPath - path to dataset root directory
-   * @param template - alias of temmplate for manifest.yalm
+   * @param template - alias of template for manifest.yalm
    */
 
   // name of the template for manifest.yalm
@@ -37,7 +37,7 @@ export function initDataset(rootPath:string, template?: any) {
       `${reason}`
     );
     // show error when manifest.yalm already exist in rootPath
-    showErrorMessage("Dataset already initialized", reason)
+    showErrorMessage("Error: Has the dataset been initilized already?", reason)
   });
 }
 
