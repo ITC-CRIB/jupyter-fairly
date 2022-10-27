@@ -141,6 +141,7 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
         if (metadataTemplate.button.accept && metadataTemplate.value) {
           console.log( `the path is: ${fileBrowserModel.path}` );
           initDataset(fileBrowserModel.path , metadataTemplate.value);
+          await fileBrowserModel.refresh();
         } else{
           console.log('rejected')
           return
