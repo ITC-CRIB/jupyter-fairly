@@ -6,8 +6,6 @@ import os
 from lib2to3.pgen2 import token
 from turtle import st
 from typing import Dict, List
-from typing_extensions import Self
-from urllib import response
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
 from dotenv import load_dotenv
@@ -26,18 +24,17 @@ def dummy_dataset(path: str, manifest_file: str='manifest.yalm'):
         pass
 
 
-
 class RouteHandler(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
     # patch, put, delete, options) to ensure only authorized user can request the
     # Jupyter server
     @tornado.web.authenticated
     def get(self):
-        param = self.get_query_argument("param1") # this is how to define query parameters.
+        # param = self.get_query_argument("param1") # this is how to define query parameters.
         # url query = url/to/extension?<param>=<value>
 
         self.finish(json.dumps({
-            "data": f"This is /jupyterfair/get_test endpoint... Hoora! Jupyter Server is Online. {param}!!!"
+            "data": f"This is /jupyterfair/get_test endpoint... Hoora! Jupyter Server is Online!!!"
         }))
 
 
@@ -85,10 +82,7 @@ class InitFairlyDataset(APIHandler):
     """
     Handler for initializing a Fairly dataset. By initializing a dataset, a
     manifest.yaml file containing basic metadata will be created in a root 
-    directory
-
-    path: path to root directory for the dataset
-    template: metadata template
+    directory.
     """
 
     @tornado.web.authenticated
@@ -111,7 +105,6 @@ class InitFairlyDataset(APIHandler):
         # for post the token must be passed in the URL
         # http://127.0.0.1:8888/jupyterfair/newdataset?token=295c3a87c6
         # 
-
     
         # body of the request
         data = self.get_json_body() # returns dictionary
@@ -123,7 +116,6 @@ class InitFairlyDataset(APIHandler):
             # when the dataset was already initialized
             raise web.HTTPError(403, "Failed to initialize dataset")
 
-
         self.finish(json.dumps({
             "action": 'initialized dataset', 
             "path": data['path'],
@@ -131,20 +123,69 @@ class InitFairlyDataset(APIHandler):
             }))
 
 
+class CloneDataset(APIHandler):
+    """
+    Handler for cloning (copying) a remote dataset to a directory,
+    using a dataset identifier.
+    """
+
+    @tornado.web.authenticated
+    def post(self):
+        """
+        Downloads a remote dataset to a local directory
+
+        Args:
+            dataset_id (str): ID of dataset in repository, or dataset URL, or dataset DOI.
+            destination (str): path to a directory to download the dataset.
+            client (str): supported client.  'figshare' or 'zenodo'.
+
+        Body of the request must contain values for dataset_id and directory 
+        as JSON:
+        {
+            "id": <id of the dataset>,
+            "destination": <path to directory>,
+            "client": <client name>
+        }
+        """
+        
+        # body of the request
+        data = self.get_json_body() # returns dictionary
+        
+        try:
+            client = fairly.client(id=data["client"])
+        except ValueError:
+            raise web.HTTPError(400, f"Invalid client id: {data['client']}")
+
+        try:
+            dataset = client.get_dataset(data["id"])
+        except ValueError:
+            # TODO, this exception is too general. It should be raised only 
+            # when the dataset was already initialized
+            raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
+        else:
+            dataset.store(data["destination"])
+        
+        self.finish(json.dumps({
+            "action": 'cloning dataset', 
+            "destination": data['directory'],
+            }))
+
 def setup_handlers(web_app):
     host_pattern = ".*$"
 
     base_url = web_app.settings["base_url"]
     extension_url = url_path_join(base_url, "jupyterfair")
-    example_url = url_path_join(extension_url, "get_example")
+    example_url = url_path_join(extension_url, "example")
     datasets_url = url_path_join(extension_url, "datasets")
     initialize_dataset_url = url_path_join(extension_url, "newdataset")
+    clone_dataset_url = url_path_join(extension_url, "clone")
     
-
     handlers = [
         (example_url, RouteHandler),
         (datasets_url, AccountDatasets),
         (initialize_dataset_url, InitFairlyDataset),
+        (clone_dataset_url, CloneDataset),
 
     ]
+
     web_app.add_handlers(host_pattern, handlers)
