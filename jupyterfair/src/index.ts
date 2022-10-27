@@ -24,13 +24,12 @@ import {
 
 // import { DocumentRegistry } from '@jupyterlab/docregistry';
 
-import {pathCommandPlugin} from './index-copy'
+import {editMetadataPlugin} from './metadata'
+import {archiveDatasetPlugin} from './archive';
 
 // Icons
 import {
   addIcon,
-  editIcon,
-  fileUploadIcon,
   // textEditorIcon,
   // closeIcon,
   // copyIcon,
@@ -47,7 +46,7 @@ import {
   // refreshIcon,
   // stopIcon,
   // textEditorIcon
-} from '@jupyterlab/ui-components'
+} from '@jupyterlab/ui-components';
 
 // import { showDialog} from '@jupyterlab/apputils';
 // import { Dialog} from '@jupyterlab/apputils';
@@ -112,79 +111,6 @@ const newDataset: JupyterFrontEndPlugin<void> = {
       rank: 100
     });
 
-    const commandEditMetadata = 'fairly:edit-metadata'
-    // Opens the manifest.yalm file in the file editor
-    app.commands.addCommand(commandEditMetadata, {
-      label: 'Edit Dataset Metadata',
-      isEnabled: () => true,
-      isVisible: () => true,
-      icon: editIcon,
-      execute: async () => {
-        console.log(`Executed ${commandEditMetadata}`);
-        
-
-        if (true) {
-          console.log('accepted');
-        } else{
-          console.log('rejected')
-        }
-      }
-    });
-
-
-    app.contextMenu.addItem({
-      command: commandEditMetadata,
-      // matches anywhere in the filebrowser
-      selector: '.jp-DirListing-content',
-      rank: 101
-    });
-
-    const commandArchiveDataset = 'fairly:archive'
-    // Archives dataset to selected Data repository
-    app.commands.addCommand(commandArchiveDataset, {
-      label: 'Archive Dataset',
-      isEnabled: () => true,
-      isVisible: () => true,
-      icon: fileUploadIcon,
-      execute: async () => {
-        console.log(`Executed ${commandArchiveDataset}`);
-
-        let targetRepository = await InputDialog.getItem({
-          title: 'Select Data Repository',
-          items: ['4TU.ResearchData',  'Zenodo', 'Figshare'],
-          okLabel: 'Continue',
-        });
-        
-        // initialize dataset when accept button is clicked and 
-        // vaule for teamplate is not null
-        if (targetRepository.button.accept && targetRepository.value) {
-          
-          let confirmAction = await InputDialog.getBoolean({
-            title: 'Do you want to archive the dataset?',
-            label: `Yes, upload metadata and files to ${targetRepository.value}`
-          });
-
-          if (confirmAction.button.accept){
-            console.log ('archive dataset');
-          }else {
-            console.log('do not archive');
-            return
-          };
-
-        } else{
-          console.log('rejected')
-          return
-        }
-      }
-    });
-
-    app.contextMenu.addItem({
-      command: commandArchiveDataset,
-      // matches anywhere in the filebrowser
-      selector: '.jp-DirListing-content',
-      rank: 102
-    });
-
   // Clone an existing dataset to current directory
   // based on url, iod(url)
   const commandCloneDataset = 'fairly:clone';
@@ -198,4 +124,4 @@ const newDataset: JupyterFrontEndPlugin<void> = {
   }
 };
 
-export default [newDataset, pathCommandPlugin];
+export default [newDataset, editMetadataPlugin, archiveDatasetPlugin];
