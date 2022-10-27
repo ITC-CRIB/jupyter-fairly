@@ -4,9 +4,12 @@ import {
 } from '@jupyterlab/application';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
-import { createDatasetCommandPlugin } from './dataset';
+import { 
+  createDatasetCommandPlugin,
+  cloneDatasetCommandPlugin, 
+} from './dataset';
 import {editMetadataPlugin} from './metadata'
-import {archiveDatasetPlugin} from './archive';
+import { archiveDatasetPlugin} from './archive';
 
 /**
  *  Activate jupyterfair extension.
@@ -26,4 +29,6 @@ export default [
   plugin, 
   createDatasetCommandPlugin, 
   editMetadataPlugin, 
-  archiveDatasetPlugin];
+  archiveDatasetPlugin,
+  cloneDatasetCommandPlugin
+];
