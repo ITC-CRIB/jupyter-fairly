@@ -24,6 +24,7 @@ import {
 
 // import { DocumentRegistry } from '@jupyterlab/docregistry';
 
+import {pathCommandPlugin} from './index-copy'
 
 // Icons
 import {
@@ -73,7 +74,7 @@ const newDataset: JupyterFrontEndPlugin<void> = {
     // console.log('IcommandPalette:', palette);
 
     // Declare command
-    const commandCreateDataset = 'fairly: create';
+    const commandCreateDataset = 'fairly:create';
    
     // add command to registry
     app.commands.addCommand(commandCreateDataset, {
@@ -120,14 +121,9 @@ const newDataset: JupyterFrontEndPlugin<void> = {
       icon: editIcon,
       execute: async () => {
         console.log(`Executed ${commandEditMetadata}`);
-
-        let metadataTemplate = await InputDialog.getItem({
-          title: 'Select format for new dataset\'s metadata',
-          items: ['Default', '4TU.Research',  'Zenodo', 'Figshare'],
-          okLabel: 'Create',
-        });
         
-        if (metadataTemplate.button.accept && metadataTemplate.value) {
+
+        if (true) {
           console.log('accepted');
         } else{
           console.log('rejected')
@@ -150,8 +146,35 @@ const newDataset: JupyterFrontEndPlugin<void> = {
       isEnabled: () => true,
       isVisible: () => true,
       icon: fileUploadIcon,
-      execute: () => {
+      execute: async () => {
         console.log(`Executed ${commandArchiveDataset}`);
+
+        let targetRepository = await InputDialog.getItem({
+          title: 'Select Data Repository',
+          items: ['4TU.ResearchData',  'Zenodo', 'Figshare'],
+          okLabel: 'Continue',
+        });
+        
+        // initialize dataset when accept button is clicked and 
+        // vaule for teamplate is not null
+        if (targetRepository.button.accept && targetRepository.value) {
+          
+          let confirmAction = await InputDialog.getBoolean({
+            title: 'Do you want to archive the dataset?',
+            label: `Yes, upload metadata and files to ${targetRepository.value}`
+          });
+
+          if (confirmAction.button.accept){
+            console.log ('archive dataset');
+          }else {
+            console.log('do not archive');
+            return
+          };
+
+        } else{
+          console.log('rejected')
+          return
+        }
       }
     });
 
@@ -161,9 +184,18 @@ const newDataset: JupyterFrontEndPlugin<void> = {
       selector: '.jp-DirListing-content',
       rank: 102
     });
-  
+
+  // Clone an existing dataset to current directory
+  // based on url, iod(url)
+  const commandCloneDataset = 'fairly:clone';
+  app.contextMenu.addItem({
+    command: commandCloneDataset,
+    // matches anywhere in the filebrowser
+    selector: '.jp-DirListing-content',
+    rank: 103
+  });
   
   }
 };
 
-export default newDataset;
+export default [newDataset, pathCommandPlugin];
