@@ -4,11 +4,13 @@ import {
 } from '@jupyterlab/application';
 
 import { addIcon } from '@jupyterlab/ui-components'
-import { InputDialog } from '@jupyterlab/apputils';
+import { Dialog, showDialog, InputDialog } from '@jupyterlab/apputils';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { showErrorMessage } from '@jupyterlab/apputils';
+import { downloadIcon } from '@jupyterlab/ui-components';
 
 import { requestAPI } from './handler';
+import { FairlyCloneForm } from './widgets/CloneForm';
 
 // import handlers from Jupyter Server extension
 // import { initDataset } from './fairly-api';
@@ -58,6 +60,50 @@ function initDataset(path: string, template?: any) {
   });
 }
 
+export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
+  id: 'jupyterfair:clone',
+  requires: [IFileBrowserFactory],
+  autoStart: true,
+  activate: (
+    app: JupyterFrontEnd,
+    fileBrowserFactory: IFileBrowserFactory
+  ) => {
+    console.log("cloneDatasetCommandPlugin activated!!");
+    const fileBrowser = fileBrowserFactory.defaultBrowser;
+    const fileBrowserModel = fileBrowser.model;
+
+    const cloneDatasetCommand = "cloneDatasetCommand";
+    app.commands.addCommand(cloneDatasetCommand, {
+      label: 'clone a Dataset',
+      isEnabled: () => true,
+      isVisible: () => true,
+      icon: downloadIcon,
+      execute:async () => {
+        const result = await showDialog({
+          title: 'Clone a Dataset',
+          body: new FairlyCloneForm(),
+          buttons: [
+            Dialog.cancelButton({ label: 'Cancel'}),
+            Dialog.okButton({ label: 'Clone'})
+          ]
+        });
+
+        if (result.button.accept && result.value) {
+          console.log('accepted');
+          await fileBrowserModel.refresh();
+        }
+      } 
+    });
+
+    app.contextMenu.addItem({
+      command: cloneDatasetCommand,
+      // matches anywhere in the filebrowser
+      selector: '.jp-DirListing-content',
+      rank: 106
+    });
+
+  }
+};
 
 export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterfair:create-dataset',
