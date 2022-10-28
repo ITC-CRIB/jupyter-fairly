@@ -4,40 +4,31 @@ import {
 } from '@jupyterlab/application';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
-
-import { requestAPI } from './handler';
+import { 
+  createDatasetCommandPlugin,
+  cloneDatasetCommandPlugin, 
+} from './dataset';
+import {editMetadataPlugin} from './metadata'
+import { archiveDatasetPlugin} from './archive';
 
 /**
- * Initialization data for the jupyterfair extension.
+ *  Activate jupyterfair extension.
  */
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterfair:plugin',
   autoStart: true,
+  requires : [],
   optional: [ISettingRegistry],
-  activate: (app: JupyterFrontEnd, settingRegistry: ISettingRegistry | null) => {
-    console.log('JupyterLab extension jupyterfair is activated!');
-
-    if (settingRegistry) {
-      settingRegistry
-        .load(plugin.id)
-        .then(settings => {
-          console.log('jupyterfair settings loaded:', settings.composite);
-        })
-        .catch(reason => {
-          console.error('Failed to load settings for jupyterfair.', reason);
-        });
-    }
-
-    requestAPI<any>('get_example')
-      .then(data => {
-        console.log(data);
-      })
-      .catch(reason => {
-        console.error(
-          `The jupyterfair server extension appears to be missing.\n${reason}`
-        );
-      });
+  activate: (app: JupyterFrontEnd, 
+    settingRegistry: ISettingRegistry | null) => {
+    console.log('jupytefair is activated!!');
   }
 };
 
-export default plugin;
+export default [
+  plugin, 
+  createDatasetCommandPlugin, 
+  editMetadataPlugin, 
+  archiveDatasetPlugin,
+  cloneDatasetCommandPlugin
+];

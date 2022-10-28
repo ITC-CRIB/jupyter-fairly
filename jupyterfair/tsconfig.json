@@ -16,9 +16,10 @@
     "outDir": "lib",
     "rootDir": "src",
     "strict": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "target": "es2017",
     "types": []
   },
-  "include": ["src/*"]
+  "include": ["src/*", "src/widgets/CloneForm.ts"]
 }
+

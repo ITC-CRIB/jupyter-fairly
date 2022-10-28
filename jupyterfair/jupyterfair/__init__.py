@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from ._version import __version__
-# from .handlers import setup_handlers
+from .handlers import setup_handlers
 
 
 
