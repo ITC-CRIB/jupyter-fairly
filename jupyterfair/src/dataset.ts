@@ -15,7 +15,6 @@ import { FairlyCloneForm } from './widgets/CloneForm';
 // import handlers from Jupyter Server extension
 // import { initDataset } from './fairly-api';
 
-
 function initDataset(path: string, template?: any) {
   /**
    * Initializes a Fairly dataset
