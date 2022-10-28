@@ -8,6 +8,7 @@ import {
 } from '@jupyterlab/ui-components';
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { showErrorMessage } from '@jupyterlab/apputils';
 
 export const editMetadataPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterfair:edit-meta',
@@ -30,9 +31,19 @@ export const editMetadataPlugin: JupyterFrontEndPlugin<void> = {
       icon: editIcon,
       execute: () => {
 
-        // return relative path w.r.t. jupyter root path.
-        // root-path = empty string.
-        console.log( `the path is: ${fileBrowserModel.path}`);
+        
+        let currentPath = './'.concat(fileBrowserModel.path);
+        const pathManifest = currentPath.concat('manifest.yaml');
+        /* We assume that the current directory contains the
+        manifest.yalm, if not we show an error message
+         */
+        try {
+          fileBrowserModel.manager.open(pathManifest)
+        } catch (error) {
+          // TODO: customize error type
+          showErrorMessage("Error Opening manifest.yalm", error);
+        };
+        
       }
     });
 
