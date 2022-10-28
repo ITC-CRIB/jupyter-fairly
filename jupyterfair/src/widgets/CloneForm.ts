@@ -1,12 +1,8 @@
-// import { TranslationBundle } from '@jupyterlab/translation';
 import { Widget } from '@lumino/widgets';
 
 /**
  * The UI for the form fields shown within the Clone modal.
  */
-
-
-
 export class FairlyCloneForm extends Widget {
   /**
    * Create a redirect form.
