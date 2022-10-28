@@ -73,7 +73,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
 
     const cloneDatasetCommand = "cloneDatasetCommand";
     app.commands.addCommand(cloneDatasetCommand, {
-      label: 'clone a Dataset',
+      label: 'Clone a Dataset',
       isEnabled: () => true,
       isVisible: () => true,
       icon: downloadIcon,
