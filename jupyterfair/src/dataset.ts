@@ -128,9 +128,13 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
         // return relative path w.r.t. jupyter root path.
         // root-path = empty string.
         console.log( `the path is: ${fileBrowserModel.path}` );
+        console.log( `the rootpath is: ${fileBrowserModel.rootPath}`);
+        
+        // console.log( `the files?: ${fileBrowserModel.filterDirectories}` );
+
 
         let metadataTemplate = await InputDialog.getItem({
-          title: 'Select format for new dataset\'s metadata',
+          title: 'Select template for dataset\'s metadata',
           items: ['', 'Default', '4TU.Research',  'Zenodo', 'Figshare'],
           okLabel: 'Create',
         });
