@@ -17,13 +17,6 @@ load_dotenv()
 FOURTU_TOKEN= os.environ['FOURTU_TOKEN']
 #######################
 
-# dummy creations 
-def dummy_dataset(path: str, manifest_file: str='manifest.yalm'):
-
-    with open(os.path.join(path, manifest_file),'rw') as manifest:
-        pass
-
-
 class RouteHandler(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
     # patch, put, delete, options) to ensure only authorized user can request the
@@ -62,20 +55,34 @@ class AccountDatasets(APIHandler):
             [
                 {
                     "id": "123456",
-                    "version": null
+                    "title": "a title",
+                    "version": null,
+                    "size": "X MB",
+                    "created": "timestamp",
+                    "modified": "timestamp",
+                    "url": "url"
                 }
             ]
         }
         """
+
         # TODO: handler return an error:
         #     raise HTTPError(http_error_msg, response=self)
         # requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://api.figshare.com/v2/account/licenses
 
         account_datasets = self.fourtu_client.get_account_datasets()
-        datasets = []
-        for dataset in account_datasets:
-            datasets.append(dataset.id) # collects metadata: id and version
-        self.finish(json.dumps({"count": len(datasets), "datasets": datasets}))
+
+        datasets = [ {
+            "id": dataset.id['id'], 
+            "title": dataset.title,
+            "version": dataset.id['version'],
+            "size": dataset.size,
+            "created": dataset.created,
+            "modified": dataset.modified,
+            "url": dataset.url
+            }  for dataset in account_datasets]
+    
+        self.finish(json.dumps({"count": len(datasets), "datasets": datasets}, default=str))
 
 
 class InitFairlyDataset(APIHandler):
@@ -135,6 +142,57 @@ class CloneDataset(APIHandler):
         Downloads a remote dataset to a local directory
 
         Args:
+            source (str): ID of dataset in repository, or dataset URL, or dataset DOI.
+            destination (str): path to a directory to download the dataset.
+            client (str): supported client.  'figshare' or 'zenodo'.
+
+        Body of the request must contain values for dataset_id and directory 
+        as JSON:
+        {
+            "source": <doi or url of the dataset>,
+            "directory": <path to directory>,
+            "client": <client name>
+        }
+        """
+        
+        # body of the request
+        data = self.get_json_body() # returns a dictionary
+        
+        try:
+            client = fairly.client(id=data["client"])
+        except ValueError:
+            raise web.HTTPError(400, f"Invalid client id: {data['client']}")
+
+        try:
+            # TODO: error with possibly the json encoding for the url dataset, or
+            # due to cross domain policies: https://www.w3schools.com/js/js_json_jsonp.asp
+
+            print('source', data["source"])
+            dataset = client.get_dataset(id=data["source"])
+        except ValueError:
+            # TODO, this exception is too general. It should be raised only 
+            # when the dataset was already initialized
+            raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
+        else:
+            print("call to store()")
+            dataset.store(path=data["destination"])
+        
+        self.finish(json.dumps({
+            "action": 'cloning dataset', 
+            "destination": data['destination'],
+            }))
+
+
+class ArchiveDataset(APIHandler):
+    """
+    Handler for archiving datasets to a data reposiotory
+    """
+
+    @tornado.web.authenticated
+    def post(self):
+        """
+        Uploads remote dataset to a remote data repository.
+        Args:
             dataset_id (str): ID of dataset in repository, or dataset URL, or dataset DOI.
             destination (str): path to a directory to download the dataset.
             client (str): supported client.  'figshare' or 'zenodo'.
@@ -169,6 +227,11 @@ class CloneDataset(APIHandler):
             "action": 'cloning dataset', 
             "destination": data['directory'],
             }))
+
+    def patch(self):
+        """ Send updatase on files and metadata to remore repository"""
+
+    
 
 def setup_handlers(web_app):
     host_pattern = ".*$"
