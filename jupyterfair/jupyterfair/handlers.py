@@ -143,7 +143,8 @@ class CloneDataset(APIHandler):
 
         Args:
             source (str): ID of dataset in repository, or dataset URL, or dataset DOI.
-            destination (str): path to a directory to download the dataset.
+            directory (str): path to a directory to download the dataset. Raise value error 
+            if directory is not empty.
             client (str): supported client.  'figshare' or 'zenodo'.
 
         Body of the request must contain values for dataset_id and directory 
@@ -175,11 +176,11 @@ class CloneDataset(APIHandler):
             raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
         else:
             print("call to store()")
-            dataset.store(path=data["destination"])
+            dataset.store(path=data["directory"])
         
         self.finish(json.dumps({
             "action": 'cloning dataset', 
-            "destination": data['destination'],
+            "destination": data['directory'],
             }))
 
 
