@@ -59,6 +59,45 @@ function initDataset(path: string, template?: any) {
   });
 }
 
+function cloneDataset(source: string, destination: string, client?: any) {
+  /**
+   * clones a remote dataset to a directory
+   * @param source - DOI or URL to the remote dataset
+   * @param destination - path to a directory to store the dataset
+   * @param client - fairly client
+   */
+
+  /* ./ is necessary becaucause defaultBrowser.Model.path
+  * returns an empty string when fileBlowser is on the
+  * jupyterlab root directory     
+  */
+  let rootPath = './';
+  let _client = '4tu';
+  console.log(`source is ${source}`);
+
+  console.log(rootPath.concat(destination))
+  requestAPI<any>('clone', {
+    method: 'POST', 
+    body: JSON.stringify({
+      source: source,
+      destination: rootPath.concat(destination),  // TODO: this might not work in Windows
+      client: _client
+    })
+  }) 
+  .then(data => {
+    console.log(data);
+  })
+  .catch(reason => {
+    console.error(
+      `${reason}`
+    );
+    // show error when manifest.yalm already exist in rootPath
+    showErrorMessage("Error when cloning dataset", reason)
+  });
+}
+
+
+
 export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterfair:clone',
   requires: [IFileBrowserFactory],
@@ -77,7 +116,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
       isEnabled: () => true,
       isVisible: () => true,
       icon: downloadIcon,
-      execute:async () => {
+      execute: async () => {
         const result = await showDialog({
           title: 'Clone a Dataset',
           body: new FairlyCloneForm(),
@@ -88,8 +127,11 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
         });
 
         if (result.button.accept && result.value) {
+          cloneDataset(result.value, fileBrowserModel.path )
           console.log('accepted');
           await fileBrowserModel.refresh();
+        } else {
+          console.log('rejected')
         }
       } 
     });
