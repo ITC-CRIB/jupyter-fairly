@@ -23,7 +23,8 @@ BASE_URL = 'https://api.figshare.com/v2/{endpoint}'
 TOKEN = config.FOURTU_TOKEN
 CHUNK_SIZE = 1048576
 
-FIX = './tests/fixtures/' # Fixtures path
+FIXTURES = './tests/fixtures/' # FIXTUREStures path
+DUMMY_PROJECT= f'./jupyterfair/tests/fixtures/dummy_project/'
 
 def create_file(n, d, path, file_name):
     f = open(f'{path}/{file_name}', 'w')
@@ -181,23 +182,7 @@ def upload_file(title, file_path):
     # We return to the figshare API to complete the file upload process.
     complete_upload(article_id, file_id)
     # list_files_of_article(article_id)
-
-def test_compression():
-    # FIXME: This should be tested for all in one test script
-    archive = FourTuData()
-    archive.zip_data_dir('./')
-    # archive.session.close()
-
-def test_requests():
-    archive = FourTuData()
-
-    # Check that wrong request throws HTTPError
-    with pytest.raises(HTTPError):
-        archive._raw_issue_request('GET','https://api.figshare.com/v2/account/articles/20021168?' )
-    
-    archive.session.close
-
-def test_del_all_test_archives():
+def del_all_test_archives():
     ''' Here I pass a list of all archives I have created in 4TU 
     and delete them programmatically
     '''
@@ -229,75 +214,31 @@ def test_del_all_test_archives():
     except HTTPError: pass
     archive.session.close()
 
+def test_compression():
+    # FIXTURESME: This should be tested for all in one test script
+    archive = FourTuData()
+    archive.zip_data_dir('./')
+    # archive.session.close()
+
+def test_requests():
+    archive = FourTuData()
+    # Check that wrong request throws HTTPError
+    with pytest.raises(HTTPError):
+        archive.raw_issue_request('GET','https://api.figshare.com/v2/account/articles/20021168?' )
+    
+    archive.session.close
 
 def test_upload():
-    # One file from project_example
-    pass
-
-# def test_article():
-#     """ Here we test the entire article creation process, including the following:
-#     1. Create, update and delete article
-#     2. Publish article
-#     2. Upload files to article
-#     """
-#     response = create_article('New Article') 
-#     response = json.loads(response.content)    
-#     article_id = response['entity_id']
-      
-#     location_key_exists = 'location' in response
-
-#     # assert basic request works
-#     assert list_articles().status_code == 200
-#     # Check that location is within the response dict keys
-#     assert location_key_exists
-
-#     # Check that upload is initiated
-#     res = initiate_new_upload(article_id, f"{FIX}text.txt") 
-#     assert res.status_code == 201
-#     # Stops upload init if file is empty
-#     with pytest.raises(AssertionError):
-#         initiate_new_upload(article_id, f"{FIX}empty.txt")
-
-#     # Upload file to article
-#     create_file(1000,100,"small_file")
+    archive = FourTuData()
+    # Upload small file
+    r = archive.create_archive('My article numberv 0')
+    article_id = json.loads(r.content)['entity_id']
+    r = archive.upload_file_to_archive(article_id,  f'{DUMMY_PROJECT}file_1MB.txt')
+    # assert that response was succesful
+    assert r.status_code == 202 
     
-#     # Assert that part one was uploaded
-#     # Assert that the entire file was uploaded
 
-#     assert os.path.exists(f"{FIX}big_file")
-#     os.remove(f"{FIX}big_file")
-    
-#     # assert upload_file(article_id, f"{FIX}text.txt").status_code == 201
 
-#     # Delete created article
-#     delete_article(article_id)
-
-#     # assert that file is empty and not uploaded
-#     # Assert that file has been uploaded
-
-# def test_author_search():
-#     ''' We will look for an author's orcid using orcid API and use is to search
-#     for the author to add it to the metadata of the article is being created
-#     '''
-#     pass
-
-# def test_article_validation():
-#     ''' We use a technology like json schema to make sure the data is valid before creating
-#     the article, to make the data more FAIR from the start
-#     '''
-#     pass
-
-#     # result = raw_issue_request('GET', result['location'])
-#     # return result
-
-# def fairy():
-#     """
-#     Here we can test domain logic, 
-    
-#     for example rejecting upload of empty metadata ,finding author, or generating metadata objects
-#     domain logic doesnt have any dependency on implementations
-#     """
-#     pass
 
 
 
