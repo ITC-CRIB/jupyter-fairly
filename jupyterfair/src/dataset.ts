@@ -63,7 +63,7 @@ function cloneDataset(source: string, destination: string, client?: any) {
   /**
    * clones a remote dataset to a directory
    * @param source - DOI or URL to the remote dataset
-   * @param destination - path to a directory to store the dataset
+   * @param destination - realtive path to a directory to store the dataset
    * @param client - fairly client
    */
 
@@ -73,30 +73,30 @@ function cloneDataset(source: string, destination: string, client?: any) {
   */
   let rootPath = './';
   let _client = '4tu';
-  console.log(`source is ${source}`);
 
-  console.log(rootPath.concat(destination))
+  let payload = JSON.stringify({
+    source: source,
+    destination: rootPath.concat(destination),  // TODO: this might not work in Windows
+    client: _client
+  });
+
+  console.log(rootPath.concat(destination));
+  
   requestAPI<any>('clone', {
     method: 'POST', 
-    body: JSON.stringify({
-      source: source,
-      destination: rootPath.concat(destination),  // TODO: this might not work in Windows
-      client: _client
-    })
+    body: payload
   }) 
   .then(data => {
     console.log(data);
   })
   .catch(reason => {
-    console.error(
-      `${reason}`
-    );
+    // console.error(
+    //   `${reason}`
+    // );
     // show error when manifest.yalm already exist in rootPath
     showErrorMessage("Error when cloning dataset", reason)
   });
 }
-
-
 
 export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterfair:clone',

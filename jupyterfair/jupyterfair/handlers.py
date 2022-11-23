@@ -70,6 +70,7 @@ class AccountDatasets(APIHandler):
         #     raise HTTPError(http_error_msg, response=self)
         # requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://api.figshare.com/v2/account/licenses
 
+        # TODO: handler should allow instantiating different clients
         account_datasets = self.fourtu_client.get_account_datasets()
 
         datasets = [ {
@@ -135,6 +136,7 @@ class CloneDataset(APIHandler):
     Handler for cloning (copying) a remote dataset to a directory,
     using a dataset identifier.
     """
+    # class attributes will be reused between http calls
 
     @tornado.web.authenticated
     def post(self):
@@ -143,7 +145,7 @@ class CloneDataset(APIHandler):
 
         Args:
             source (str): ID of dataset in repository, or dataset URL, or dataset DOI.
-            directory (str): path to a directory to download the dataset. Raise value error 
+            destination (str): path to a directory to download the dataset. Raise value error 
             if directory is not empty.
             client (str): supported client.  'figshare' or 'zenodo'.
 
@@ -151,16 +153,19 @@ class CloneDataset(APIHandler):
         as JSON:
         {
             "source": <doi or url of the dataset>,
-            "directory": <path to directory>,
+            "destination": <path to directory>,
             "client": <client name>
         }
         """
-        
+     
         # body of the request
         data = self.get_json_body() # returns a dictionary
         
+        # print(data)
         try:
-            client = fairly.client(id=data["client"])
+            # TODO: handler should allow instantiating different clients
+            client = fairly.client(id=data["client"], token=FOURTU_TOKEN)
+            print("client id", client.client_id)
         except ValueError:
             raise web.HTTPError(400, f"Invalid client id: {data['client']}")
 
@@ -176,11 +181,11 @@ class CloneDataset(APIHandler):
             raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
         else:
             print("call to store()")
-            dataset.store(path=data["directory"])
+            dataset.store(path=data["destination"])
         
         self.finish(json.dumps({
             "action": 'cloning dataset', 
-            "destination": data['directory'],
+            "destination": data['destination'],
             }))
 
 
@@ -233,7 +238,6 @@ class ArchiveDataset(APIHandler):
         """ Send updatase on files and metadata to remore repository"""
 
     
-
 def setup_handlers(web_app):
     host_pattern = ".*$"
 
