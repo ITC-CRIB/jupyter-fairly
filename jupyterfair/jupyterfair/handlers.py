@@ -163,25 +163,29 @@ class CloneDataset(APIHandler):
         
         # print(data)
         try:
-            # TODO: handler should allow instantiating different clients
+            # TODO: token should be read from config file
             client = fairly.client(id=data["client"], token=FOURTU_TOKEN)
-            print("client id", client.client_id)
         except ValueError:
             raise web.HTTPError(400, f"Invalid client id: {data['client']}")
-
+        
         try:
             # TODO: error with possibly the json encoding for the url dataset, or
             # due to cross domain policies: https://www.w3schools.com/js/js_json_jsonp.asp
 
             print('source', data["source"])
+            # connecto to remote dataset and retrieve metadata
             dataset = client.get_dataset(id=data["source"])
         except ValueError:
             # TODO, this exception is too general. It should be raised only 
             # when the dataset was already initialized
             raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
-        else:
+        
+        try:
             print("call to store()")
+            # download files and store them in local directory
             dataset.store(path=data["destination"])
+        except ValueError:
+            raise web.HTTPError(403, f"Can't not clone dataset to not-empty directory." )
         
         self.finish(json.dumps({
             "action": 'cloning dataset', 
