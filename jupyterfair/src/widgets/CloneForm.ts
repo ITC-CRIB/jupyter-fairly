@@ -5,7 +5,7 @@ import { Widget } from '@lumino/widgets';
  */
 export class FairlyCloneForm extends Widget {
   /**
-   * Create a redirect form for cloning datasets
+   * Creates a form for cloning datasets
    * 
    */
    constructor() {
