@@ -11,6 +11,8 @@ import { downloadIcon } from '@jupyterlab/ui-components';
 
 import { requestAPI } from './handler';
 import { FairlyCloneForm } from './widgets/CloneForm';
+import { logger } from './logger';
+import { Level } from './tokens';
 
 // import handlers from Jupyter Server extension
 // import { initDataset } from './fairly-api';
@@ -90,10 +92,7 @@ function cloneDataset(source: string, destination: string, client?: any) {
     console.log(data);
   })
   .catch(reason => {
-    // console.error(
-    //   `${reason}`
-    // );
-    // show error when manifest.yalm already exist in rootPath
+    // show error when destination directory is not empty
     showErrorMessage("Error when cloning dataset", reason)
   });
 }
@@ -127,9 +126,22 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
         });
 
         if (result.button.accept && result.value) {
-          cloneDataset(result.value, fileBrowserModel.path )
-          console.log('accepted');
-          await fileBrowserModel.refresh();
+          logger.log({
+            level: Level.RUNNING,
+            message: 'Cloning...'
+          });
+
+          try {
+            cloneDataset(result.value, fileBrowserModel.path);
+            console.log('accepted');
+            await fileBrowserModel.refresh();
+          } catch (error) {
+            console.error(
+              'Encontered an error when cloning the dataset: ', 
+              error
+            )
+          }
+
         } else {
           console.log('rejected')
         }
