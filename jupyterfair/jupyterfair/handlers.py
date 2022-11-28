@@ -185,7 +185,7 @@ class CloneDataset(APIHandler):
             # download files and store them in local directory
             dataset.store(path=data["destination"])
         except ValueError:
-            raise web.HTTPError(403, f"Can't not clone dataset to not-empty directory." )
+            raise web.HTTPError(403, f"Can't clone dataset to not-empty directory." )
         
         self.finish(json.dumps({
             "action": 'cloning dataset', 
@@ -193,9 +193,9 @@ class CloneDataset(APIHandler):
             }))
 
 
-class ArchiveDataset(APIHandler):
+class UploadDataset(APIHandler):
     """
-    Handler for archiving datasets to a data reposiotory
+    Handler for uploading metadata and files to a data reposiotory
     """
 
     @tornado.web.authenticated
@@ -238,8 +238,11 @@ class ArchiveDataset(APIHandler):
             "destination": data['directory'],
             }))
 
+
     def patch(self):
-        """ Send updatase on files and metadata to remore repository"""
+        """ Send updates on files and metadata to remore repository"""
+
+        raise NotImplementedError
 
     
 def setup_handlers(web_app):
