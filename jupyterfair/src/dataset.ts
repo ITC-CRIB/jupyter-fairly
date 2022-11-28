@@ -111,13 +111,13 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
 
     const cloneDatasetCommand = "cloneDatasetCommand";
     app.commands.addCommand(cloneDatasetCommand, {
-      label: 'Clone a Dataset',
+      label: 'Clone Dataset',
       isEnabled: () => true,
       isVisible: () => true,
       icon: downloadIcon,
       execute: async () => {
         const result = await showDialog({
-          title: 'Clone a Dataset',
+          title: 'Clone Dataset',
           body: new FairlyCloneForm(),
           buttons: [
             Dialog.cancelButton({ label: 'Cancel'}),
