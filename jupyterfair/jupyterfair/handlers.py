@@ -228,23 +228,28 @@ class UploadDataset(APIHandler):
             local_dataset = fairly.dataset(data["directory"])
         except NotADirectoryError:
             # throws error when path is not a directory
-            raise web.HTTPError(404, f"Invalid path to directory: {data['path']}")
+            raise web.HTTPError(404, f"Invalid path to directory: {data['directory']}")
         
+        try:
+            local_dataset.upload(client)
+        except ValueError:
+            # generic error it raises if anything goes wrong with upload
+            raise web.HTTPError(500, f'Something went wrong with uploading')
 
         
         # else:
         #     dataset.store(data["destination"])
         
         self.finish(json.dumps({
-            "action": 'cloning dataset', 
-            "destination": data['directory'],
+            "action": 'upload dataset', 
+            "status": 'complete',
             }))
 
 
     def patch(self):
         """ Send updates on files and metadata to remore repository"""
 
-        raise NotImplementedError
+        raise web.HTTPError(501, "Not implemented")
 
     
 def setup_handlers(web_app):
@@ -256,12 +261,16 @@ def setup_handlers(web_app):
     datasets_url = url_path_join(extension_url, "datasets")
     initialize_dataset_url = url_path_join(extension_url, "newdataset")
     clone_dataset_url = url_path_join(extension_url, "clone")
+    upload_dataset_url = url_path_join(extension_url, "upload")
+
     
     handlers = [
         (example_url, RouteHandler),
         (datasets_url, AccountDatasets),
         (initialize_dataset_url, InitFairlyDataset),
         (clone_dataset_url, CloneDataset),
+        (upload_dataset_url, UploadDataset),
+
 
     ]
 
