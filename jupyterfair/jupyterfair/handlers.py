@@ -235,10 +235,6 @@ class UploadDataset(APIHandler):
         except ValueError:
             # generic error it raises if anything goes wrong with upload
             raise web.HTTPError(500, f'Something went wrong with uploading')
-
-        
-        # else:
-        #     dataset.store(data["destination"])
         
         self.finish(json.dumps({
             "action": 'upload dataset', 
