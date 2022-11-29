@@ -19,10 +19,10 @@
                 "orcid_token": ""
         },
         "4tu": {
-        "token": "73e25096ac6f125816d48456899e94c5f5b2f8b794ca6cca77934760bc54bf61102c6d>
+        "token": ""
         },
         "zenodo": {
-        "token":"TFUS9Gpjhxe0JcJFaidAWKzjefoHvngeYt5LnhdK2u9rWyNyiQGIJJmmPAMw"
+        "token":""
         }
     }
    ```
