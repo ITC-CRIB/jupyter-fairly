@@ -11,7 +11,7 @@ import {
   cloneDatasetCommandPlugin, 
 } from './dataset';
 import {editMetadataPlugin} from './metadata'
-import { archiveDatasetPlugin} from './archive';
+import { uploadDatasetPlugin} from './upload';
 
 // import { FairlyWidget } from './widgets/FairlyTab';
 
@@ -48,25 +48,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export default [
   plugin, 
   createDatasetCommandPlugin, 
   editMetadataPlugin, 
-  archiveDatasetPlugin,
+  uploadDatasetPlugin,
   cloneDatasetCommandPlugin
 ];
 
