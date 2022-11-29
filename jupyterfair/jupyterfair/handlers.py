@@ -70,6 +70,7 @@ class AccountDatasets(APIHandler):
         #     raise HTTPError(http_error_msg, response=self)
         # requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://api.figshare.com/v2/account/licenses
 
+        # TODO: handler should allow instantiating different clients
         account_datasets = self.fourtu_client.get_account_datasets()
 
         datasets = [ {
@@ -135,6 +136,7 @@ class CloneDataset(APIHandler):
     Handler for cloning (copying) a remote dataset to a directory,
     using a dataset identifier.
     """
+    # class attributes will be reused between http calls
 
     @tornado.web.authenticated
     def post(self):
@@ -143,7 +145,7 @@ class CloneDataset(APIHandler):
 
         Args:
             source (str): ID of dataset in repository, or dataset URL, or dataset DOI.
-            directory (str): path to a directory to download the dataset. Raise value error 
+            destination (str): path to a directory to download the dataset. Raise value error 
             if directory is not empty.
             client (str): supported client.  'figshare' or 'zenodo'.
 
@@ -151,58 +153,65 @@ class CloneDataset(APIHandler):
         as JSON:
         {
             "source": <doi or url of the dataset>,
-            "directory": <path to directory>,
+            "destination": <path to directory>,
             "client": <client name>
         }
         """
-        
+     
         # body of the request
         data = self.get_json_body() # returns a dictionary
         
+        # print(data)
         try:
-            client = fairly.client(id=data["client"])
+            # TODO: token should be read from config file
+            client = fairly.client(id=data["client"], token=FOURTU_TOKEN)
         except ValueError:
             raise web.HTTPError(400, f"Invalid client id: {data['client']}")
-
+        
         try:
             # TODO: error with possibly the json encoding for the url dataset, or
             # due to cross domain policies: https://www.w3schools.com/js/js_json_jsonp.asp
 
             print('source', data["source"])
+            # connecto to remote dataset and retrieve metadata
             dataset = client.get_dataset(id=data["source"])
         except ValueError:
             # TODO, this exception is too general. It should be raised only 
             # when the dataset was already initialized
             raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
-        else:
+        
+        try:
             print("call to store()")
-            dataset.store(path=data["directory"])
+            # download files and store them in local directory
+            dataset.store(path=data["destination"])
+        except ValueError:
+            raise web.HTTPError(403, f"Can't clone dataset to not-empty directory." )
         
         self.finish(json.dumps({
             "action": 'cloning dataset', 
-            "destination": data['directory'],
+            "destination": data['destination'],
             }))
 
 
-class ArchiveDataset(APIHandler):
+class UploadDataset(APIHandler):
     """
-    Handler for archiving datasets to a data reposiotory
+    Handler for uploading metadata and files to a data reposiotory
     """
 
     @tornado.web.authenticated
     def post(self):
         """
-        Uploads remote dataset to a remote data repository.
+        Uploads local dataset to a remote data repository.
         Args:
-            dataset_id (str): ID of dataset in repository, or dataset URL, or dataset DOI.
-            destination (str): path to a directory to download the dataset.
-            client (str): supported client.  'figshare' or 'zenodo'.
+    
+            directory (str): path to directory 
+            client (str): supported client.  'figshare', '4tu or 'zenodo'.
 
         Body of the request must contain values for dataset_id and directory 
         as JSON:
         {
-            "id": <id of the dataset>,
-            "destination": <path to directory>,
+            
+            "directory": <path to directory>,
             "client": <client name>
         }
         """
@@ -211,29 +220,34 @@ class ArchiveDataset(APIHandler):
         data = self.get_json_body() # returns dictionary
         
         try:
-            client = fairly.client(id=data["client"])
+            client = fairly.client(id=data["client"], token=FOURTU_TOKEN)
         except ValueError:
             raise web.HTTPError(400, f"Invalid client id: {data['client']}")
 
         try:
-            dataset = client.get_dataset(data["id"])
+            local_dataset = fairly.dataset(data["directory"])
+        except NotADirectoryError:
+            # throws error when path is not a directory
+            raise web.HTTPError(404, f"Invalid path to directory: {data['directory']}")
+        
+        try:
+            local_dataset.upload(client)
         except ValueError:
-            # TODO, this exception is too general. It should be raised only 
-            # when the dataset was already initialized
-            raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
-        else:
-            dataset.store(data["destination"])
+            # generic error it raises if anything goes wrong with upload
+            raise web.HTTPError(500, f'Something went wrong with uploading')
         
         self.finish(json.dumps({
-            "action": 'cloning dataset', 
-            "destination": data['directory'],
+            "action": 'upload dataset', 
+            "status": 'complete',
             }))
 
+
     def patch(self):
-        """ Send updatase on files and metadata to remore repository"""
+        """ Send updates on files and metadata to remore repository"""
+
+        raise web.HTTPError(501, "Not implemented")
 
     
-
 def setup_handlers(web_app):
     host_pattern = ".*$"
 
@@ -243,12 +257,16 @@ def setup_handlers(web_app):
     datasets_url = url_path_join(extension_url, "datasets")
     initialize_dataset_url = url_path_join(extension_url, "newdataset")
     clone_dataset_url = url_path_join(extension_url, "clone")
+    upload_dataset_url = url_path_join(extension_url, "upload")
+
     
     handlers = [
         (example_url, RouteHandler),
         (datasets_url, AccountDatasets),
         (initialize_dataset_url, InitFairlyDataset),
         (clone_dataset_url, CloneDataset),
+        (upload_dataset_url, UploadDataset),
+
 
     ]
 

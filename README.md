@@ -9,14 +9,25 @@
     ```
 2. Clone repository
 3. Activate conda environment
-4. Create a `.env` file in  the `jupyterfair/jupyterfair/` subfolder, and add a TOKEN (for now only 4TU personal tokens). Such as:
+4. Create a `config.json` and store it in `~/.fairly`.
+5. Cope the example below to `config.json`. You must add the tokens for your repository accounts
+   ```json
+   {
+        "fairly": {
+                "orcid_client_id":"APP-IELS3LR4OCLHLELC",
+                "orcid_clien_secret": "",
+                "orcid_token": ""
+        },
+        "4tu": {
+        "token": "73e25096ac6f125816d48456899e94c5f5b2f8b794ca6cca77934760bc54bf61102c6d>
+        },
+        "zenodo": {
+        "token":"TFUS9Gpjhxe0JcJFaidAWKzjefoHvngeYt5LnhdK2u9rWyNyiQGIJJmmPAMw"
+        }
+    }
    ```
-   TOKEN="Bearer <token-hash>"
-   ```
-5. Install, activate and build extension
+6. Go to `jupyterfair` directory, and install, activate and build extension
     ```shell
-    # Install package in development mode
-    pip install -e .
     # Link your development version of the extension with JupyterLab
     jupyter labextension develop . --overwrite
     # Enable the server extension
@@ -24,23 +35,17 @@
     # Rebuild extension Typescript source after making changes
     jlpm run build
     ```
-6. On a new terminal, start the Jupyter Server
+7. On a new terminal, start the JupyterLab
    ```shell
-   jupyter server
+   jupyter lab
    ```
-7. Open the link in the terminal in a browser. Go to `http://127.0.0.1:8888/jupyterfair/get_example`. You should see the following message:
-   ```json
-   {"data": "This is /jupyterfair/get_test endpoint... Hoora! It works!!!"}
-   ```
+8. Open the link in the terminal in a browser. You should see the commands of the extension in the context menu of the side panel.
 
-    > You will need to re-build the extension with `jlpm run build` and re-start **jupyter server** for changes to the soruce code take effect.
+    ![extension-context-menu](docs/img/contex-menu.png)
 
-## Testing the communication with 4TU Research Data
 
-If the development environment was successfully set up. You should be able to retrieve the list of articles in your 4TU account at this URL (an empty list will be showned if you have no articles):
 
-```
-http://127.0.0.1:8888/jupyterfair/list_articles
-```
+> You will need to re-build the extension with `jlpm run build` and re-start **jupyter server** for changes to the soruce code take effect.
+
 
 

@@ -15,33 +15,82 @@ import {
 import {
   fileUploadIcon,
 } from '@jupyterlab/ui-components';
+import { requestAPI } from './handler';
+import { showErrorMessage } from '@jupyterlab/apputils';
 
 /**
- * Initialization data for the jupyterfair extension.
+ * Uploads metadata and files to data repository
  */
 
-export const archiveDatasetPlugin: JupyterFrontEndPlugin<void> = {
-  id: 'jupyterfair:archive',
+
+ function uploadDataset(directory: string,  repository: string) {
+  /**
+   * upload local dataset to data reposotory
+   * @param directory - realtive path to directory of local dataset
+   * @param repository - name of data repository
+   */
+
+  /* ./ is necessary becaucause defaultBrowser.Model.path
+  * returns an empty string when fileBlowser is on the
+  * jupyterlab root directory     
+  */
+  let rootPath = './';
+
+  var client;
+  
+  if(repository === '4TU.ResearchData') {
+    client = '4tu';
+  }
+  else if (repository === 'Zenodo'){
+    client = 'zenodo'
+  }
+  else if (repository === 'Figshare'){
+    client = 'figshare'
+  };
+
+  let payload = JSON.stringify({
+    directory: rootPath.concat(directory),  // TODO: this might not work in Windows
+    client: client
+  });
+
+  console.log(payload);
+  
+  requestAPI<any>('upload', {
+    method: 'POST', 
+    body: payload
+  }) 
+  .then(data => {
+    console.log(data);
+  })
+  .catch(reason => {
+    // show error when 
+    showErrorMessage("Error when uploading dataset", reason)
+  });
+};
+
+
+export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
+  id: 'jupyterfair:upload',
   requires: [IFileBrowserFactory],
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
     fileBrowserFactory: IFileBrowserFactory
   ) => {
-    console.log("archiveDatasetPlugin activated!!");
+    console.log("uploadDatasetPlugin activated!!");
     const fileBrowser = fileBrowserFactory.defaultBrowser;
     const fileBrowserModel = fileBrowser.model;
 
     // TODO: the plugin start without error, but the model.path is an empty string for root-path (path where jupyter was started.)
-    const archiveDatasetCommand = "archiveDataset"
+    const archiveDatasetCommand = "uploadDataset"
     app.commands.addCommand(archiveDatasetCommand, {
-      label: 'Archive Dataset',
+      label: 'Upload Dataset',
       isEnabled: () => true,
       isVisible: () => true, // activate only when current directory contains a manifest.yalm
       icon: fileUploadIcon,
       execute: async() => {
 
-        // return relative path w.r.t. jupyter root path.
+        // return relative path w.r.t. jupyterlab root path.
         // root-path = empty string.
         console.log( `the path is: ${fileBrowserModel.path}` );
 
@@ -56,12 +105,13 @@ export const archiveDatasetPlugin: JupyterFrontEndPlugin<void> = {
         if (targetRepository.button.accept && targetRepository.value) {
           
           let confirmAction = await InputDialog.getBoolean({
-            title: 'Do you want to archive the dataset?',
+            title: 'Do you want to upload the dataset?',
             label: `Yes, upload metadata and files to ${targetRepository.value}`
           });
 
           if (confirmAction.button.accept){
-            console.log ('archive dataset');
+            console.log ('uploading dataset');
+            uploadDataset(fileBrowserModel.path, targetRepository.value)
           }else {
             console.log('do not archive');
             return
