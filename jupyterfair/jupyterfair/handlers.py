@@ -201,17 +201,17 @@ class UploadDataset(APIHandler):
     @tornado.web.authenticated
     def post(self):
         """
-        Uploads remote dataset to a remote data repository.
+        Uploads local dataset to a remote data repository.
         Args:
-            dataset_id (str): ID of dataset in repository, or dataset URL, or dataset DOI.
-            destination (str): path to a directory to download the dataset.
-            client (str): supported client.  'figshare' or 'zenodo'.
+    
+            directory (str): path to directory 
+            client (str): supported client.  'figshare', '4tu or 'zenodo'.
 
         Body of the request must contain values for dataset_id and directory 
         as JSON:
         {
-            "id": <id of the dataset>,
-            "destination": <path to directory>,
+            
+            "directory": <path to directory>,
             "client": <client name>
         }
         """
@@ -220,18 +220,20 @@ class UploadDataset(APIHandler):
         data = self.get_json_body() # returns dictionary
         
         try:
-            client = fairly.client(id=data["client"])
+            client = fairly.client(id=data["client"], token=FOURTU_TOKEN)
         except ValueError:
             raise web.HTTPError(400, f"Invalid client id: {data['client']}")
 
         try:
-            dataset = client.get_dataset(data["id"])
-        except ValueError:
-            # TODO, this exception is too general. It should be raised only 
-            # when the dataset was already initialized
-            raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
-        else:
-            dataset.store(data["destination"])
+            local_dataset = fairly.dataset(data["directory"])
+        except NotADirectoryError:
+            # throws error when path is not a directory
+            raise web.HTTPError(404, f"Invalid path to directory: {data['path']}")
+        
+
+        
+        # else:
+        #     dataset.store(data["destination"])
         
         self.finish(json.dumps({
             "action": 'cloning dataset', 
