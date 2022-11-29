@@ -11,6 +11,8 @@ import { downloadIcon } from '@jupyterlab/ui-components';
 
 import { requestAPI } from './handler';
 import { FairlyCloneForm } from './widgets/CloneForm';
+import { logger } from './logger';
+import { Level } from './tokens';
 
 // import handlers from Jupyter Server extension
 // import { initDataset } from './fairly-api';
@@ -63,7 +65,7 @@ function cloneDataset(source: string, destination: string, client?: any) {
   /**
    * clones a remote dataset to a directory
    * @param source - DOI or URL to the remote dataset
-   * @param destination - path to a directory to store the dataset
+   * @param destination - realtive path to a directory to store the dataset
    * @param client - fairly client
    */
 
@@ -73,30 +75,27 @@ function cloneDataset(source: string, destination: string, client?: any) {
   */
   let rootPath = './';
   let _client = '4tu';
-  console.log(`source is ${source}`);
 
-  console.log(rootPath.concat(destination))
+  let payload = JSON.stringify({
+    source: source,
+    destination: rootPath.concat(destination),  // TODO: this might not work in Windows
+    client: _client
+  });
+
+  console.log(rootPath.concat(destination));
+  
   requestAPI<any>('clone', {
     method: 'POST', 
-    body: JSON.stringify({
-      source: source,
-      destination: rootPath.concat(destination),  // TODO: this might not work in Windows
-      client: _client
-    })
+    body: payload
   }) 
   .then(data => {
     console.log(data);
   })
   .catch(reason => {
-    console.error(
-      `${reason}`
-    );
-    // show error when manifest.yalm already exist in rootPath
+    // show error when destination directory is not empty
     showErrorMessage("Error when cloning dataset", reason)
   });
 }
-
-
 
 export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterfair:clone',
@@ -112,13 +111,13 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
 
     const cloneDatasetCommand = "cloneDatasetCommand";
     app.commands.addCommand(cloneDatasetCommand, {
-      label: 'Clone a Dataset',
+      label: 'Clone Dataset',
       isEnabled: () => true,
       isVisible: () => true,
       icon: downloadIcon,
       execute: async () => {
         const result = await showDialog({
-          title: 'Clone a Dataset',
+          title: 'Clone Dataset',
           body: new FairlyCloneForm(),
           buttons: [
             Dialog.cancelButton({ label: 'Cancel'}),
@@ -127,9 +126,22 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
         });
 
         if (result.button.accept && result.value) {
-          cloneDataset(result.value, fileBrowserModel.path )
-          console.log('accepted');
-          await fileBrowserModel.refresh();
+          logger.log({
+            level: Level.RUNNING,
+            message: 'Cloning...'
+          });
+
+          try {
+            cloneDataset(result.value, fileBrowserModel.path);
+            console.log('accepted');
+            await fileBrowserModel.refresh();
+          } catch (error) {
+            console.error(
+              'Encontered an error when cloning the dataset: ', 
+              error
+            )
+          }
+
         } else {
           console.log('rejected')
         }
