@@ -33,7 +33,7 @@ export const editMetadataPlugin: JupyterFrontEndPlugin<void> = {
 
         
         let currentPath = './'.concat(fileBrowserModel.path);
-        const pathManifest = currentPath.concat('manifest.yaml');
+        const pathManifest = currentPath.concat('/manifest.yaml');
         /* We assume that the current directory contains the
         manifest.yalm, if not we show an error message
          */
