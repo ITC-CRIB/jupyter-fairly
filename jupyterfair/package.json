@@ -1,6 +1,6 @@
 {
   "name": "jupyterfair",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "a tool for seamless integration of Jupyter-based research environments and research data repositories.",
   "keywords": [
     "jupyter",
