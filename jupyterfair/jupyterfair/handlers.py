@@ -43,17 +43,21 @@ class AccountDatasets(APIHandler):
     return: JSON array
     """
     
-    # class attributes will be reused between http calls
-    fourtu_client = fairly.client(id="figshare")
-
-
-
     @tornado.web.authenticated
     def get(self):
         """
         Returns a count and list of datasets an user account as JSON. 
-        Datasets are listed as 'id' and 'version'
-        Example:
+        Datasets are listed as 'id' and 'version'.
+
+        Args:
+            client (str): supported client.  'figshare' or 'zenodo'.
+
+        Body example:
+            {
+                "client": <client name>
+            }
+
+        Response example:
         {
             "count": 1,
             "datasets": 
@@ -71,24 +75,32 @@ class AccountDatasets(APIHandler):
         }
         """
 
-        # TODO: handler return an error:
-        #     raise HTTPError(http_error_msg, response=self)
-        # requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://api.figshare.com/v2/account/licenses
-
-        # TODO: handler should allow instantiating different clients
-        account_datasets = self.fourtu_client.get_account_datasets()
-
-        datasets = [ {
-            "id": dataset.id['id'], 
-            "title": dataset.title,
-            "version": dataset.id['version'],
-            "size": dataset.size,
-            "created": dataset.created,
-            "modified": dataset.modified,
-            "url": dataset.url
-            }  for dataset in account_datasets]
+        # catch body of the request
+        data = self.get_json_body() # returns a dictionary
+        try:
+            # tokens are read from .fairly/config.json
+            client = fairly.client(id=data["client"])
+        except ValueError:
+            raise web.HTTPError(400, f"Invalid client id: {data['client']}")
+        
+        try:
+            # connect to data repository and retrieve list of datasets
+            account_datasets = client.get_account_datasets()
+        except:
+            # TODO: a not too general exception must be raised when authentification fails 
+            raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
+        else:
+            datasets = [ {
+                "id": dataset.id['id'], 
+                "title": dataset.title,
+                "version": dataset.id['version'],
+                "size": dataset.size,
+                "created": dataset.created,
+                "modified": dataset.modified,
+                "url": dataset.url
+                }  for dataset in account_datasets]
     
-        self.finish(json.dumps({"count": len(datasets), "datasets": datasets}, default=str))
+            self.finish(json.dumps({"count": len(datasets), "datasets": datasets}, default=str))
 
 
 class InitFairlyDataset(APIHandler):
