@@ -119,15 +119,14 @@ class InitFairlyDataset(APIHandler):
             root (str): path to the dataset directory
             template (str): name of the template to use on manifest.yalm
         
-        Body of the request must contain values for root and template 
-        as JSON:
+        Body example:
         {
             "root": <path to dataset root directory>,
             "template"": <template name>
         }
         """
 
-        # for post the token must be passed in the URL
+        # for POST the token must be passed in the URL
         # http://127.0.0.1:8888/jupyterfair/newdataset?token=295c3a87c6
         # 
     
@@ -142,9 +141,7 @@ class InitFairlyDataset(APIHandler):
             raise web.HTTPError(403, "Failed to initialize dataset")
 
         self.finish(json.dumps({
-            "action": 'initialized dataset', 
-            "path": data['path'],
-            "template": data['template']
+            "message": 'dataset was initialized', 
             }))
 
 
