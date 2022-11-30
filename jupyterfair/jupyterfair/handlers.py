@@ -12,23 +12,29 @@ from dotenv import load_dotenv
 from tornado import web
 import fairly
 
-# IMPORTANT
-# Tokenf for fairly clients are read from config.json in the home directory.
+############# IMPORTANT #####################################################
+# Tokens for fairly clients are read from config.json in the home directory.
 # For linux the path is ~/.fairly/config.json
 # For Windows the path is [?]
-#
+############################################################################
 
-class RouteHandler(APIHandler):
+class ExampleEndpoint(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
     # patch, put, delete, options) to ensure only authorized user can request the
     # Jupyter server
     @tornado.web.authenticated
     def get(self):
-        # param = self.get_query_argument("param1") # this is how to define query parameters.
-        # url query = url/to/extension?<param>=<value>
+        # This is how to define query parameters.
+        #   param = self.get_query_argument("param1")
+        # example query: url/to/extension?<param>=<value>
+
+        # This is how to pass and catch parameters in the handlers
+            # def __init__(self, *args, **kwargs):
+            # self.extra = kwargs.pop('token')
 
         self.finish(json.dumps({
-            "data": f"This is /jupyterfair/get_test endpoint... Hoora! Jupyter Server is Online!!!"
+            "message": f"This is /jupyterfair/example endpoint. Jupyter Server is Online!",
+            "from": " The JupyterFAIR Team"
         }))
 
 
@@ -38,11 +44,9 @@ class AccountDatasets(APIHandler):
     """
     
     # class attributes will be reused between http calls
-    fourtu_client = fairly.client(id="figshare", token=FOURTU_TOKEN)
+    fourtu_client = fairly.client(id="figshare")
 
-    # TODO: this is how to pass parameters to the handlers
-    # def __init__(self, *args, **kwargs):
-    #     self.extra = kwargs.pop('token')
+
 
     @tornado.web.authenticated
     def get(self):
@@ -262,7 +266,7 @@ def setup_handlers(web_app):
 
     
     handlers = [
-        (example_url, RouteHandler),
+        (example_url, ExampleEndpoint),
         (datasets_url, AccountDatasets),
         (initialize_dataset_url, InitFairlyDataset),
         (clone_dataset_url, CloneDataset),
