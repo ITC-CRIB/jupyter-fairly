@@ -12,10 +12,11 @@ from dotenv import load_dotenv
 from tornado import web
 import fairly
 
-## FOR TESTING ONLY
-load_dotenv()
-FOURTU_TOKEN= os.environ['FOURTU_TOKEN']
-#######################
+# IMPORTANT
+# Tokenf for fairly clients are read from config.json in the home directory.
+# For linux the path is ~/.fairly/config.json
+# For Windows the path is [?]
+#
 
 class RouteHandler(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
