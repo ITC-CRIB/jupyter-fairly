@@ -119,12 +119,12 @@ class InitFairlyDataset(APIHandler):
         Creates a manifest.yalm file based on a template.
 
         Args:
-            target (str): path to the dataset directory
+            path (str): path to the dataset root directory
             template (str): name of the template to use on manifest.yalm
         
         Body example:
         {
-            "target": <path to dataset root directory>,
+            "path": <path to dataset root directory>,
             "template"": <template name>
         }
         """
@@ -137,15 +137,18 @@ class InitFairlyDataset(APIHandler):
         data = self.get_json_body() # returns dictionary
 
         try:
+            print(data)
             fairly.init_dataset(path=data["path"], template=data["template"])
         except ValueError:
             # TODO, this exception is too general. It should be raised only 
             # when the dataset was already initialized
             raise web.HTTPError(403, "Failed to initialize dataset")
 
-        self.finish(json.dumps({
-            "message": 'dataset was initialized', 
-            }))
+        # TODO, implement exception for invalid/unknown template name
+        else:
+            self.finish(json.dumps({
+                "message": 'Dataset initilized', 
+                }))
 
 
 class CloneDataset(APIHandler):
