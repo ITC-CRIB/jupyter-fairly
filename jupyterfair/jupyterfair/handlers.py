@@ -77,7 +77,10 @@ class AccountDatasets(APIHandler):
 
         # catch body of the request
         data = self.get_json_body() # returns a dictionary
+
         try:
+            print(data)
+            print('type', type(data))
             # tokens are read from .fairly/config.json
             client = fairly.client(id=data["client"])
         except ValueError:
@@ -106,8 +109,8 @@ class AccountDatasets(APIHandler):
 class InitFairlyDataset(APIHandler):
     """
     Handler for initializing a Fairly dataset. By initializing a dataset, a
-    manifest.yaml file containing basic metadata will be created in a root 
-    directory.
+    manifest.yaml file containing a template for metadata will be created in 
+    target directory.
     """
 
     @tornado.web.authenticated
@@ -116,12 +119,12 @@ class InitFairlyDataset(APIHandler):
         Creates a manifest.yalm file based on a template.
 
         Args:
-            root (str): path to the dataset directory
+            target (str): path to the dataset directory
             template (str): name of the template to use on manifest.yalm
         
         Body example:
         {
-            "root": <path to dataset root directory>,
+            "target": <path to dataset root directory>,
             "template"": <template name>
         }
         """
@@ -147,7 +150,7 @@ class InitFairlyDataset(APIHandler):
 
 class CloneDataset(APIHandler):
     """
-    Handler for cloning (copying) a remote dataset to a directory,
+    Handler for cloning (copying) a remote dataset to a loca directory,
     using a dataset identifier.
     """
     # class attributes will be reused between http calls
@@ -158,7 +161,7 @@ class CloneDataset(APIHandler):
         Downloads a remote dataset to a local directory
 
         Args:
-            source (str): ID of dataset in repository, or dataset URL, or dataset DOI.
+            source (str): ID of dataset in  data repository, or dataset URL, or dataset DOI.
             destination (str): path to a directory to download the dataset. Raise value error 
             if directory is not empty.
             client (str): supported client.  'figshare' or 'zenodo'.
@@ -168,41 +171,28 @@ class CloneDataset(APIHandler):
         {
             "source": <doi or url of the dataset>,
             "destination": <path to directory>,
-            "client": <client name>
         }
         """
      
         # body of the request
         data = self.get_json_body() # returns a dictionary
         
-        # print(data)
         try:
-            # TODO: token should be read from config file
-            client = fairly.client(id=data["client"], token=FOURTU_TOKEN)
+            # creates lazy object for valid identifier
+            dataset = fairly.dataset(data["source"])
+        
         except ValueError:
-            raise web.HTTPError(400, f"Invalid client id: {data['client']}")
+            # Raised when a url, doi is not known by fairly
+            raise web.HTTPError(400, f"Unknown URL or DOI: {data['source']}")
         
         try:
-            # TODO: error with possibly the json encoding for the url dataset, or
-            # due to cross domain policies: https://www.w3schools.com/js/js_json_jsonp.asp
-
-            print('source', data["source"])
-            # connecto to remote dataset and retrieve metadata
-            dataset = client.get_dataset(id=data["source"])
-        except ValueError:
-            # TODO, this exception is too general. It should be raised only 
-            # when the dataset was already initialized
-            raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
-        
-        try:
-            print("call to store()")
             # download files and store them in local directory
             dataset.store(path=data["destination"])
         except ValueError:
             raise web.HTTPError(403, f"Can't clone dataset to not-empty directory." )
         
         self.finish(json.dumps({
-            "action": 'cloning dataset', 
+            "message": 'completed', 
             "destination": data['destination'],
             }))
 
