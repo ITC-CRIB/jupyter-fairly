@@ -242,10 +242,10 @@ class UploadDataset(APIHandler):
         except ValueError:
             # generic error, it raises if anything goes wrong with upload
             raise web.HTTPError(500, f'Something went wrong with uploading')
-        
-        self.finish(json.dumps({ 
-            "message": 'completed',
-            }))
+        else:
+            self.finish(json.dumps({ 
+                "message": 'completed',
+                }))
 
 
     def patch(self):
