@@ -165,15 +165,14 @@ class CloneDataset(APIHandler):
 
         Args:
             source (str): ID of dataset in  data repository, or dataset URL, or dataset DOI.
-            destination (str): path to a directory to download the dataset. Raise value error 
+            path (str): path to a directory to download the dataset. Raise value error 
             if directory is not empty.
             client (str): supported client.  'figshare' or 'zenodo'.
 
-        Body of the request must contain values for dataset_id and directory 
-        as JSON:
+        Body example as JSON:
         {
             "source": <doi or url of the dataset>,
-            "destination": <path to directory>,
+            "path": <path to directory>,
         }
         """
      
@@ -196,7 +195,7 @@ class CloneDataset(APIHandler):
         
         self.finish(json.dumps({
             "message": 'completed', 
-            "destination": data['destination'],
+            "destination": data['path'],
             }))
 
 
@@ -211,14 +210,13 @@ class UploadDataset(APIHandler):
         Uploads local dataset to a remote data repository.
         Args:
     
-            directory (str): path to directory 
+            dataset (str): path to root directory of dataset 
             client (str): supported client.  'figshare', '4tu or 'zenodo'.
 
-        Body of the request must contain values for dataset_id and directory 
-        as JSON:
+        Body example as JSON:
         {
             
-            "directory": <path to directory>,
+            "dataset": <path to root directory>,
             "client": <client name>
         }
         """
