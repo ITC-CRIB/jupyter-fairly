@@ -193,7 +193,7 @@ class CloneDataset(APIHandler):
         except ValueError:
             raise web.HTTPError(403, f"Can't clone dataset to not-empty directory." )
         except ConnectionError:
-            raise web.HTTPError(500, f"Can't connect to data repository")
+            raise web.HTTPError(503, f"Can't connect to data repository")
         else:
             self.finish(json.dumps({
                 "message": 'completed', 
