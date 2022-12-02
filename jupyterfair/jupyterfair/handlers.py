@@ -192,11 +192,13 @@ class CloneDataset(APIHandler):
             dataset.store(path=data["destination"])
         except ValueError:
             raise web.HTTPError(403, f"Can't clone dataset to not-empty directory." )
-        
-        self.finish(json.dumps({
-            "message": 'completed', 
-            "destination": data['path'],
-            }))
+        except ConnectionError:
+            raise web.HTTPError(500, f"Can't connect to data repository")
+        else:
+            self.finish(json.dumps({
+                "message": 'completed', 
+                "destination": data['path'],
+                }))
 
 
 class UploadDataset(APIHandler):
@@ -210,13 +212,13 @@ class UploadDataset(APIHandler):
         Uploads local dataset to a remote data repository.
         Args:
     
-            dataset (str): path to root directory of dataset 
-            client (str): supported client.  'figshare', '4tu or 'zenodo'.
+            dataset (str): path to root directory of fairly dataset
+            client (str): supported client.  'figshare' or 'zenodo'.
 
         Body example as JSON:
         {
             
-            "dataset": <path to root directory>,
+            "dataset": <path to root directory of fairly dataset>,
             "client": <client name>
         }
         """
@@ -225,25 +227,24 @@ class UploadDataset(APIHandler):
         data = self.get_json_body() # returns dictionary
         
         try:
-            client = fairly.client(id=data["client"], token=FOURTU_TOKEN)
+            client = fairly.client(id=data["client"])
         except ValueError:
             raise web.HTTPError(400, f"Invalid client id: {data['client']}")
 
         try:
-            local_dataset = fairly.dataset(data["directory"])
+            local_dataset = fairly.dataset(data["dataset"])
         except NotADirectoryError:
             # throws error when path is not a directory
-            raise web.HTTPError(404, f"Invalid path to directory: {data['directory']}")
+            raise web.HTTPError(404, f"Invalid path to directory: {data['dataset']}")
         
         try:
             local_dataset.upload(client)
         except ValueError:
-            # generic error it raises if anything goes wrong with upload
+            # generic error, it raises if anything goes wrong with upload
             raise web.HTTPError(500, f'Something went wrong with uploading')
         
-        self.finish(json.dumps({
-            "action": 'upload dataset', 
-            "status": 'complete',
+        self.finish(json.dumps({ 
+            "message": 'completed',
             }))
 
 
@@ -271,8 +272,6 @@ def setup_handlers(web_app):
         (initialize_dataset_url, InitFairlyDataset),
         (clone_dataset_url, CloneDataset),
         (upload_dataset_url, UploadDataset),
-
-
     ]
 
     web_app.add_handlers(host_pattern, handlers)
