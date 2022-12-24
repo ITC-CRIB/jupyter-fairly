@@ -12,22 +12,29 @@ from dotenv import load_dotenv
 from tornado import web
 import fairly
 
-## FOR TESTING ONLY
-load_dotenv()
-FOURTU_TOKEN= os.environ['FOURTU_TOKEN']
-#######################
+############# IMPORTANT #####################################################
+# Tokens for fairly clients are read from config.json in the home directory.
+# For linux the path is ~/.fairly/config.json
+# For Windows the path is [?]
+############################################################################
 
-class RouteHandler(APIHandler):
+class ExampleEndpoint(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
     # patch, put, delete, options) to ensure only authorized user can request the
     # Jupyter server
     @tornado.web.authenticated
     def get(self):
-        # param = self.get_query_argument("param1") # this is how to define query parameters.
-        # url query = url/to/extension?<param>=<value>
+        # This is how to define query parameters.
+        #   param = self.get_query_argument("param1")
+        # example query: url/to/extension?<param>=<value>
+
+        # This is how to pass and catch parameters in the handlers
+            # def __init__(self, *args, **kwargs):
+            # self.extra = kwargs.pop('token')
 
         self.finish(json.dumps({
-            "data": f"This is /jupyterfair/get_test endpoint... Hoora! Jupyter Server is Online!!!"
+            "message": f"This is /jupyterfair/example endpoint. Jupyter Server is Online!",
+            "from": " The JupyterFAIR Team"
         }))
 
 
@@ -36,19 +43,21 @@ class AccountDatasets(APIHandler):
     return: JSON array
     """
     
-    # class attributes will be reused between http calls
-    fourtu_client = fairly.client(id="figshare", token=FOURTU_TOKEN)
-
-    # TODO: this is how to pass parameters to the handlers
-    # def __init__(self, *args, **kwargs):
-    #     self.extra = kwargs.pop('token')
-
     @tornado.web.authenticated
     def get(self):
         """
         Returns a count and list of datasets an user account as JSON. 
-        Datasets are listed as 'id' and 'version'
-        Example:
+        Datasets are listed as 'id' and 'version'.
+
+        Args:
+            client (str): supported client.  'figshare' or 'zenodo'.
+
+        Body example:
+            {
+                "client": <client name>
+            }
+
+        Response example:
         {
             "count": 1,
             "datasets": 
@@ -66,24 +75,32 @@ class AccountDatasets(APIHandler):
         }
         """
 
-        # TODO: handler return an error:
-        #     raise HTTPError(http_error_msg, response=self)
-        # requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://api.figshare.com/v2/account/licenses
-
-        # TODO: handler should allow instantiating different clients
-        account_datasets = self.fourtu_client.get_account_datasets()
-
-        datasets = [ {
-            "id": dataset.id['id'], 
-            "title": dataset.title,
-            "version": dataset.id['version'],
-            "size": dataset.size,
-            "created": dataset.created,
-            "modified": dataset.modified,
-            "url": dataset.url
-            }  for dataset in account_datasets]
+        # catch body of the request
+        data = self.get_json_body() # returns a dictionary
+        try:
+            # tokens are read from .fairly/config.json
+            client = fairly.client(id=data["client"])
+        except ValueError:
+            raise web.HTTPError(400, f"Invalid client id: {data['client']}")
+        
+        try:
+            # connect to data repository and retrieve list of datasets
+            account_datasets = client.get_account_datasets()
+        except:
+            # TODO: a not too general exception must be raised when authentification fails 
+            raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
+        else:
+            datasets = [ {
+                "id": dataset.id['id'], 
+                "title": dataset.title,
+                "version": dataset.id['version'],
+                "size": dataset.size,
+                "created": dataset.created,
+                "modified": dataset.modified,
+                "url": dataset.url
+                }  for dataset in account_datasets]
     
-        self.finish(json.dumps({"count": len(datasets), "datasets": datasets}, default=str))
+            self.finish(json.dumps({"count": len(datasets), "datasets": datasets}, default=str))
 
 
 class InitFairlyDataset(APIHandler):
@@ -102,15 +119,14 @@ class InitFairlyDataset(APIHandler):
             root (str): path to the dataset directory
             template (str): name of the template to use on manifest.yalm
         
-        Body of the request must contain values for root and template 
-        as JSON:
+        Body example:
         {
             "root": <path to dataset root directory>,
             "template"": <template name>
         }
         """
 
-        # for post the token must be passed in the URL
+        # for POST the token must be passed in the URL
         # http://127.0.0.1:8888/jupyterfair/newdataset?token=295c3a87c6
         # 
     
@@ -125,9 +141,7 @@ class InitFairlyDataset(APIHandler):
             raise web.HTTPError(403, "Failed to initialize dataset")
 
         self.finish(json.dumps({
-            "action": 'initialized dataset', 
-            "path": data['path'],
-            "template": data['template']
+            "message": 'dataset was initialized', 
             }))
 
 
@@ -261,7 +275,7 @@ def setup_handlers(web_app):
 
     
     handlers = [
-        (example_url, RouteHandler),
+        (example_url, ExampleEndpoint),
         (datasets_url, AccountDatasets),
         (initialize_dataset_url, InitFairlyDataset),
         (clone_dataset_url, CloneDataset),
