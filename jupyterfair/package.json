@@ -1,17 +1,18 @@
 {
   "name": "jupyterfair",
-  "version": "0.1.2",
-  "description": "a tool for seamless integration of Jupyter-based research environments and research data repositories.",
+  "version": "0.2.0-beta.1",
+  "description": "a tool for seamless integration of Jupyter-based research environments and research data repositories based on the fairly package.",
   "keywords": [
     "jupyter",
     "jupyterlab",
-    "jupyterlab-extension"
+    "jupyterlab-extension",
+    "fairly"
   ],
   "homepage": "https://github.com/ITC-CRIB/JupyterFAIR",
   "bugs": {
     "url": "https://github.com/ITC-CRIB/JupyterFAIR/issues"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT License",
   "author": {
     "name": "JupyterFAIR Team",
     "email": "m.g.garciaalvarez@tudelft.nl"

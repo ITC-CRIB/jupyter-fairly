@@ -63,7 +63,8 @@ setup_args = dict(
         "python-dotenv==0.20.0",
         'pytest==7.1.2',
         "jupyter-packaging==0.12.0",
-        "nodejs==0.1.1"
+        "nodejs==0.1.1",
+        "fairly==0.2.1"
     ],
     zip_safe=False,
     include_package_data=True,
