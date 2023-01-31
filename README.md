@@ -46,6 +46,3 @@
 
 
 > You will need to re-build the extension with `jlpm run build` and re-start **jupyter server** for changes to the soruce code take effect.
-
-
-
