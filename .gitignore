@@ -12,6 +12,7 @@ jupyterfair/.ipynb_checkpoints
 *.tsbuildinfo
 jupyterfair/labextension
 jupyterfair/jupyterfair/labextension
+test-dataset/
 
 # Created by https://www.gitignore.io/api/python
 # Edit at https://www.gitignore.io/?templates=python
