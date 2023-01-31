@@ -3,12 +3,19 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-import { addIcon } from '@jupyterlab/ui-components'
-import { Dialog, showDialog, InputDialog } from '@jupyterlab/apputils';
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
-import { showErrorMessage } from '@jupyterlab/apputils';
-import { downloadIcon } from '@jupyterlab/ui-components';
+import { 
+  addIcon,
+  downloadIcon
+ } from '@jupyterlab/ui-components';
 
+import { 
+  Dialog, 
+  showDialog, 
+  InputDialog, 
+  showErrorMessage 
+} from '@jupyterlab/apputils';
+
+import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { requestAPI } from './handler';
 import { FairlyCloneForm } from './widgets/CloneForm';
 import { logger } from './logger';
@@ -170,8 +177,48 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     const fileBrowser = fileBrowserFactory.defaultBrowser;
     const fileBrowserModel = fileBrowser.model;
 
-    // TODO: the plugin start without error, but the model.path is an empty string for root-path (path where jupyter was started.)
+  
     const createDatasetCommand = "createDatasetCommand"
+    
+    // TODO: find how to use notifications and actions
+    // to promp user on execution of some commands.
+    app.commands.execute('apputils:notify', {
+      message: 'initilize dataset',
+      type: 'info',
+      options: {
+        autoClose: false,
+        actions: {
+          label: 'notification init',
+          commandId: createDatasetCommand,
+        }
+      }
+   });
+
+  //  {
+  //   /**
+  //    * The action label.
+  //    *
+  //    * This should be a short description.
+  //    */
+  //   label: string;
+  //   /**
+  //    * Callback command id to trigger
+  //    */
+  //   commandId: string;
+  //   /**
+  //    * Command arguments
+  //    */
+  //   args?: ReadonlyJsonObject;
+  //   /**
+  //    * The action caption.
+  //    *
+  //    * This can be a longer description of the action.
+  //    */
+  //   caption?: string;
+  // }
+
+   
+
     app.commands.addCommand(createDatasetCommand, {
       label: 'Create Fairly Dataset',
       isEnabled: () => true,
