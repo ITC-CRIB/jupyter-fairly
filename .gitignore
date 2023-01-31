@@ -257,3 +257,6 @@ dev-notes/
 
 # Ignore archive formats
 **.zip
+
+# Test-Data
+test-dataset/
