@@ -172,7 +172,7 @@ class CloneDataset(APIHandler):
         Body example as JSON:
         {
             "source": <doi or url of the dataset>,
-            "path": <path to directory>,
+            "destination": <path to directory>,
         }
         """
      
@@ -197,7 +197,7 @@ class CloneDataset(APIHandler):
         else:
             self.finish(json.dumps({
                 "message": 'completed', 
-                "destination": data['path'],
+                "destination": data["destination"],
                 }))
 
 
