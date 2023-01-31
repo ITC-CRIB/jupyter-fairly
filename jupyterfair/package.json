@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/ITC-CRIB/JupyterFAIR/issues"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "author": {
     "name": "JupyterFAIR Team",
     "email": "m.g.garciaalvarez@tudelft.nl"
