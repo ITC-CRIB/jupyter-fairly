@@ -185,7 +185,7 @@ class CloneDataset(APIHandler):
         
         except ValueError:
             # Raised when a url, doi is not known by fairly
-            raise web.HTTPError(400, f"Unknown URL or DOI: {data['source']}")
+            raise web.HTTPError(400, f"Unknown URL or DOI for: {data['source']}")
         
         try:
             # download files and store them in local directory
@@ -212,13 +212,13 @@ class UploadDataset(APIHandler):
         Uploads local dataset to a remote data repository.
         Args:
     
-            dataset (str): path to root directory of fairly dataset
+            directory (str): path to root directory of initialized fairly dataset
             client (str): supported client.  'figshare' or 'zenodo'.
 
         Body example as JSON:
         {
             
-            "dataset": <path to root directory of fairly dataset>,
+            "directory": <path to root directory of fairly dataset>,
             "client": <client name>
         }
         """
@@ -232,10 +232,22 @@ class UploadDataset(APIHandler):
             raise web.HTTPError(400, f"Invalid client id: {data['client']}")
 
         try:
-            local_dataset = fairly.dataset(data["dataset"])
+            # TODO: fix bug: 
+            # Error messages:
+                # File "/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/fairly/src/fairly/dataset/local.py", line 354, in upload
+                # dataset = client.create_dataset(self.metadata)
+                # File "/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/fairly/src/fairly/client/__init__.py", line 292, in create_dataset
+                # id = self._create_dataset(metadata)
+                # File "/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/fairly/src/fairly/client/figshare.py", line 753, in _create_dataset
+                # result, _ = self._request("account/articles", "POST", data={"title": metadata.get("title", "")})
+                # File "/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/fairly/src/fairly/client/__init__.py", line 355, in _request
+                # response.raise_for_status()
+                # requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://api.figshare.com/v2/account/articles
+
+            local_dataset = fairly.dataset(data["directory"])
         except NotADirectoryError:
             # throws error when path is not a directory
-            raise web.HTTPError(404, f"Invalid path to directory: {data['dataset']}")
+            raise web.HTTPError(404, f"Invalid path to directory: {data['directory']}")
         
         try:
             local_dataset.upload(client)
