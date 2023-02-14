@@ -10,7 +10,7 @@
 2. Clone repository
 3. Activate conda environment
 4. Create a `config.json` and store it in `~/.fairly`.
-5. Cope the example below to `config.json`. You must add the tokens for your repository accounts
+5. Copy the example below to `config.json`. You must add the tokens for your repository accounts
    ```json
    {
         "fairly": {
