@@ -1,5 +1,5 @@
-# JupyterFAIR
- A jupyterLab extension for seamless integration of Jupyter-based research environments and research data repositories.
+# Jupyter Fairly
+ A jupyterLab extension for the [fairly](https://github.com/ITC-CRIB/fairly) package, and the seamless integration of Jupyter-based research environments and research data repositories.
 
 ## Set up Dev Environment
 
@@ -26,12 +26,12 @@
         }
     }
    ```
-6. Go to `jupyterfair` directory, and install, activate and build extension
+6. Go to `jupyter_fairly` directory, and install, activate and build extension
     ```shell
     # Link your development version of the extension with JupyterLab
     jupyter labextension develop . --overwrite
     # Enable the server extension
-    jupyter server extension enable jupyterfair
+    jupyter server extension enable jupyter-fairly
     # Rebuild extension Typescript source after making changes
     jlpm run build
     ```
