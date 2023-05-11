@@ -12,6 +12,7 @@ import {
 } from './dataset';
 import {editMetadataPlugin} from './metadata'
 import { uploadDatasetPlugin} from './upload';
+import { FairlyMenuPlugin } from './mainmenu';
 
 // import { FairlyWidget } from './widgets/FairlyTab';
 
@@ -53,7 +54,8 @@ export default [
   createDatasetCommandPlugin, 
   editMetadataPlugin, 
   uploadDatasetPlugin,
-  cloneDatasetCommandPlugin
+  cloneDatasetCommandPlugin,
+  FairlyMenuPlugin
 ];
 
 //Todo: add new tab to left pannel
