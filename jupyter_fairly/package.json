@@ -59,8 +59,10 @@
         "@jupyterlab/application": "^3.6.1",
         "@jupyterlab/apputils": "^3.6.1",
         "@jupyterlab/coreutils": "^5.1.0",
+        "@jupyterlab/mainmenu": "^3.6.3",
         "@jupyterlab/services": "^6.1.0",
-        "@jupyterlab/settingregistry": "^3.6.1"
+        "@jupyterlab/settingregistry": "^3.6.1",
+        "@phosphor/widgets": "^1.9.3"
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",
