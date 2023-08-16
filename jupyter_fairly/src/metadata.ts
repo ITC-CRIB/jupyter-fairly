@@ -19,7 +19,8 @@ export const editMetadataPlugin: JupyterFrontEndPlugin<void> = {
     fileBrowserFactory: IFileBrowserFactory
   ) => {
     console.log("editMetadataPlugin activated!!");
-    const fileBrowser = fileBrowserFactory.defaultBrowser;
+    // const fileBrowser = fileBrowserFactory.defaultBrowser;
+    const fileBrowser = fileBrowserFactory.tracker.currentWidget;
     const fileBrowserModel = fileBrowser.model;
 
     // Open the manifest.yalm file in the file editor
@@ -39,7 +40,7 @@ export const editMetadataPlugin: JupyterFrontEndPlugin<void> = {
          */
         try {
           fileBrowserModel.manager.open(pathManifest)
-        } catch (error) {
+        } catch (error: any) {
           // TODO: customize error type
           showErrorMessage("Error Opening manifest.yalm", error);
         };

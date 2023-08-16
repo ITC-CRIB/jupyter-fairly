@@ -113,7 +113,8 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     fileBrowserFactory: IFileBrowserFactory
   ) => {
     console.log("cloneDatasetCommandPlugin activated!!");
-    const fileBrowser = fileBrowserFactory.defaultBrowser;
+    // const fileBrowser = fileBrowserFactory.defaultBrowser;
+    const fileBrowser = fileBrowserFactory.tracker.currentWidget;
     const fileBrowserModel = fileBrowser.model;
 
     const cloneDatasetCommand = "cloneDatasetCommand";
@@ -174,7 +175,8 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     fileBrowserFactory: IFileBrowserFactory
   ) => {
     console.log("createDatasetCommandPlugin activated!!");
-    const fileBrowser = fileBrowserFactory.defaultBrowser;
+    // const fileBrowser = fileBrowserFactory.defaultBrowser;
+    const fileBrowser = fileBrowserFactory.tracker.currentWidget;
     const fileBrowserModel = fileBrowser.model;
 
   

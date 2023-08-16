@@ -78,7 +78,8 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
     fileBrowserFactory: IFileBrowserFactory
   ) => {
     console.log("uploadDatasetPlugin activated!!");
-    const fileBrowser = fileBrowserFactory.defaultBrowser;
+    // const fileBrowser = fileBrowserFactory.defaultBrowser;
+    const fileBrowser = fileBrowserFactory.tracker.currentWidget;
     const fileBrowserModel = fileBrowser.model;
 
     // TODO: the plugin start without error, but the model.path is an empty string for root-path (path where jupyter was started.)
