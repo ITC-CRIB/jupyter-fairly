@@ -84,7 +84,7 @@ jupyter labextension develop . --overwrite
 # Server extension must be manually installed in develop mode
 jupyter server extension enable jupyter_fairly
 # Rebuild extension Typescript source after making changes
-jlpm build
+jlpm run build
 ```
 
 You can watch the source directory and run JupyterLab at the same time in different terminals to watch for changes in the extension's source and automatically rebuild the extension.
@@ -175,3 +175,6 @@ Project members:
 - [Center of Expertise in Big Geodata Science, University of Twente, Faculty ITC](https://itc.nl/big-geodata/)
 - [Digital Competence Centre, TU Delft](https://dcc.tudelft.nl/)
 - [4TU.ResearchData](https://data.4tu.nl/)
+
+
+# TODO: enforce using requests-2.28.2 urllib3-1.26.16 to solve issue #76. This only affects the lab extension
