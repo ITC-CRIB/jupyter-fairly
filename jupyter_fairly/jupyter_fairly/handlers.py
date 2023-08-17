@@ -267,6 +267,67 @@ class UploadDataset(APIHandler):
 
         raise web.HTTPError(501, "Not implemented")
 
+
+class RegisterToken(APIHandler):
+    """ 
+    Handler for registring tokens of data repositories accounts to a local
+    Fairly configuration file.
+    """
+
+    @tornado.web.authenticated
+    def post(self):
+        """
+        Registers a new token for a data repository.
+
+        Args:
+            client (str): supported client.  'figshare', '4tu' or 'zenodo'.
+            token (str): token of the account in data repository.
+
+        Body example as JSON:
+            {
+                "repository": <client name>,
+                "token": <token>
+            }
+        """
+
+        # body of the request
+        data = self.get_json_body() # returns dictionary
+        
+        # Default location of config file
+        config_file = os.path.expanduser('~/.fairly/config.json')
+
+        if not os.path.exists(config_file):
+            # create config file and add token
+            os.makedirs(os.path.dirname(config_file), exist_ok=True)
+            with open(config_file, 'w') as f:
+
+                config = {
+                    f"{data['repository']}": {
+                        "token": data['token']
+                    }
+                }
+                json.dump(config, f)
+
+        elif os.path.exists(config_file):
+            # add token to existing config file
+            # if client exists, token will be overwritten
+            with open(config_file, 'r') as f:
+                content = json.load(f)
+                content[data['repository']] = { "token": data['token'] }
+
+            with open(config_file, 'w') as f:
+                json.dump(content, f)
+                    
+        else:
+            raise web.HTTPError(406, f'Faile to register token to config file: {config_file}')
+        
+        self.finish(json.dumps({
+            "message": f"token registered at {config_file}",
+            "repository": data['repository'],
+            "from": " The JupyterFAIR Team"
+        }))
+
+
     
 def setup_handlers(web_app):
     host_pattern = ".*$"
@@ -278,6 +339,7 @@ def setup_handlers(web_app):
     initialize_dataset_url = url_path_join(extension_url, "newdataset")
     clone_dataset_url = url_path_join(extension_url, "clone")
     upload_dataset_url = url_path_join(extension_url, "upload")
+    register_token_url = url_path_join(extension_url, "register")
 
     
     handlers = [
@@ -286,6 +348,7 @@ def setup_handlers(web_app):
         (initialize_dataset_url, InitFairlyDataset),
         (clone_dataset_url, CloneDataset),
         (upload_dataset_url, UploadDataset),
+        (register_token_url, RegisterToken)
     ]
 
     web_app.add_handlers(host_pattern, handlers)
