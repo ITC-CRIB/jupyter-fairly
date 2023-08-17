@@ -57,7 +57,7 @@ import { showErrorMessage } from '@jupyterlab/apputils';
     console.log(data);
   })
   .catch(reason => {
-    // show error when 
+    // show error when requestAPI fails
     showErrorMessage("Error when registering access token", reason)
   });
 };
@@ -77,6 +77,7 @@ export const registerTokenPlugin: JupyterFrontEndPlugin<void> = {
       label: 'Register Token',
       isEnabled: () => true,
       isVisible: () => true, 
+      icon: settingsIcon,
       execute: async() => {
 
         // Asks for the data repository
