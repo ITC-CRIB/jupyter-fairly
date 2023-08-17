@@ -268,7 +268,7 @@ class UploadDataset(APIHandler):
         raise web.HTTPError(501, "Not implemented")
 
 
-class RegisterToken(APIHandler):
+class RegisterRepositoryToken(APIHandler):
     """ 
     Handler for registring tokens of data repositories accounts to a local
     Fairly configuration file.
@@ -322,9 +322,9 @@ class RegisterToken(APIHandler):
             raise web.HTTPError(406, f'Faile to register token to config file: {config_file}')
         
         self.finish(json.dumps({
-            "message": f"token registered at {config_file}",
+            "message": f"token sucessfully registered",
             "repository": data['repository'],
-            "from": " The JupyterFAIR Team"
+            "from": "The JupyterFAIR Team"
         }))
 
 
@@ -339,7 +339,7 @@ def setup_handlers(web_app):
     initialize_dataset_url = url_path_join(extension_url, "newdataset")
     clone_dataset_url = url_path_join(extension_url, "clone")
     upload_dataset_url = url_path_join(extension_url, "upload")
-    register_token_url = url_path_join(extension_url, "register")
+    register_token_url = url_path_join(extension_url, "repo-token")
 
     
     handlers = [
@@ -348,7 +348,7 @@ def setup_handlers(web_app):
         (initialize_dataset_url, InitFairlyDataset),
         (clone_dataset_url, CloneDataset),
         (upload_dataset_url, UploadDataset),
-        (register_token_url, RegisterToken)
+        (register_token_url, RegisterRepositoryToken)
     ]
 
     web_app.add_handlers(host_pattern, handlers)
