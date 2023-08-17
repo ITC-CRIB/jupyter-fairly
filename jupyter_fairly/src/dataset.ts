@@ -184,17 +184,17 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     
     // TODO: find how to use notifications and actions
     // to promp user on execution of some commands.
-    app.commands.execute('apputils:notify', {
-      message: 'initilize dataset',
-      type: 'info',
-      options: {
-        autoClose: false,
-        actions: {
-          label: 'notification init',
-          commandId: createDatasetCommand,
-        }
-      }
-   });
+  //   app.commands.execute('apputils:notify', {
+  //     message: 'initilize dataset',
+  //     type: 'info',
+  //     options: {
+  //       autoClose: false,
+  //       actions: {
+  //         label: 'notification init',
+  //         commandId: createDatasetCommand,
+  //       }
+  //     }
+  //  });
 
   //  {
   //   /**
