@@ -12,10 +12,7 @@ import {
 } from './dataset';
 import {editMetadataPlugin} from './metadata'
 import { uploadDatasetPlugin} from './upload';
-// import { FairlyMenuPlugin } from './mainmenu';
-import { registerTokenPlugin } from './register-token';
-
-// import { FairlyWidget } from './widgets/FairlyTab';
+import { FairlyMenuPlugin } from './menu';
 
 
 /**
@@ -32,20 +29,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     
       console.log('jupytefair is activated!!');
       
-      // this doesn't do what is expected
-      // See: https://stackoverflow.com/questions/63065310/how-do-i-create-a-jupyter-lab-extension-that-adds-a-custom-button-to-the-toolba
-      const openFairlyTabCommand = 'widgets:open-tab';
-      app.commands.addCommand( openFairlyTabCommand, {
-        label: 'Open Fairly Tab',
-        caption: 'Open the Fairly Tab',
-        // isEnabled: () => true,
-        // isVisible: () => true,
-        execute: () => {
-          // const widget = new FairlyWidget();
-          // app.shell.add(widget, 'main');
-        }
-      });
-      palette.addItem({command: openFairlyTabCommand, category: 'Fairly'});
   }
 };
 
@@ -56,8 +39,7 @@ export default [
   editMetadataPlugin, 
   uploadDatasetPlugin,
   cloneDatasetCommandPlugin,
-  // FairlyMenuPlugin,
-  registerTokenPlugin
+  FairlyMenuPlugin,
 ];
 
 //Todo: add new tab to left pannel
