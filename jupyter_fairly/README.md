@@ -176,5 +176,3 @@ Project members:
 - [Digital Competence Centre, TU Delft](https://dcc.tudelft.nl/)
 - [4TU.ResearchData](https://data.4tu.nl/)
 
-
-# TODO: enforce using requests-2.28.2 urllib3-1.26.16 to solve issue #76. This only affects the lab extension
