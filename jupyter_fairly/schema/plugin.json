@@ -2,6 +2,28 @@
   "jupyter.lab.shortcuts": [],
   "title": "jupyter-fairly",
   "description": "jupyter-fairly settings.",
+  "jupyter.lab.menus": {
+    "main": [
+      {
+        "id": "jupyter-fairly-menu",
+        "label": "Fairly",
+        "rank": 80,
+        "items": [
+          {
+            "command": "registerAccessToken"
+          },
+          { "type": "separator"
+          },
+          {
+            "command": "fairly:openURL",
+            "args": {
+              "url": "https://fairly.readthedocs.io/en/latest/"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "type": "object",
   "properties": {},
   "additionalProperties": false
