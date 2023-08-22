@@ -27,20 +27,20 @@ import {
      * @param token - access token for data repository
      */
   
-    var repositoryId;
+    var clientId;
     
     if(repository === '4TU.ResearchData') {
-      repositoryId = '4tu';
+      clientId = '4tu';
     }
     else if (repository === 'Zenodo'){
-      repositoryId = 'zenodo'
+      clientId = 'zenodo'
     }
     else if (repository === 'Figshare'){
-      repositoryId = 'figshare'
+      clientId = 'figshare'
     };
   
     let payload = JSON.stringify({
-      repository: repositoryId,  
+      client: clientId,  
       token: token
     });
   
