@@ -64,7 +64,7 @@ import {
  * Initialization data for the main menu example.
  */
 export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
-    id: 'jupyter-fairly:fairly-menu',
+    id: '@jupyter-fairly/mainmenu',
     requires: [IFileBrowserFactory],
   autoStart: true,
   activate: (
