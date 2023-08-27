@@ -4,7 +4,7 @@ import {
 } from '@jupyterlab/application';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
-import { ICommandPalette,} from '@jupyterlab/apputils';
+// import { ICommandPalette,} from '@jupyterlab/apputils';
 
 import { 
   createDatasetCommandPlugin,
@@ -14,24 +14,62 @@ import {editMetadataPlugin} from './metadata'
 import { uploadDatasetPlugin} from './upload';
 import { FairlyMenuPlugin } from './menu';
 
-
+//  TODO: try to implement the example in a new extension for 3.6
 /**
  *  Activate jupyter-fairly extension.
  */
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: 'jupyter-fairly:plugin',
+  id: '@jupyter-fairly:plugin',
   autoStart: true,
-  requires : [ICommandPalette],
+  requires : [],
   optional: [ISettingRegistry],
-  activate: (app: JupyterFrontEnd,
-    palette: ICommandPalette, 
-    settingRegistry: ISettingRegistry | null) => {
-    
-      console.log('jupytefair is activated!!');
+  activate: (app: JupyterFrontEnd) => {
+    console.log('JupyterLab extension jupyter-fairly is activated!');
+    // app.commands.addCommand('examples-notifications:notify', {
+    //   label: 'Display notifications',
+    //   execute: () => {
+    //     // Create a success notification
+
+    //     console.log('notification menu was clicked');
+
+  
+
+    //     Notification.success("Successfully created a notification.");
+
+        // Create an error notification with an action button
+        // Notification.error('Watch out something went wrong.', {
+        //   actions: [
+        //     { label: 'Help', callback: () => alert('This was a fake error.') }
+        //   ],
+        //   autoClose: 3000
+        // });
+
+        // Create a notification waiting for an asynchronous task
+        // const delegate = new PromiseDelegate<ReadonlyJSONValue>();
+        // const delay = 2000;
+        // // The fake task is to wait for `delay`
+        // setTimeout(() => {
+        //   // When resolving and rejecting the task promise, you
+        //   // can provide a object that will be available to construct
+        //   // the success and error message.
+        //   delegate.resolve({ delay });
+        // }, delay);
+        // Notification.promise(delegate.promise, {
+        //   // Message when the task is pending
+        //   pending: { message: 'Waiting...', options: { autoClose: false } },
+        //   // Message when the task finished successfully
+        //   success: {
+        //     message: (result: any) =>
+        //       `Action successful after ${result.delay}ms.`
+        //   },
+        //   // Message when the task finished with errors
+        //   error: { message: () => 'Action failed.' }
+        // });
       
-  }
+    }
 };
 
+// TODO: add signal/notifications for download/upload progress
 
 export default [
   plugin, 
@@ -40,6 +78,7 @@ export default [
   uploadDatasetPlugin,
   cloneDatasetCommandPlugin,
   FairlyMenuPlugin,
+  // NotificationPlugin,
 ];
 
 //Todo: add new tab to left pannel
