@@ -1,6 +1,6 @@
 {
     "name": "jupyter-fairly",
-    "version": "0.2.0-b3",
+    "version": "0.3.0-b",
     "description": "A JupyterLab extension for seamless integration of Jupyter-based research environments and research data repositories",
     "keywords": [
         "jupyter",
@@ -13,7 +13,7 @@
     },
     "license": "BSD-3-Clause",
     "author": {
-        "name": "Manuel G. Garcia, Serkan Girgin, Jose Urra",
+        "name": "Manuel G. Garcia, Serkan Girgin, Jose Urra Llanusa",
         "email": "m.g.garciaalvarez@tudelft.nl"
     },
     "files": [
@@ -69,7 +69,6 @@
         "@jupyterlab/translation": "^4.0.5",
         "@jupyterlab/ui-components": "^4.0.5",
         "@lumino/coreutils": "^2.1.2",
-        "@lumino/disposable": "^2.1.2",
         "@lumino/signaling": "^2.1.2",
         "@lumino/widgets": "^2.3.0",
         "@phosphor/widgets": "^1.9.3"

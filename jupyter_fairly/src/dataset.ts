@@ -105,7 +105,7 @@ function cloneDataset(source: string, destination: string, client?: any) {
 }
 
 export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
-  id: 'jupyter-fairly:clone',
+  id: '@jupyter-fairly/clone',
   requires: [IFileBrowserFactory],
   autoStart: true,
   activate: (
@@ -117,7 +117,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     const fileBrowser = fileBrowserFactory.tracker.currentWidget;
     const fileBrowserModel = fileBrowser.model;
 
-    const cloneDatasetCommand = "cloneDatasetCommand";
+    const cloneDatasetCommand = "cloneDataset";
     app.commands.addCommand(cloneDatasetCommand, {
       label: 'Clone Dataset',
       isEnabled: () => true,

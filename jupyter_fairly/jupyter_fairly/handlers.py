@@ -270,7 +270,7 @@ class UploadDataset(APIHandler):
 
 class RegisterRepositoryToken(APIHandler):
     """ 
-    Handler for registring tokens of data repositories accounts to a local
+    Handler for registring tokens of data repositories a local
     Fairly configuration file.
     """
 
@@ -285,7 +285,7 @@ class RegisterRepositoryToken(APIHandler):
 
         Body example as JSON:
             {
-                "repository": <client name>,
+                "client": <client name>,
                 "token": <token>
             }
         """
@@ -293,37 +293,29 @@ class RegisterRepositoryToken(APIHandler):
         # body of the request
         data = self.get_json_body() # returns dictionary
         
-        # Default location of config file
-        config_file = os.path.expanduser('~/.fairly/config.json')
+        # Ensure the Fairly config directory exists in the user's home directory
+        config_file_directory = os.path.expanduser('~/.fairly')
+        os.makedirs(config_file_directory, exist_ok=True)
 
-        if not os.path.exists(config_file):
-            # create config file and add token
-            os.makedirs(os.path.dirname(config_file), exist_ok=True)
-            with open(config_file, 'w') as f:
+        # create client
+        try:
+            client = fairly.client(data["client"]) # repository referst to client name in fairly
+        except ValueError:
+            raise web.HTTPError(400, f"Invalid name for the client: {data['client']} \
+                                Is the requested client supported by Fairly?")
 
-                config = {
-                    f"{data['repository']}": {
-                        "token": data['token']
-                    }
-                }
-                json.dump(config, f)
-
-        elif os.path.exists(config_file):
-            # add token to existing config file
-            # if client exists, token will be overwritten
-            with open(config_file, 'r') as f:
-                content = json.load(f)
-                content[data['repository']] = { "token": data['token'] }
-
-            with open(config_file, 'w') as f:
-                json.dump(content, f)
-                    
-        else:
-            raise web.HTTPError(406, f'Faile to register token to config file: {config_file}')
+        # add token to client
+        client.config['token'] = data['token']
+        # save client config to config file
+        try:
+            client.save_config()
+        except FileNotFoundError:
+            raise web.HTTPError(500, f"Path to configuration directory wasn't found: \
+                                {config_file_directory}")
         
         self.finish(json.dumps({
             "message": f"token sucessfully registered",
-            "repository": data['repository'],
+            "client": data['client'],
             "from": "The JupyterFAIR Team"
         }))
 

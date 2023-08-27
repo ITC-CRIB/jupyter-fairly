@@ -70,7 +70,7 @@ import { showErrorMessage } from '@jupyterlab/apputils';
 
 
 export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
-  id: 'jupyter-fairly:upload',
+  id: '@jupyter-fairly/upload',
   requires: [IFileBrowserFactory],
   autoStart: true,
   activate: (
