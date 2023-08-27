@@ -10,6 +10,12 @@
         "rank": 80,
         "items": [
           {
+            "command": "cloneDataset"
+          },
+          {
+            "command": "uploadDataset"
+          },
+          {
             "command": "registerAccessToken"
           },
           { "type": "separator"
