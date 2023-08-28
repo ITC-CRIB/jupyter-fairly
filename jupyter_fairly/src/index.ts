@@ -14,7 +14,6 @@ import {editMetadataPlugin} from './metadata'
 import { uploadDatasetPlugin} from './upload';
 import { FairlyMenuPlugin } from './menu';
 
-//  TODO: try to implement the example in a new extension for 3.6
 /**
  *  Activate jupyter-fairly extension.
  */

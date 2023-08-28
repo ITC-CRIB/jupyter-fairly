@@ -21,9 +21,6 @@ import { FairlyCloneForm } from './widgets/CloneForm';
 import { logger } from './logger';
 import { Level } from './tokens';
 
-// import handlers from Jupyter Server extension
-// import { initDataset } from './fairly-api';
-
 function initDataset(path: string, template?: any) {
   /**
    * Initializes a Fairly dataset
@@ -112,8 +109,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     app: JupyterFrontEnd,
     fileBrowserFactory: IFileBrowserFactory
   ) => {
-    console.log("cloneDatasetCommandPlugin activated!!");
-    // const fileBrowser = fileBrowserFactory.defaultBrowser;
+ 
     const fileBrowser = fileBrowserFactory.tracker.currentWidget;
     const fileBrowserModel = fileBrowser.model;
 
