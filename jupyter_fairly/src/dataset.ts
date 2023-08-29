@@ -130,6 +130,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
           ],
           checkbox: {
             label: 'Extract compressed files',
+            caption: 'Uncompress zip and tar.gz files',
             checked: false
           }
         });
