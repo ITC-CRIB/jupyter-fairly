@@ -97,7 +97,7 @@ export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
           });
 
           if (accessToken.button.accept){
-            console.log ('registeing token');
+            console.log ('registering token');
             registerToken(targetRepository.value, accessToken.value)
           }else {
             console.log('operation was canceled by the user');
