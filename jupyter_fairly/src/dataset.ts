@@ -65,7 +65,7 @@ function initDataset(path: string, template?: any) {
   });
 }
 
-function cloneDataset(source: string, destination: string, client?: any) {
+function cloneDataset(source: string, destination: string, extract: boolean = false, client?: any) {
   /**
    * clones a remote dataset to a directory
    * @param source - DOI or URL to the remote dataset
@@ -83,6 +83,7 @@ function cloneDataset(source: string, destination: string, client?: any) {
   let payload = JSON.stringify({
     source: source,
     destination: rootPath.concat(destination),  // TODO: this might not work in Windows
+    extract: extract,
     client: _client
   });
 
@@ -126,7 +127,12 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
           buttons: [
             Dialog.cancelButton({ label: 'Cancel'}),
             Dialog.okButton({ label: 'Clone'})
-          ]
+          ],
+          checkbox: {
+            label: 'Extract compressed files',
+            caption: 'Uncompress zip and tar.gz files',
+            checked: false
+          }
         });
 
         if (result.button.accept && result.value) {
@@ -136,7 +142,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
           });
 
           try {
-            cloneDataset(result.value, fileBrowserModel.path);
+            cloneDataset(result.value, fileBrowserModel.path, result.isChecked);
             console.log('accepted');
             await fileBrowserModel.refresh();
           } catch (error) {
@@ -170,52 +176,13 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     app: JupyterFrontEnd,
     fileBrowserFactory: IFileBrowserFactory
   ) => {
-    console.log("createDatasetCommandPlugin activated!!");
-    // const fileBrowser = fileBrowserFactory.defaultBrowser;
+   
+ 
     const fileBrowser = fileBrowserFactory.tracker.currentWidget;
     const fileBrowserModel = fileBrowser.model;
 
   
     const createDatasetCommand = "createDatasetCommand"
-    
-    // TODO: find how to use notifications and actions
-    // to promp user on execution of some commands.
-  //   app.commands.execute('apputils:notify', {
-  //     message: 'initilize dataset',
-  //     type: 'info',
-  //     options: {
-  //       autoClose: false,
-  //       actions: {
-  //         label: 'notification init',
-  //         commandId: createDatasetCommand,
-  //       }
-  //     }
-  //  });
-
-  //  {
-  //   /**
-  //    * The action label.
-  //    *
-  //    * This should be a short description.
-  //    */
-  //   label: string;
-  //   /**
-  //    * Callback command id to trigger
-  //    */
-  //   commandId: string;
-  //   /**
-  //    * Command arguments
-  //    */
-  //   args?: ReadonlyJsonObject;
-  //   /**
-  //    * The action caption.
-  //    *
-  //    * This can be a longer description of the action.
-  //    */
-  //   caption?: string;
-  // }
-
-   
 
     app.commands.addCommand(createDatasetCommand, {
       label: 'Create Fairly Dataset',
