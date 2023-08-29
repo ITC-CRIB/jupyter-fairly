@@ -65,7 +65,7 @@ function initDataset(path: string, template?: any) {
   });
 }
 
-function cloneDataset(source: string, destination: string, client?: any) {
+function cloneDataset(source: string, destination: string, extract: boolean = false, client?: any) {
   /**
    * clones a remote dataset to a directory
    * @param source - DOI or URL to the remote dataset
@@ -83,6 +83,7 @@ function cloneDataset(source: string, destination: string, client?: any) {
   let payload = JSON.stringify({
     source: source,
     destination: rootPath.concat(destination),  // TODO: this might not work in Windows
+    extract: extract,
     client: _client
   });
 
@@ -126,7 +127,11 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
           buttons: [
             Dialog.cancelButton({ label: 'Cancel'}),
             Dialog.okButton({ label: 'Clone'})
-          ]
+          ],
+          checkbox: {
+            label: 'Extract compressed files',
+            checked: false
+          }
         });
 
         if (result.button.accept && result.value) {
@@ -136,8 +141,9 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
           });
 
           try {
-            cloneDataset(result.value, fileBrowserModel.path);
+            cloneDataset(result.value, fileBrowserModel.path, result.isChecked);
             console.log('accepted');
+            console.log(result.isChecked);
             await fileBrowserModel.refresh();
           } catch (error) {
             console.error(
