@@ -18,8 +18,7 @@ export const editMetadataPlugin: JupyterFrontEndPlugin<void> = {
     app: JupyterFrontEnd,
     fileBrowserFactory: IFileBrowserFactory
   ) => {
-    console.log("editMetadataPlugin activated!!");
-    // const fileBrowser = fileBrowserFactory.defaultBrowser;
+
     const fileBrowser = fileBrowserFactory.tracker.currentWidget;
     const fileBrowserModel = fileBrowser.model;
 
