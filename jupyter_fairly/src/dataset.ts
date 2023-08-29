@@ -144,7 +144,6 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
           try {
             cloneDataset(result.value, fileBrowserModel.path, result.isChecked);
             console.log('accepted');
-            console.log(result.isChecked);
             await fileBrowserModel.refresh();
           } catch (error) {
             console.error(
@@ -177,52 +176,13 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     app: JupyterFrontEnd,
     fileBrowserFactory: IFileBrowserFactory
   ) => {
-    console.log("createDatasetCommandPlugin activated!!");
-    // const fileBrowser = fileBrowserFactory.defaultBrowser;
+   
+ 
     const fileBrowser = fileBrowserFactory.tracker.currentWidget;
     const fileBrowserModel = fileBrowser.model;
 
   
     const createDatasetCommand = "createDatasetCommand"
-    
-    // TODO: find how to use notifications and actions
-    // to promp user on execution of some commands.
-  //   app.commands.execute('apputils:notify', {
-  //     message: 'initilize dataset',
-  //     type: 'info',
-  //     options: {
-  //       autoClose: false,
-  //       actions: {
-  //         label: 'notification init',
-  //         commandId: createDatasetCommand,
-  //       }
-  //     }
-  //  });
-
-  //  {
-  //   /**
-  //    * The action label.
-  //    *
-  //    * This should be a short description.
-  //    */
-  //   label: string;
-  //   /**
-  //    * Callback command id to trigger
-  //    */
-  //   commandId: string;
-  //   /**
-  //    * Command arguments
-  //    */
-  //   args?: ReadonlyJsonObject;
-  //   /**
-  //    * The action caption.
-  //    *
-  //    * This can be a longer description of the action.
-  //    */
-  //   caption?: string;
-  // }
-
-   
 
     app.commands.addCommand(createDatasetCommand, {
       label: 'Create Fairly Dataset',
