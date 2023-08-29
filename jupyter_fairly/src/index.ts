@@ -4,7 +4,6 @@ import {
 } from '@jupyterlab/application';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
-// import { ICommandPalette,} from '@jupyterlab/apputils';
 
 import { 
   createDatasetCommandPlugin,
@@ -68,7 +67,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     }
 };
 
-// TODO: add signal/notifications for download/upload progress
 
 export default [
   plugin, 
@@ -77,8 +75,5 @@ export default [
   uploadDatasetPlugin,
   cloneDatasetCommandPlugin,
   FairlyMenuPlugin,
-  // NotificationPlugin,
 ];
 
-//Todo: add new tab to left pannel
-// example: https://github.com/jupyterlab/extension-examples/tree/master/widgets
