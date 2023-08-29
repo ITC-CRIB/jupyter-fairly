@@ -173,6 +173,7 @@ class CloneDataset(APIHandler):
         {
             "source": <doi or url of the dataset>,
             "destination": <path to directory>,
+            "extract": <boolean>
         }
         """
      
@@ -189,7 +190,7 @@ class CloneDataset(APIHandler):
         
         try:
             # download files and store them in local directory
-            dataset.store(path=data["destination"])
+            dataset.store(path=data["destination"], extract=data["extract"])
         except ValueError:
             raise web.HTTPError(403, f"Can't clone dataset to not-empty directory." )
         except ConnectionError:
