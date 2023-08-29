@@ -22,26 +22,12 @@ To install the extension, execute:
 pip install jupyter_fairly
 ```
 
-To configure the extension
+Configurations are stored in  `.fairly/config.json`  in the user's home directory. This is where the extension stores access tokens for data repositories.
 
-1. Create a `config.json` and store it in `~/.fairly`.
-2. Copy the example below to `config.json`. You must add the tokens for your repository accounts
-   
-   ```json
-   {
-        "fairly": {
-                "orcid_client_id":"APP-IELS3LR4OCLHLELC",
-                "orcid_clien_secret": "",
-                "orcid_token": ""
-        },
-        "4tu": {
-        "token": "<your-token>"
-        },
-        "zenodo": {
-        "token":"<your-token>"
-        }
-    }
-   ```
+To add an access tokens, use the **Fairly** menu in the JupyterLab main menu bar.
+
+<img src="./img/fairly_menu.png" alt="Fairly Menu" width="450"/>
+
 
 ## Uninstall
 
