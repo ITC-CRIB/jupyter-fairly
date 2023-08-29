@@ -10,6 +10,7 @@ for the frontend extension.
 ## Requirements
 
 - JupyterLab >= 3.0
+- fairly >= 0.4.0
 
 ## Install
 
@@ -19,26 +20,7 @@ To install the extension, execute:
 pip install jupyter_fairly
 ```
 
-To configure the extension
-
-1. Create a `config.json` and store it in `~/.fairly`.
-2. Copy the example below to `config.json`. You must add the tokens for your repository accounts
-   
-   ```json
-   {
-        "fairly": {
-                "orcid_client_id":"APP-IELS3LR4OCLHLELC",
-                "orcid_clien_secret": "",
-                "orcid_token": ""
-        },
-        "4tu": {
-        "token": "<your-token>"
-        },
-        "zenodo": {
-        "token":"<your-token>"
-        }
-    }
-   ```
+To run the extension, start JupyterLab. If JupyterLab was running during installation, a *restart is required.*
 
 ## Uninstall
 
@@ -66,9 +48,9 @@ jupyter labextension list
 
 ## Contributing
 
-### Development install
+### Development installation
 
-Note: You will need NodeJS to build the extension package.
+> Note: You will need NodeJS to build the extension package.
 
 The `jlpm` command is JupyterLab's pinned version of
 [yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
