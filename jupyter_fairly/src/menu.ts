@@ -5,7 +5,7 @@ import {
 
 import {
   InputDialog,
-  // ICommandPalette,
+  Notification
 } from '@jupyterlab/apputils';
 
 import { 
@@ -43,16 +43,20 @@ function registerToken(repository: string,  newToken: string) {
     client: clientId,  
     token: newToken
   });
-  
+
   requestAPI<any>('repo-token', {
     method: 'POST', 
     body: payload
   }) 
   .then(data => {
     console.log(data);
+    // show notification when requestAPI succeeds
+    Notification.success('Access Token registered successfully.', 
+      {autoClose: 3000});
   })
   .catch(reason => {
     // show error when requestAPI fails
+    // TODO: show error message in notification, and add reason as callback()
     showErrorMessage("Error when registering access token", reason)
   });
 };

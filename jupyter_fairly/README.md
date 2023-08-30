@@ -9,8 +9,10 @@ for the frontend extension.
 
 ## Requirements
 
-- JupyterLab >= 3.0
-- fairly
+- JupyterLab >= 3.0 < 4
+- fairly >= 0.4.0 
+
+> This is the last version supported by JupyterLab 3.x. 
 
 ## Install
 
@@ -20,7 +22,12 @@ To install the extension, execute:
 pip install jupyter_fairly
 ```
 
-To run the extension, start JupyterLab. If JupyterLab was running during installation, a *restart is required.*
+Configurations are stored in  `.fairly/config.json`  in the user's home directory. This is where the extension stores access tokens for data repositories.
+
+To add an access tokens, use the **Fairly** menu in the JupyterLab main menu bar.
+
+<img src="../img/fairly_menu.png" alt="Fairly Menu" width="450"/>
+
 
 ## Uninstall
 
@@ -48,9 +55,9 @@ jupyter labextension list
 
 ## Contributing
 
-### Development installation
+### Development install
 
-> Note: You will need NodeJS to build the extension package.
+Note: You will need NodeJS to build the extension package.
 
 The `jlpm` command is JupyterLab's pinned version of
 [yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
@@ -66,7 +73,7 @@ jupyter labextension develop . --overwrite
 # Server extension must be manually installed in develop mode
 jupyter server extension enable jupyter_fairly
 # Rebuild extension Typescript source after making changes
-jlpm run build
+jlpm build
 ```
 
 You can watch the source directory and run JupyterLab at the same time in different terminals to watch for changes in the extension's source and automatically rebuild the extension.
@@ -157,4 +164,3 @@ Project members:
 - [Center of Expertise in Big Geodata Science, University of Twente, Faculty ITC](https://itc.nl/big-geodata/)
 - [Digital Competence Centre, TU Delft](https://dcc.tudelft.nl/)
 - [4TU.ResearchData](https://data.4tu.nl/)
-

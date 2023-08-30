@@ -4,12 +4,15 @@ import {
 } from '@jupyterlab/application';
 
 import {
-  InputDialog
+  InputDialog,
+  Notification
 } from '@jupyterlab/apputils';
 
 import { 
   IFileBrowserFactory 
 } from '@jupyterlab/filebrowser';
+
+import { PromiseDelegate, ReadonlyJSONValue } from '@lumino/coreutils';
 
 // Icons
 import {
@@ -53,7 +56,10 @@ import { showErrorMessage } from '@jupyterlab/apputils';
     client: client
   });
 
-  console.log(payload);
+  // notification
+  const delegate = new PromiseDelegate<ReadonlyJSONValue>();
+  const complete = "complete";
+  const failed = "failed"
   
   requestAPI<any>('upload', {
     method: 'POST', 
@@ -61,11 +67,24 @@ import { showErrorMessage } from '@jupyterlab/apputils';
   }) 
   .then(data => {
     console.log(data);
+    delegate.resolve({ complete });
   })
   .catch(reason => {
+    delegate.reject({ failed });
     // show error when 
     showErrorMessage("Error when uploading dataset", reason)
   });
+
+  Notification.promise(delegate.promise, {
+    pending: { message: 'Uploading dataset...', options: { autoClose: false } },
+    success: {
+      message: (result: any) =>
+      `Dataset upload ${result.complete}.`,
+      options: {autoClose: 3000}
+    },
+    error: {message: () => `Upload failed.`}
+  });
+
 };
 
 
@@ -129,7 +148,7 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
       command: archiveDatasetCommand,
       // matches anywhere in the filebrowser
       selector: '.jp-DirListing-content',
-      rank: 102
+      rank: 104
     });
   }
 };
