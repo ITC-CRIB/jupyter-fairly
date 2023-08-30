@@ -162,7 +162,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
       command: cloneDatasetCommand,
       // matches anywhere in the filebrowser
       selector: '.jp-DirListing-content',
-      rank: 106
+      rank: 103
     });
 
   }

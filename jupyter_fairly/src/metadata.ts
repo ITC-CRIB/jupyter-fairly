@@ -51,7 +51,7 @@ export const editMetadataPlugin: JupyterFrontEndPlugin<void> = {
       command: openManifestCommand,
       // matches anywhere in the filebrowser
       selector: '.jp-DirListing-content',
-      rank: 105
+      rank: 101
     });
   }
 };

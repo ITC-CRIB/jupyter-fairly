@@ -129,7 +129,7 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
       command: archiveDatasetCommand,
       // matches anywhere in the filebrowser
       selector: '.jp-DirListing-content',
-      rank: 102
+      rank: 104
     });
   }
 };
