@@ -8,7 +8,6 @@ from turtle import st
 from typing import Dict, List
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
-from dotenv import load_dotenv
 from tornado import web
 import fairly
 
