@@ -12,8 +12,11 @@ import {
   Dialog, 
   showDialog, 
   InputDialog, 
-  showErrorMessage 
+  showErrorMessage,
+  Notification
 } from '@jupyterlab/apputils';
+
+import { PromiseDelegate, ReadonlyJSONValue } from '@lumino/coreutils';
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { requestAPI } from './handler';
@@ -89,17 +92,35 @@ function cloneDataset(source: string, destination: string, extract: boolean = fa
 
   console.log(rootPath.concat(destination));
   
+  // notification
+  const delegate = new PromiseDelegate<ReadonlyJSONValue>();
+  const complete = "complete";
+  const failed = "failed"
+
   requestAPI<any>('clone', {
     method: 'POST', 
     body: payload
   }) 
   .then(data => {
     console.log(data);
+    delegate.resolve({ finished });
   })
   .catch(reason => {
+    delegate.reject({failed})
     // show error when destination directory is not empty
     showErrorMessage("Error when cloning dataset", reason)
   });
+
+  Notification.promise(delegate.promise, {
+    pending: { message: 'Cloning dataset...', options: { autoClose: false } },
+    success: {
+      message: (result: any) =>
+      `Clonning ${result.complete}.`,
+      options: {autoClose: 3000}
+    },
+    error: {message: () => `Cloning failed.`}
+  });
+  
 }
 
 export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
@@ -115,6 +136,8 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     const fileBrowserModel = fileBrowser.model;
 
     const cloneDatasetCommand = "cloneDataset";
+
+  
     app.commands.addCommand(cloneDatasetCommand, {
       label: 'Clone Dataset',
       isEnabled: () => true,
@@ -135,13 +158,15 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
           }
         });
 
+
         if (result.button.accept && result.value) {
           // logger.log({
           //   level: Level.RUNNING,
           //   message: 'Cloning...'
           // });
 
-          try {
+
+          try {      
             cloneDataset(result.value, fileBrowserModel.path, result.isChecked);
             console.log('accepted');
             await fileBrowserModel.refresh();
@@ -150,7 +175,8 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
               'Encontered an error when cloning the dataset: ', 
               error
             )
-          }
+          };
+
 
         } else {
           console.log('rejected')
