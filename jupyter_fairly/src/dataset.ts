@@ -103,7 +103,7 @@ function cloneDataset(source: string, destination: string, extract: boolean = fa
   }) 
   .then(data => {
     console.log(data);
-    delegate.resolve({ finished });
+    delegate.resolve({ complete });
   })
   .catch(reason => {
     delegate.reject({failed})
@@ -136,7 +136,6 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     const fileBrowserModel = fileBrowser.model;
 
     const cloneDatasetCommand = "cloneDataset";
-
   
     app.commands.addCommand(cloneDatasetCommand, {
       label: 'Clone Dataset',
@@ -158,13 +157,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
           }
         });
 
-
         if (result.button.accept && result.value) {
-          // logger.log({
-          //   level: Level.RUNNING,
-          //   message: 'Cloning...'
-          // });
-
 
           try {      
             cloneDataset(result.value, fileBrowserModel.path, result.isChecked);
@@ -176,7 +169,6 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
               error
             )
           };
-
 
         } else {
           console.log('rejected')
