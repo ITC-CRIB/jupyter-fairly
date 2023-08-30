@@ -8,7 +8,6 @@ from turtle import st
 from typing import Dict, List
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
-from dotenv import load_dotenv
 from tornado import web
 import fairly
 
@@ -231,7 +230,7 @@ class UploadDataset(APIHandler):
             client = fairly.client(id=data["client"])
         except ValueError:
             raise web.HTTPError(400, f"Invalid client id: {data['client']}")
-
+        
         try:
             # TODO: fix bug: 
             # Error messages:
@@ -257,6 +256,9 @@ class UploadDataset(APIHandler):
             # print(client["token"])
             print(e)
             raise web.HTTPError(500, f'Something went wrong with uploading: {e}')
+        except Warning:
+            raise web.HTTPError(409, "Dataset already exists in data repository. Check the repository \
+                                 and if necessary delete any the 'remotes' from the manifest.yaml before attemping again.")
         else:
             self.finish(json.dumps({ 
                 "message": 'completed',

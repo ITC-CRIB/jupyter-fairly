@@ -28,7 +28,7 @@ export class FairlyCloneForm extends Widget {
     const text = document.createElement('span');
 
     node.className = 'jp-RedirectForm';
-    text.textContent = 'Enter the URL or DOI of the dataset';
+    text.textContent = 'Enter URL or DOI of the dataset';
     input.placeholder = 'https://doi.org/xx.x/xx.vx';
 
     label.appendChild(text);
