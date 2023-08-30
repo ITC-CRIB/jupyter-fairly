@@ -18,8 +18,8 @@ import {
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { requestAPI } from './handler';
 import { FairlyCloneForm } from './widgets/CloneForm';
-import { logger } from './logger';
-import { Level } from './tokens';
+// import { logger } from './logger';
+// import { Level } from './tokens';
 
 function initDataset(path: string, template?: any) {
   /**
@@ -136,10 +136,10 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
         });
 
         if (result.button.accept && result.value) {
-          logger.log({
-            level: Level.RUNNING,
-            message: 'Cloning...'
-          });
+          // logger.log({
+          //   level: Level.RUNNING,
+          //   message: 'Cloning...'
+          // });
 
           try {
             cloneDataset(result.value, fileBrowserModel.path, result.isChecked);
@@ -169,7 +169,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
 };
 
 export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
-  id: 'jupyter-fairly:create-dataset',
+  id: '@jupyter-fairly/create-dataset',
   requires: [IFileBrowserFactory],
   autoStart: true,
   activate: (
@@ -224,56 +224,3 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///
-// function initDataset(rootPath:string, template: any) {
-//   requestAPI<any>('newdataset', {
-//     method: 'POST', 
-//     body: JSON.stringify({
-//       path: rootPath, 
-//       template: template
-//     })
-//   }) // This is how to query the api-url
-//   .then(data => {
-//     console.log(data);
-//   })
-//   .catch(reason => {
-//     console.error(
-//       `The jupyter-fairly server extension appears to be missing.\n${reason}`
-//     );
-//   });
-// }
-
-// const fbModel = new FilterFileBrowserModel({ manager: docManager});
-
-    // const fbWidget = new FileBrowser({
-    //   id: 'filebrowser',
-    //   model: 
-    // };
-
-    
-    // const browser = factory.tracker.currentWidget;
-    
-    // console.log(browser);
-    // const basePath = factory.defaultBrowser.model.path;
-    // // const basePath = factory.tracker.;
-    // console.log(`workspace: ${basePath}`);
-    // const {tracker} = factory;
