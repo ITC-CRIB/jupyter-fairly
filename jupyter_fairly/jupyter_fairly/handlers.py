@@ -262,20 +262,21 @@ class UploadDataset(APIHandler):
         
         Args:
     
-            local-dataset (str): path to root directory of initialized fairly dataset
+            localdataset (str): path to root directory of initialized fairly dataset
                              witch a remote registered in the manifest.yaml file
 
         Body example as JSON:
         {
             
-            "local-dataset": <path to root directory of fairly dataset>
+            "localdataset": <path to root directory of fairly dataset>
         }
         """
 
         data = self.get_json_body() 
+        print(data)
 
         try:
-            local_dataset = fairly.dataset(data["local-dataset"])
+            local_dataset = fairly.dataset(data["localdataset"])
 
         except FileNotFoundError as e:
             raise web.HTTPError(404, f"Manifest file is missing from current directory: {e}")
