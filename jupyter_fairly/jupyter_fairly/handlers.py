@@ -210,6 +210,7 @@ class UploadDataset(APIHandler):
     def post(self):
         """
         Uploads local dataset to a remote data repository.
+
         Args:
     
             directory (str): path to root directory of initialized fairly dataset
@@ -234,14 +235,6 @@ class UploadDataset(APIHandler):
         try:
             # TODO: fix bug: 
             # Error messages:
-                # File "/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/fairly/src/fairly/dataset/local.py", line 354, in upload
-                # dataset = client.create_dataset(self.metadata)
-                # File "/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/fairly/src/fairly/client/__init__.py", line 292, in create_dataset
-                # id = self._create_dataset(metadata)
-                # File "/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/fairly/src/fairly/client/figshare.py", line 753, in _create_dataset
-                # result, _ = self._request("account/articles", "POST", data={"title": metadata.get("title", "")})
-                # File "/home/manuel/Documents/devel/JupyterFAIR/jupyterfair/jupyterfair/fairly/src/fairly/client/__init__.py", line 355, in _request
-                # response.raise_for_status()
                 # requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://api.figshare.com/v2/account/articles
 
             local_dataset = fairly.dataset(data["directory"])
@@ -257,18 +250,46 @@ class UploadDataset(APIHandler):
             print(e)
             raise web.HTTPError(500, f'Something went wrong with uploading: {e}')
         except Warning:
-            raise web.HTTPError(409, "Dataset already exists in data repository. Check the repository \
-                                 and if necessary delete any the 'remotes' from the manifest.yaml before attemping again.")
+            raise web.HTTPError(409, "Dataset already exists in data repository. Use \
+                                the update option to update the dataset.")
         else:
             self.finish(json.dumps({ 
                 "message": 'completed',
                 }))
 
-
     def patch(self):
-        """ Send updates on files and metadata to remore repository"""
+        """ Send updates on files and metadata to remore repository
+        
+        Args:
+    
+            local-dataset (str): path to root directory of initialized fairly dataset
+                             witch a remote registered in the manifest.yaml file
 
-        raise web.HTTPError(501, "Not implemented")
+        Body example as JSON:
+        {
+            
+            "local-dataset": <path to root directory of fairly dataset>
+        }
+        """
+
+        data = self.get_json_body() 
+
+        try:
+            local_dataset = fairly.dataset(data["local-dataset"])
+
+        except FileNotFoundError as e:
+            raise web.HTTPError(404, f"Manifest file is missing from current directory: {e}")
+        except NotADirectoryError as e:
+            raise web.HTTPError(404, f"Path to dataset is not a directory: {e}")
+
+        try:
+            local_dataset.push() # push updates (files and metadata) to remote repository
+        except ValueError:
+            raise web.HTTPError(405, f"The dataset doesn't have a remote. Use the upload option first.")
+        else:
+            self.finish(json.dumps({
+                "message": 'remote was updated',
+                }))
 
 
 class RegisterRepositoryToken(APIHandler):
