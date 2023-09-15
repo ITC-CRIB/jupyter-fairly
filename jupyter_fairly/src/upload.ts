@@ -88,6 +88,54 @@ import { showErrorMessage } from '@jupyterlab/apputils';
 };
 
 
+function updateRemoteDataset(localDataset: string) {
+  /**
+   * upload local dataset to data reposotory
+   * @param localDataset - realtive path to directory of local dataset with remote metadata
+   */
+
+  /* ./ is necessary becaucause defaultBrowser.Model.path
+  * returns an empty string when fileBlowser is on the
+  * jupyterlab root directory     
+  */
+  let rootPath = './';
+
+  let payload = JSON.stringify({
+    localdataset: rootPath.concat(localDataset)
+  });
+
+  // notification
+  const delegate = new PromiseDelegate<ReadonlyJSONValue>();
+  const complete = "complete";
+  const failed = "failed"
+  
+  requestAPI<any>('upload', {
+    method: 'PATCH', 
+    body: payload
+  }) 
+  .then(data => {
+    console.log(data);
+    delegate.resolve({ complete });
+  })
+  .catch(reason => {
+    delegate.reject({ failed });
+    // show error when 
+    showErrorMessage("Error when updating remote dataset", reason)
+  });
+
+  Notification.promise(delegate.promise, {
+    pending: { message: 'Updating remote dataset...', options: { autoClose: false } },
+    success: {
+      message: (result: any) =>
+      `Remote dataset update ${result.complete}.`,
+      options: {autoClose: 3000}
+    },
+    error: {message: () => `Updating remote dataset failed.`}
+  });
+
+};
+
+
 export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-fairly/upload',
   requires: [IFileBrowserFactory],
@@ -102,8 +150,8 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
     const fileBrowserModel = fileBrowser.model;
 
     
-    const archiveDatasetCommand = "uploadDataset"
-    app.commands.addCommand(archiveDatasetCommand, {
+    const uploadDatasetCommand = "uploadDataset"
+    app.commands.addCommand(uploadDatasetCommand, {
       label: 'Upload Dataset',
       isEnabled: () => true,
       isVisible: () => true, // activate only when current directory contains a manifest.yalm
@@ -144,11 +192,49 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
       }
     });
 
+
+    const updateRemoteDatasetCommand = "updateRemoteDataset"
+    app.commands.addCommand(updateRemoteDatasetCommand, {
+      label: 'Push',
+      isEnabled: () => true,
+      isVisible: () => true, // activate only when current directory contains a manifest.yalm
+      icon: fileUploadIcon,
+      execute: async() => {
+
+        // return relative path w.r.t. jupyterlab root path.
+        // root-path = empty string.
+
+        // Choose a better dialog for this
+        let confirmAction = await InputDialog.getBoolean({
+          title: 'Push and update the data repository?',
+          label: 'Yes, push and update the data repository'
+        });
+
+      
+        if (confirmAction.button.accept){
+          console.log ('uploading changes to data repository');
+          updateRemoteDataset(fileBrowserModel.path)
+        }else {
+          console.log('rejected');
+          return
+        };
+
+      }
+    });
+
     app.contextMenu.addItem({
-      command: archiveDatasetCommand,
+      command: uploadDatasetCommand,
       // matches anywhere in the filebrowser
       selector: '.jp-DirListing-content',
       rank: 104
-    });
+    }
+    );
+    app.contextMenu.addItem({
+      command: updateRemoteDatasetCommand,
+      // matches anywhere in the filebrowser
+      selector: '.jp-DirListing-content',
+      rank: 105
+    }
+    );
   }
 };
