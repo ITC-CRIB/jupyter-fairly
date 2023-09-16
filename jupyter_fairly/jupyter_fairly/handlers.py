@@ -257,25 +257,79 @@ class UploadDataset(APIHandler):
                 "message": 'completed',
                 }))
 
+
+class PushDataset(APIHandler):
+    """
+    Handler for pushing updates on files and metadata to data repository
+    """
+
+    @tornado.web.authenticated
     def patch(self):
-        """ Send updates on files and metadata to remore repository
+        """ Updates files and metadata in existing dataset in data repository
         
         Args:
     
-            local-dataset (str): path to root directory of initialized fairly dataset
+            localdataset (str): path to root directory of initialized fairly dataset
                              witch a remote registered in the manifest.yaml file
 
         Body example as JSON:
         {
             
-            "local-dataset": <path to root directory of fairly dataset>
+            "localdataset": <path to root directory of fairly dataset>
         }
         """
 
         data = self.get_json_body() 
+        print(data)
 
         try:
-            local_dataset = fairly.dataset(data["local-dataset"])
+            local_dataset = fairly.dataset(data["localdataset"])
+
+        except FileNotFoundError as e:
+            raise web.HTTPError(404, f"Manifest file is missing from current directory: {e}")
+        except NotADirectoryError as e:
+            raise web.HTTPError(404, f"Path to dataset is not a directory: {e}")
+
+        try:
+            local_dataset.push() # push updates (files and metadata) to remote repository
+        except ValueError:
+            raise web.HTTPError(405, f"The dataset doesn't have a remote. Make sure you're in the right directory or use `upload` option first.")
+        except KeyError as e:
+            raise web.HTTPError(400, f"Possible malformed manifest file. Missing {e}")
+        else:
+            self.finish(json.dumps({
+                "message": 'remote  dataset is up to date',
+                }))
+
+
+class PullDataset(APIHandler):
+    """
+    Handler for pulling updates on files and metadata to remore repository
+    """
+
+    @tornado.web.authenticated
+    def patch(self):
+        """ Updates files and metadata in local dataset based on changes in data repository.
+        
+        Args:
+    
+            localdataset (str): path to root directory of initialized fairly dataset
+                             witch a remote registered in the manifest.yaml file
+
+        Body example as JSON:
+        {
+            
+            "localdataset": <path to root directory of fairly dataset>
+        }
+        """
+        raise web.HTTPError(501, "Not implemented yet")
+
+        # TODO: implement save changes to manifest.yaml and files in local dataset
+        data = self.get_json_body() 
+        print(data)
+
+        try:
+            local_dataset = fairly.dataset(data["localdataset"])
 
         except FileNotFoundError as e:
             raise web.HTTPError(404, f"Manifest file is missing from current directory: {e}")
@@ -287,8 +341,10 @@ class UploadDataset(APIHandler):
         except ValueError:
             raise web.HTTPError(405, f"The dataset doesn't have a remote. Use the upload option first.")
         else:
+            # save changes to manifest.yaml
+    
             self.finish(json.dumps({
-                "message": 'remote was updated',
+                "message": 'local dataset is up to date',
                 }))
 
 
@@ -355,6 +411,8 @@ def setup_handlers(web_app):
     initialize_dataset_url = url_path_join(extension_url, "newdataset")
     clone_dataset_url = url_path_join(extension_url, "clone")
     upload_dataset_url = url_path_join(extension_url, "upload")
+    push_dataset_url = url_path_join(extension_url, "push")
+    pull_dataset_url = url_path_join(extension_url, "pull")
     register_token_url = url_path_join(extension_url, "repo-token")
 
     
@@ -364,6 +422,8 @@ def setup_handlers(web_app):
         (initialize_dataset_url, InitFairlyDataset),
         (clone_dataset_url, CloneDataset),
         (upload_dataset_url, UploadDataset),
+        (push_dataset_url, PushDataset),
+        (pull_dataset_url, PullDataset),
         (register_token_url, RegisterRepositoryToken)
     ]
 

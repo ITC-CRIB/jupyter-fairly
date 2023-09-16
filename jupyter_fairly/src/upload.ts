@@ -5,7 +5,9 @@ import {
 
 import {
   InputDialog,
-  Notification
+  Notification,
+  showDialog,
+  Dialog
 } from '@jupyterlab/apputils';
 
 import { 
@@ -17,13 +19,11 @@ import { PromiseDelegate, ReadonlyJSONValue } from '@lumino/coreutils';
 // Icons
 import {
   fileUploadIcon,
+  redoIcon
 } from '@jupyterlab/ui-components';
 import { requestAPI } from './handler';
 import { showErrorMessage } from '@jupyterlab/apputils';
 
-/**
- * Uploads metadata and files to data repository
- */
 
 
  function uploadDataset(directory: string,  repository: string) {
@@ -88,6 +88,54 @@ import { showErrorMessage } from '@jupyterlab/apputils';
 };
 
 
+function pushDataset(localDataset: string) {
+  /**
+   * upload local dataset to data reposotory
+   * @param localDataset - realtive path to directory of local dataset with remote metadata
+   */
+
+  /* ./ is necessary becaucause defaultBrowser.Model.path
+  * returns an empty string when fileBlowser is on the
+  * jupyterlab root directory     
+  */
+  let rootPath = './';
+
+  let payload = JSON.stringify({
+    localdataset: rootPath.concat(localDataset)
+  });
+
+  // notification
+  const delegate = new PromiseDelegate<ReadonlyJSONValue>();
+  const complete = "complete";
+  const failed = "failed"
+  
+  requestAPI<any>('push', {
+    method: 'PATCH', 
+    body: payload
+  }) 
+  .then(data => {
+    console.log(data);
+    delegate.resolve({ complete });
+  })
+  .catch(reason => {
+    delegate.reject({ failed });
+    // show error when 
+    showErrorMessage("Error when updating remote dataset", reason)
+  });
+
+  Notification.promise(delegate.promise, {
+    pending: { message: 'Pushing dataset to repository ...', options: { autoClose: false } },
+    success: {
+      message: (result: any) =>
+      `Remote dataset update ${result.complete}.`,
+      options: {autoClose: 3000}
+    },
+    error: {message: () => `Pushing has failed.`}
+  });
+
+};
+
+
 export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-fairly/upload',
   requires: [IFileBrowserFactory],
@@ -102,8 +150,9 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
     const fileBrowserModel = fileBrowser.model;
 
     
-    const archiveDatasetCommand = "uploadDataset"
-    app.commands.addCommand(archiveDatasetCommand, {
+    // ** Upload a new dataset to a data repository **
+    const uploadDatasetCommand = "uploadDataset"
+    app.commands.addCommand(uploadDatasetCommand, {
       label: 'Upload Dataset',
       isEnabled: () => true,
       isVisible: () => true, // activate only when current directory contains a manifest.yalm
@@ -144,11 +193,44 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
       }
     });
 
+    // ** Push changes made to a local dataset to a data repository **
+    const pushCommand = "pushDataset"
+    app.commands.addCommand(pushCommand, {
+      label: 'Push',
+      isEnabled: () => true,
+      isVisible: () => true, // activate only when current directory contains a manifest.yalm
+      icon: redoIcon,
+      execute: async() => {
+
+        let confirmAction = await showDialog({
+            title: 'Push changes', // Can be text or a react element
+            body: 'This will update the data repository using changes made here.', 
+            host: document.body, // Parent element for rendering the dialog
+            buttons: [Dialog.cancelButton(), Dialog.okButton({ label: 'Push' })],
+          })
+
+        if (confirmAction.button.accept){
+          await pushDataset(fileBrowserModel.path)
+        } else {
+          console.log('rejected');
+          return
+        };
+      }
+    });
+
     app.contextMenu.addItem({
-      command: archiveDatasetCommand,
+      command: uploadDatasetCommand,
       // matches anywhere in the filebrowser
       selector: '.jp-DirListing-content',
       rank: 104
-    });
+    }
+    );
+    app.contextMenu.addItem({
+      command: pushCommand,
+      // matches anywhere in the filebrowser
+      selector: '.jp-DirListing-content',
+      rank: 105
+    }
+    );
   }
 };
