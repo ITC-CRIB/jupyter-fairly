@@ -320,6 +320,7 @@ class PullDataset(APIHandler):
             "localdataset": <path to root directory of fairly dataset>
         }
         """
+        raise web.HTTPError(501, "Not implemented yet")
 
         data = self.get_json_body() 
         print(data)
@@ -337,6 +338,8 @@ class PullDataset(APIHandler):
         except ValueError:
             raise web.HTTPError(405, f"The dataset doesn't have a remote. Use the upload option first.")
         else:
+            # save changes to manifest.yaml
+    
             self.finish(json.dumps({
                 "message": 'local dataset is up to date',
                 }))
