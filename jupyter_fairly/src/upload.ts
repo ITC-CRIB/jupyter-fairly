@@ -5,6 +5,7 @@ import {
 
 import {
   InputDialog,
+  Dialog
   Notification
 } from '@jupyterlab/apputils';
 
@@ -88,7 +89,7 @@ import { showErrorMessage } from '@jupyterlab/apputils';
 };
 
 
-function updateRemoteDataset(localDataset: string) {
+function pushDataset(localDataset: string) {
   /**
    * upload local dataset to data reposotory
    * @param localDataset - realtive path to directory of local dataset with remote metadata
@@ -109,7 +110,7 @@ function updateRemoteDataset(localDataset: string) {
   const complete = "complete";
   const failed = "failed"
   
-  requestAPI<any>('upload', {
+  requestAPI<any>('push', {
     method: 'PATCH', 
     body: payload
   }) 
@@ -124,13 +125,13 @@ function updateRemoteDataset(localDataset: string) {
   });
 
   Notification.promise(delegate.promise, {
-    pending: { message: 'Updating remote dataset...', options: { autoClose: false } },
+    pending: { message: 'Pushing dataset to repository ...', options: { autoClose: false } },
     success: {
       message: (result: any) =>
       `Remote dataset update ${result.complete}.`,
       options: {autoClose: 3000}
     },
-    error: {message: () => `Updating remote dataset failed.`}
+    error: {message: () => `Pushing has failed.`}
   });
 
 };
@@ -193,8 +194,8 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
     });
 
 
-    const updateRemoteDatasetCommand = "updateRemoteDataset"
-    app.commands.addCommand(updateRemoteDatasetCommand, {
+    const pushCommand = "pushDataset"
+    app.commands.addCommand(pushCommand, {
       label: 'Push',
       isEnabled: () => true,
       isVisible: () => true, // activate only when current directory contains a manifest.yalm
@@ -206,14 +207,16 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
 
         // Choose a better dialog for this
         let confirmAction = await InputDialog.getBoolean({
-          title: 'Push and update the data repository?',
-          label: 'Yes, push and update the data repository'
+          title: 'Confirm the operation',
+          label: `Yes, push changes to the data dataset`,
+          okLabel: 'Push',
         });
 
-      
+        
+
         if (confirmAction.button.accept){
-          console.log ('uploading changes to data repository');
-          updateRemoteDataset(fileBrowserModel.path)
+          console.log ('pushing changes to data repository');
+          pushDataset(fileBrowserModel.path)
         }else {
           console.log('rejected');
           return
@@ -230,7 +233,7 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
     }
     );
     app.contextMenu.addItem({
-      command: updateRemoteDatasetCommand,
+      command: pushCommand,
       // matches anywhere in the filebrowser
       selector: '.jp-DirListing-content',
       rank: 105
