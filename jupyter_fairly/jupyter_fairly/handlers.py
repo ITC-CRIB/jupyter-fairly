@@ -293,7 +293,9 @@ class PushDataset(APIHandler):
         try:
             local_dataset.push() # push updates (files and metadata) to remote repository
         except ValueError:
-            raise web.HTTPError(405, f"The dataset doesn't have a remote. Use the upload option first.")
+            raise web.HTTPError(405, f"The dataset doesn't have a remote. Make sure you're in the right directory or use `upload` option first.")
+        except KeyError as e:
+            raise web.HTTPError(400, f"Possible malformed manifest file. Missing {e}")
         else:
             self.finish(json.dumps({
                 "message": 'remote  dataset is up to date',
@@ -322,6 +324,7 @@ class PullDataset(APIHandler):
         """
         raise web.HTTPError(501, "Not implemented yet")
 
+        # TODO: implement save changes to manifest.yaml and files in local dataset
         data = self.get_json_body() 
         print(data)
 
