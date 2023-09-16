@@ -5,8 +5,9 @@ import {
 
 import {
   InputDialog,
+  Notification,
+  showDialog,
   Dialog
-  Notification
 } from '@jupyterlab/apputils';
 
 import { 
@@ -18,13 +19,11 @@ import { PromiseDelegate, ReadonlyJSONValue } from '@lumino/coreutils';
 // Icons
 import {
   fileUploadIcon,
+  redoIcon
 } from '@jupyterlab/ui-components';
 import { requestAPI } from './handler';
 import { showErrorMessage } from '@jupyterlab/apputils';
 
-/**
- * Uploads metadata and files to data repository
- */
 
 
  function uploadDataset(directory: string,  repository: string) {
@@ -151,6 +150,7 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
     const fileBrowserModel = fileBrowser.model;
 
     
+    // ** Upload a new dataset to a data repository **
     const uploadDatasetCommand = "uploadDataset"
     app.commands.addCommand(uploadDatasetCommand, {
       label: 'Upload Dataset',
@@ -193,35 +193,28 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
       }
     });
 
-
+    // ** Push changes made to a local dataset to a data repository **
     const pushCommand = "pushDataset"
     app.commands.addCommand(pushCommand, {
       label: 'Push',
       isEnabled: () => true,
       isVisible: () => true, // activate only when current directory contains a manifest.yalm
-      icon: fileUploadIcon,
+      icon: redoIcon,
       execute: async() => {
 
-        // return relative path w.r.t. jupyterlab root path.
-        // root-path = empty string.
-
-        // Choose a better dialog for this
-        let confirmAction = await InputDialog.getBoolean({
-          title: 'Confirm the operation',
-          label: `Yes, push changes to the data dataset`,
-          okLabel: 'Push',
-        });
-
-        
+        let confirmAction = await showDialog({
+            title: 'Push changes', // Can be text or a react element
+            body: 'This will update the data repository using changes made here.', 
+            host: document.body, // Parent element for rendering the dialog
+            buttons: [Dialog.cancelButton(), Dialog.okButton({ label: 'Push' })],
+          })
 
         if (confirmAction.button.accept){
-          console.log ('pushing changes to data repository');
-          pushDataset(fileBrowserModel.path)
-        }else {
+          await pushDataset(fileBrowserModel.path)
+        } else {
           console.log('rejected');
           return
         };
-
       }
     });
 
