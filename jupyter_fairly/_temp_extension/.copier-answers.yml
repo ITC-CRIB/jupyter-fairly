@@ -1,0 +1,15 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.2.6
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: m.g.garciaalvarez@tudelft.nl
+author_name: Manuel G. Garcia, Serkan Girgin, Jose Urra Llanusa
+has_binder: true
+has_settings: true
+kind: server
+labextension_name: jupyter-fairly
+project_short_description: A JupyterLab extension for seamless integration of Jupyter-based
+    research environments and research data repositories
+python_name: jupyter_fairly
+repository: https://github.com/ITC-CRIB/jupyter-fairly.git
+test: true
+
