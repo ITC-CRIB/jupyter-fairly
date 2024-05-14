@@ -10,7 +10,7 @@ for the frontend extension.
 ## Requirements
 
 - JupyterLab >= 3.0 < 4
-- fairly >= 0.4.0 
+- fairly == 0.4.1 
 
 > This is the last version that supports JupyterLab 3.x. 
 
