@@ -1,6 +1,6 @@
 {
     "name": "jupyter-fairly",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "description": "A JupyterLab extension for seamless integration of Jupyter-based research environments and research data repositories",
     "keywords": [
         "jupyter",
