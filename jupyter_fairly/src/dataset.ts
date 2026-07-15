@@ -18,11 +18,9 @@ import {
 
 import { PromiseDelegate, ReadonlyJSONValue } from '@lumino/coreutils';
 
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { IDefaultFileBrowser} from '@jupyterlab/filebrowser';
 import { requestAPI } from './handler';
 import { FairlyCloneForm } from './widgets/CloneForm';
-// import { logger } from './logger';
-// import { Level } from './tokens';
 
 function initDataset(path: string, template?: any) {
   /**
@@ -125,11 +123,11 @@ function cloneDataset(source: string, destination: string, extract: boolean = fa
 
 export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-fairly/clone',
-  requires: [IFileBrowserFactory],
+  requires: [IDefaultFileBrowser],
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    fileBrowserFactory: IFileBrowserFactory
+    fileBrowserFactory: IDefaultFileBrowser
   ) => {
  
     const fileBrowser = fileBrowserFactory.tracker.currentWidget;
@@ -188,11 +186,11 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
 
 export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-fairly/create-dataset',
-  requires: [IFileBrowserFactory],
+  requires: [IDefaultFileBrowser],
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    fileBrowserFactory: IFileBrowserFactory
+    fileBrowserFactory: IDefaultFileBrowser
   ) => {
    
  
