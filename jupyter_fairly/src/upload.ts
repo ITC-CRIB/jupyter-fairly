@@ -11,7 +11,7 @@ import {
 } from '@jupyterlab/apputils';
 
 import { 
-  IFileBrowserFactory 
+  IDefaultFileBrowser 
 } from '@jupyterlab/filebrowser';
 
 import { PromiseDelegate, ReadonlyJSONValue } from '@lumino/coreutils';
@@ -138,11 +138,11 @@ function pushDataset(localDataset: string) {
 
 export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-fairly/upload',
-  requires: [IFileBrowserFactory],
+  requires: [IDefaultFileBrowser],
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    fileBrowserFactory: IFileBrowserFactory
+    fileBrowserFactory: IDefaultFileBrowser
   ) => {
     console.log("uploadDatasetPlugin activated!!");
     // const fileBrowser = fileBrowserFactory.defaultBrowser;
