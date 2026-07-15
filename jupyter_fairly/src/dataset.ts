@@ -127,11 +127,9 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    fileBrowserFactory: IDefaultFileBrowser
+    defaultFileBrowser: IDefaultFileBrowser
   ) => {
- 
-    const fileBrowser = fileBrowserFactory.tracker.currentWidget;
-    const fileBrowserModel = fileBrowser.model;
+    const fileBrowserModel = defaultFileBrowser.model;
 
     const cloneDatasetCommand = "cloneDataset";
   
@@ -190,14 +188,10 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    fileBrowserFactory: IDefaultFileBrowser
-  ) => {
-   
- 
-    const fileBrowser = fileBrowserFactory.tracker.currentWidget;
-    const fileBrowserModel = fileBrowser.model;
+    defaultFileBrowser: IDefaultFileBrowser
+  ) => { 
+    const fileBrowserModel = defaultFileBrowser.model;
 
-  
     const createDatasetCommand = "createDatasetCommand"
 
     app.commands.addCommand(createDatasetCommand, {
