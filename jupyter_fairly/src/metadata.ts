@@ -7,16 +7,16 @@ import {
   editIcon,
 } from '@jupyterlab/ui-components';
 
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { IDefaultFileBrowser } from '@jupyterlab/filebrowser';
 import { showErrorMessage } from '@jupyterlab/apputils';
 
 export const editMetadataPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-fairly/metadata',
-  requires: [IFileBrowserFactory],
+  requires: [IDefaultFileBrowser],
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    fileBrowserFactory: IFileBrowserFactory
+    fileBrowserFactory: IDefaultFileBrowser
   ) => {
 
     const fileBrowser = fileBrowserFactory.tracker.currentWidget;
