@@ -142,14 +142,11 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    fileBrowserFactory: IDefaultFileBrowser
+    defaultFileBrowser: IDefaultFileBrowser
   ) => {
     console.log("uploadDatasetPlugin activated!!");
-    // const fileBrowser = fileBrowserFactory.defaultBrowser;
-    const fileBrowser = fileBrowserFactory.tracker.currentWidget;
-    const fileBrowserModel = fileBrowser.model;
+    const fileBrowserModel = defaultFileBrowser.model;
 
-    
     // ** Upload a new dataset to a data repository **
     const uploadDatasetCommand = "uploadDataset"
     app.commands.addCommand(uploadDatasetCommand, {
