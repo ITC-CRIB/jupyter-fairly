@@ -16,11 +16,9 @@ export const editMetadataPlugin: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    fileBrowserFactory: IDefaultFileBrowser
+    defaultFileBrowser: IDefaultFileBrowser
   ) => {
-
-    const fileBrowser = fileBrowserFactory.tracker.currentWidget;
-    const fileBrowserModel = fileBrowser.model;
+    const fileBrowserModel = defaultFileBrowser.model;
 
     // Open the manifest.yalm file in the file editor
     const openManifestCommand = "openManifestCommand"
