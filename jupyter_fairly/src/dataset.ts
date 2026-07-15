@@ -122,7 +122,7 @@ function cloneDataset(source: string, destination: string, extract: boolean = fa
 }
 
 export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-fairly/clone',
+  id: '@jupyter-fairly:clone',
   requires: [IDefaultFileBrowser],
   autoStart: true,
   activate: (
@@ -185,7 +185,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
 };
 
 export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-fairly/create-dataset',
+  id: '@jupyter-fairly:create-dataset',
   requires: [IDefaultFileBrowser],
   autoStart: true,
   activate: (
