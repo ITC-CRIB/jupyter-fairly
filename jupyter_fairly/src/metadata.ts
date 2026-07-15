@@ -11,7 +11,7 @@ import { IDefaultFileBrowser } from '@jupyterlab/filebrowser';
 import { showErrorMessage } from '@jupyterlab/apputils';
 
 export const editMetadataPlugin: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-fairly:metadata',
+  id: 'jupyter-fairly:metadata',
   requires: [IDefaultFileBrowser],
   autoStart: true,
   activate: (

@@ -66,7 +66,7 @@ function registerToken(repository: string,  newToken: string) {
 * Initialization data for the main menu example.
 */
 export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-fairly/mainmenu',
+  id: 'jupyter-fairly:mainmenu',
   requires: [IFileBrowserFactory],
 autoStart: true,
 activate: (

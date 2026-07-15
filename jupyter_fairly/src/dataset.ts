@@ -183,7 +183,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
 };
 
 export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-fairly:create-dataset',
+  id: 'jupyter-fairly:create-dataset',
   requires: [IDefaultFileBrowser],
   autoStart: true,
   activate: (

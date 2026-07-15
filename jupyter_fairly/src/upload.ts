@@ -137,7 +137,7 @@ function pushDataset(localDataset: string) {
 
 
 export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-fairly:upload',
+  id: 'jupyter-fairly:upload',
   requires: [IDefaultFileBrowser],
   autoStart: true,
   activate: (
