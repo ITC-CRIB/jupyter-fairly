@@ -98,7 +98,7 @@ activate: (
           okLabel: 'Add Token',
         });
 
-        if (accessToken.button.accept){
+        if (accessToken.button.accept && accessToken.value){
           console.log ('registering token');
           registerToken(targetRepository.value, accessToken.value)
         }else {
