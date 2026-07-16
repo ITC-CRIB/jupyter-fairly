@@ -156,7 +156,7 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
         if (result.button.accept && result.value) {
 
           try {      
-            cloneDataset(result.value, fileBrowserModel.path, result.isChecked);
+            cloneDataset(result.value, fileBrowserModel.path, result.isChecked ?? false);
             console.log('accepted');
             await fileBrowserModel.refresh();
           } catch (error) {
