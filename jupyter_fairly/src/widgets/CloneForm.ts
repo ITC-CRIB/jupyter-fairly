@@ -16,9 +16,8 @@ export class FairlyCloneForm extends Widget {
    * Returns the input value as plain text
    */
   getValue(): string {
-    // TODO: this should be properly initialized, 
-    // See: https://stackoverflow.com/questions/40349987/how-to-suppress-error-ts2533-object-is-possibly-null-or-undefined
-    return this.node.querySelector('input').value.trim(); // strickNullChecks = true, brakes this code
+    const input = this.node.querySelector('input');
+    return input ? input.value.trim() : '';
   }
 
   private static createFormNode(): HTMLElement {
