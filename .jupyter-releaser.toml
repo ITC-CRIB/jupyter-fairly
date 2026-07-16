@@ -1,0 +1,15 @@
+# Jupyter Releaser configuration.
+#
+# The releaser only reads this file at the repository root (the
+# [tool.jupyter-releaser] section in jupyter_fairly/pyproject.toml is NOT
+# read, because the Python package lives in a subdirectory).
+#
+# npm publishing is skipped: the releaser's build-npm step requires a
+# package.json at the repository root. Publish the npm package manually from
+# jupyter_fairly/ if needed (see RELEASE.md).
+skip = ["build-npm", "check-npm"]
+
+[options]
+version_cmd = "hatch version"
+# "path_to_package:name_of_package" — the extension lives in jupyter_fairly/
+python_packages = ["jupyter_fairly:jupyter_fairly"]
