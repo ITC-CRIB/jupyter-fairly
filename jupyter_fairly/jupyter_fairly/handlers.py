@@ -1,11 +1,6 @@
-from distutils import extension
 import json
 import tornado
 import os
-
-from lib2to3.pgen2 import token
-from turtle import st
-from typing import Dict, List
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
 from tornado import web
