@@ -18,6 +18,8 @@ import {
 
 import { PromiseDelegate, ReadonlyJSONValue } from '@lumino/coreutils';
 
+import { PathExt } from '@jupyterlab/coreutils';
+
 import { IDefaultFileBrowser} from '@jupyterlab/filebrowser';
 import { requestAPI } from './handler';
 import { FairlyCloneForm } from './widgets/CloneForm';
@@ -31,11 +33,11 @@ function initDataset(path: string, template?: any) {
 
   // name of the template for manifest.yalm
   let templateMeta = '';
-  /* ./ is necessary becaucause defaultBrowser.Model.path
-  * returns an empty string when fileBlowser is on the
-  * jupyterlab root directory     
+  /* file browser paths always use forward slashes and are empty
+  * at the jupyterlab root directory; joining with '.' yields a
+  * relative path the server can resolve on any OS ('.' at the root)
   */
-  let rootPath = './'
+  const datasetPath = PathExt.join('.', path);
   if(template === '4TU.Research' || template === 'Figshare') {
     templateMeta = 'figshare';
   }
@@ -46,14 +48,14 @@ function initDataset(path: string, template?: any) {
     templateMeta = 'default'
   }
 
-  console.log(rootPath.concat(path))
+  console.log(datasetPath)
   requestAPI<any>('newdataset', {
-    method: 'POST', 
+    method: 'POST',
     body: JSON.stringify({
-      path: rootPath.concat(path),  // TODO: this might not work in Windows
+      path: datasetPath,
       template: templateMeta
     })
-  }) 
+  })
   .then(data => {
     console.log(data);
   })
@@ -74,21 +76,21 @@ function cloneDataset(source: string, destination: string, extract: boolean = fa
    * @param client - fairly client
    */
 
-  /* ./ is necessary becaucause defaultBrowser.Model.path
-  * returns an empty string when fileBlowser is on the
-  * jupyterlab root directory     
+  /* file browser paths always use forward slashes and are empty
+  * at the jupyterlab root directory; joining with '.' yields a
+  * relative path the server can resolve on any OS ('.' at the root)
   */
-  let rootPath = './';
+  const destinationPath = PathExt.join('.', destination);
   let _client = '4tu';
 
   let payload = JSON.stringify({
     source: source,
-    destination: rootPath.concat(destination),  // TODO: this might not work in Windows
+    destination: destinationPath,
     extract: extract,
     client: _client
   });
 
-  console.log(rootPath.concat(destination));
+  console.log(destinationPath);
   
   // notification
   const delegate = new PromiseDelegate<ReadonlyJSONValue>();

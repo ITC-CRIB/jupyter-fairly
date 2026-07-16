@@ -16,6 +16,8 @@ import {
 
 import { PromiseDelegate, ReadonlyJSONValue } from '@lumino/coreutils';
 
+import { PathExt } from '@jupyterlab/coreutils';
+
 // Icons
 import {
   fileUploadIcon,
@@ -33,11 +35,11 @@ import { showErrorMessage } from '@jupyterlab/apputils';
    * @param repository - name of data repository
    */
 
-  /* ./ is necessary becaucause defaultBrowser.Model.path
-  * returns an empty string when fileBlowser is on the
-  * jupyterlab root directory     
+  /* file browser paths always use forward slashes and are empty
+  * at the jupyterlab root directory; joining with '.' yields a
+  * relative path the server can resolve on any OS ('.' at the root)
   */
-  let rootPath = './';
+  const directoryPath = PathExt.join('.', directory);
 
   var client;
   
@@ -52,7 +54,7 @@ import { showErrorMessage } from '@jupyterlab/apputils';
   };
 
   let payload = JSON.stringify({
-    directory: rootPath.concat(directory),  // TODO: this might not work in Windows
+    directory: directoryPath,
     client: client
   });
 
@@ -94,14 +96,12 @@ function pushDataset(localDataset: string) {
    * @param localDataset - realtive path to directory of local dataset with remote metadata
    */
 
-  /* ./ is necessary becaucause defaultBrowser.Model.path
-  * returns an empty string when fileBlowser is on the
-  * jupyterlab root directory     
+  /* file browser paths always use forward slashes and are empty
+  * at the jupyterlab root directory; joining with '.' yields a
+  * relative path the server can resolve on any OS ('.' at the root)
   */
-  let rootPath = './';
-
   let payload = JSON.stringify({
-    localdataset: rootPath.concat(localDataset)
+    localdataset: PathExt.join('.', localDataset)
   });
 
   // notification
