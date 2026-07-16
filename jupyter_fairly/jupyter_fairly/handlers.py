@@ -12,27 +12,39 @@ import fairly
 # For Windows the path is [?]
 ############################################################################
 
-class ExampleEndpoint(APIHandler):
+class FairlyAPIHandler(APIHandler):
+    """Base handler with helpers shared by the jupyter-fairly endpoints."""
+
+    def get_body(self, *required):
+        """Return the JSON request body, validating the required fields.
+
+        Raises HTTPError 400 when the body is missing, is not valid JSON,
+        or lacks any of the required fields.
+        """
+        data = self.get_json_body()
+        if data is None:
+            raise web.HTTPError(400, "Request body must be valid JSON")
+        missing = [field for field in required if field not in data]
+        if missing:
+            raise web.HTTPError(
+                400, f"Missing fields in request body: {', '.join(missing)}"
+            )
+        return data
+
+
+class ExampleEndpoint(FairlyAPIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
     # patch, put, delete, options) to ensure only authorized user can request the
     # Jupyter server
     @tornado.web.authenticated
     def get(self):
-        # This is how to define query parameters.
-        #   param = self.get_query_argument("param1")
-        # example query: url/to/extension?<param>=<value>
-
-        # This is how to pass and catch parameters in the handlers
-            # def __init__(self, *args, **kwargs):
-            # self.extra = kwargs.pop('token')
-
         self.finish(json.dumps({
-            "message": f"This is /jupyterfairly/example endpoint. Jupyter Server is Online!",
+            "message": "This is /jupyter-fairly/example endpoint. Jupyter Server is Online!",
             "from": " The JupyterFAIR Team"
         }))
 
 
-class AccountDatasets(APIHandler):
+class AccountDatasets(FairlyAPIHandler):
     """Handler for listing datasets in a user account     
     return: JSON array
     """
@@ -70,22 +82,20 @@ class AccountDatasets(APIHandler):
         """
 
         # catch body of the request
-        data = self.get_json_body() # returns a dictionary
+        data = self.get_body("client")
 
         try:
-            print(data)
-            print('type', type(data))
             # tokens are read from .fairly/config.json
             client = fairly.client(id=data["client"])
         except ValueError:
             raise web.HTTPError(400, f"Invalid client id: {data['client']}")
-        
+
         try:
             # connect to data repository and retrieve list of datasets
             account_datasets = client.get_account_datasets()
-        except:
-            # TODO: a not too general exception must be raised when authentification fails 
-            raise web.HTTPError(401, f"Authentification failed for: {data['client']}")
+        except Exception:
+            # TODO: a not too general exception must be raised when authentication fails
+            raise web.HTTPError(401, f"Authentication failed for: {data['client']}")
         else:
             datasets = [ {
                 "id": dataset.id['id'], 
@@ -100,7 +110,7 @@ class AccountDatasets(APIHandler):
             self.finish(json.dumps({"count": len(datasets), "datasets": datasets}, default=str))
 
 
-class InitFairlyDataset(APIHandler):
+class InitFairlyDataset(FairlyAPIHandler):
     """
     Handler for initializing a Fairly dataset. By initializing a dataset, a
     manifest.yaml file containing a template for metadata will be created in 
@@ -123,29 +133,26 @@ class InitFairlyDataset(APIHandler):
         }
         """
 
-        # for POST the token must be passed in the URL
-        # http://127.0.0.1:8888/jupyterfairly/newdataset?token=295c3a87c6
-        # 
-    
         # body of the request
-        data = self.get_json_body() # returns dictionary
+        data = self.get_body("path", "template")
 
         try:
-            print(data)
             fairly.init_dataset(path=data["path"], template=data["template"])
-        except ValueError:
-            # TODO, this exception is too general. It should be raised only 
+        except (ValueError, PermissionError):
+            # fairly < 1 raised ValueError for an already-initialized dataset,
+            # fairly >= 2 raises PermissionError
+            # TODO, this exception is too general. It should be raised only
             # when the dataset was already initialized
             raise web.HTTPError(403, "Failed to initialize dataset")
 
         # TODO, implement exception for invalid/unknown template name
         else:
             self.finish(json.dumps({
-                "message": 'Dataset initilized', 
+                "message": 'Dataset initialized',
                 }))
 
 
-class CloneDataset(APIHandler):
+class CloneDataset(FairlyAPIHandler):
     """
     Handler for cloning (copying) a remote dataset to a loca directory,
     using a dataset identifier.
@@ -172,23 +179,23 @@ class CloneDataset(APIHandler):
         """
      
         # body of the request
-        data = self.get_json_body() # returns a dictionary
-        
+        data = self.get_body("source", "destination", "extract")
+
         try:
             # creates lazy object for valid identifier
             dataset = fairly.dataset(data["source"])
-        
+
         except ValueError:
             # Raised when a url, doi is not known by fairly
             raise web.HTTPError(400, f"Unknown URL or DOI for: {data['source']}")
-        
+
         try:
             # download files and store them in local directory
             dataset.store(path=data["destination"], extract=data["extract"])
         except ValueError:
-            raise web.HTTPError(403, f"Can't clone dataset to not-empty directory." )
+            raise web.HTTPError(403, "Can't clone dataset to not-empty directory.")
         except ConnectionError:
-            raise web.HTTPError(503, f"Can't connect to data repository")
+            raise web.HTTPError(503, "Can't connect to data repository")
         else:
             self.finish(json.dumps({
                 "message": 'completed', 
@@ -196,7 +203,7 @@ class CloneDataset(APIHandler):
                 }))
 
 
-class UploadDataset(APIHandler):
+class UploadDataset(FairlyAPIHandler):
     """
     Handler for uploading metadata and files to a data reposiotory
     """
@@ -220,15 +227,15 @@ class UploadDataset(APIHandler):
         """
         
         # body of the request
-        data = self.get_json_body() # returns dictionary
-        
+        data = self.get_body("directory", "client")
+
         try:
             client = fairly.client(id=data["client"])
         except ValueError:
             raise web.HTTPError(400, f"Invalid client id: {data['client']}")
-        
+
         try:
-            # TODO: fix bug: 
+            # TODO: fix bug:
             # Error messages:
                 # requests.exceptions.HTTPError: 403 Client Error: Forbidden for url: https://api.figshare.com/v2/account/articles
 
@@ -236,13 +243,11 @@ class UploadDataset(APIHandler):
         except NotADirectoryError:
             # throws error when path is not a directory
             raise web.HTTPError(404, f"Invalid path to directory: {data['directory']}")
-        
+
         try:
             local_dataset.upload(client)
         except ValueError as e:
             # generic error, it raises if anything goes wrong with upload
-            # print(client["token"])
-            print(e)
             raise web.HTTPError(500, f'Something went wrong with uploading: {e}')
         except Warning:
             raise web.HTTPError(409, "Dataset already exists in data repository. Use \
@@ -253,7 +258,7 @@ class UploadDataset(APIHandler):
                 }))
 
 
-class PushDataset(APIHandler):
+class PushDataset(FairlyAPIHandler):
     """
     Handler for pushing updates on files and metadata to data repository
     """
@@ -274,8 +279,7 @@ class PushDataset(APIHandler):
         }
         """
 
-        data = self.get_json_body() 
-        print(data)
+        data = self.get_body("localdataset")
 
         try:
             local_dataset = fairly.dataset(data["localdataset"])
@@ -288,7 +292,7 @@ class PushDataset(APIHandler):
         try:
             local_dataset.push() # push updates (files and metadata) to remote repository
         except ValueError:
-            raise web.HTTPError(405, f"The dataset doesn't have a remote. Make sure you're in the right directory or use `upload` option first.")
+            raise web.HTTPError(405, "The dataset doesn't have a remote. Make sure you're in the right directory or use `upload` option first.")
         except KeyError as e:
             raise web.HTTPError(400, f"Possible malformed manifest file. Missing {e}")
         else:
@@ -297,7 +301,7 @@ class PushDataset(APIHandler):
                 }))
 
 
-class PullDataset(APIHandler):
+class PullDataset(FairlyAPIHandler):
     """
     Handler for pulling updates on files and metadata to remore repository
     """
@@ -317,33 +321,13 @@ class PullDataset(APIHandler):
             "localdataset": <path to root directory of fairly dataset>
         }
         """
+        # TODO: implement using fairly's pull support: load the local dataset
+        # with fairly.dataset(), fetch the remote changes, and save them to
+        # manifest.yaml and the local files.
         raise web.HTTPError(501, "Not implemented yet")
 
-        # TODO: implement save changes to manifest.yaml and files in local dataset
-        data = self.get_json_body() 
-        print(data)
 
-        try:
-            local_dataset = fairly.dataset(data["localdataset"])
-
-        except FileNotFoundError as e:
-            raise web.HTTPError(404, f"Manifest file is missing from current directory: {e}")
-        except NotADirectoryError as e:
-            raise web.HTTPError(404, f"Path to dataset is not a directory: {e}")
-
-        try:
-            local_dataset.push() # push updates (files and metadata) to remote repository
-        except ValueError:
-            raise web.HTTPError(405, f"The dataset doesn't have a remote. Use the upload option first.")
-        else:
-            # save changes to manifest.yaml
-    
-            self.finish(json.dumps({
-                "message": 'local dataset is up to date',
-                }))
-
-
-class RegisterRepositoryToken(APIHandler):
+class RegisterRepositoryToken(FairlyAPIHandler):
     """ 
     Handler for registring tokens of data repositories a local
     Fairly configuration file.
@@ -366,8 +350,8 @@ class RegisterRepositoryToken(APIHandler):
         """
 
         # body of the request
-        data = self.get_json_body() # returns dictionary
-        
+        data = self.get_body("client", "token")
+
         # Ensure the Fairly config directory exists in the user's home directory
         config_file_directory = os.path.expanduser('~/.fairly')
         os.makedirs(config_file_directory, exist_ok=True)
@@ -389,7 +373,7 @@ class RegisterRepositoryToken(APIHandler):
                                 {config_file_directory}")
         
         self.finish(json.dumps({
-            "message": f"token sucessfully registered",
+            "message": "token successfully registered",
             "client": data['client'],
             "from": "The JupyterFAIR Team"
         }))
