@@ -5,6 +5,9 @@ opens the server to the world and provide access to JupyterLab
 JavaScript objects through the global window variable.
 """
 from tempfile import mkdtemp
+from jupyterlab.galata import configure_jupyter_server
+
+configure_jupyter_server(c)
 
 c.ServerApp.port = 8888
 c.ServerApp.port_retries = 0

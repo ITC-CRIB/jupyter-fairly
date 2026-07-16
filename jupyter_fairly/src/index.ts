@@ -17,7 +17,7 @@ import { FairlyMenuPlugin } from './menu';
  *  Activate jupyter-fairly extension.
  */
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: '@jupyter-fairly:plugin',
+  id: 'jupyter-fairly:plugin',
   autoStart: true,
   requires : [],
   optional: [ISettingRegistry],

@@ -1,4 +1,4 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 # Jupyter Fairly
  A jupyterLab extension for the [fairly](https://github.com/ITC-CRIB/fairly) package, and the seamless integration of Jupyter-based research environments and research data repositories.
@@ -9,10 +9,16 @@ for the frontend extension.
 
 ## Requirements
 
-- JupyterLab >= 3.0 < 4
-- fairly >= 0.4.0 
+- Python >= 3.10
+- JupyterLab >= 4.0 (developed and tested with JupyterLab 4.6)
+- fairly >= 2.0 (installed automatically)
 
-> This is the last version supported by JupyterLab 3.x. 
+The extension also works with **Jupyter Notebook >= 7**: the dataset commands are
+available by right-clicking the file list on the tree page, and the *Fairly* menu
+appears in the menu bar of notebook and editor pages.
+
+> Versions 0.4.x are the last ones that support JupyterLab 3.x. If you are on
+> JupyterLab 3, install `jupyter_fairly==0.4.2`.
 
 ## Install
 
@@ -66,8 +72,8 @@ The `jlpm` command is JupyterLab's pinned version of
 ```bash
 # Clone the repo to your local environment
 # Change directory to the jupyter_fairly directory
-# Install package in development mode
-pip install -e ".[test]"
+# Install package in development mode (the 'dev' extra brings JupyterLab and jupyter-builder)
+pip install -e ".[test,dev]"
 # Link your development version of the extension with JupyterLab
 jupyter labextension develop . --overwrite
 # Server extension must be manually installed in develop mode

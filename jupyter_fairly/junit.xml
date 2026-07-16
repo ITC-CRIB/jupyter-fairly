@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="1" failures="0" errors="0" time="1.301">
+  <testsuite name="jupyter-fairly" errors="0" failures="0" skipped="0" timestamp="2026-07-16T17:43:34" time="0.669" tests="1">
+    <testcase classname="jupyter-fairly should be tested" name="jupyter-fairly should be tested" time="0.002">
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -9,10 +9,14 @@ for the frontend extension.
 
 ## Requirements
 
-- JupyterLab >= 3.0 < 4
-- fairly == 0.4.1 
+- Python >= 3.10
+- JupyterLab >= 4.0 (developed and tested with JupyterLab 4.6)
+- fairly >= 2.0 (installed automatically)
 
-> This is the last version that supports JupyterLab 3.x. 
+The extension also works with **Jupyter Notebook >= 7**: the dataset commands are
+available by right-clicking the file list on the tree page, and the *Fairly* menu
+appears in the menu bar of notebook and editor pages.
+
 
 ## Install
 
@@ -66,14 +70,15 @@ The `jlpm` command is JupyterLab's pinned version of
 ```bash
 # Clone the repo to your local environment
 # Change directory to the jupyter_fairly directory
-# Install package in development mode
-pip install -e ".[test]"
-# Link your development version of the extension with JupyterLab
-jupyter labextension develop . --overwrite
-# Server extension must be manually installed in develop mode
-jupyter server extension enable jupyter_fairly
+# Install package in development mode (the 'dev' extra brings JupyterLab and jupyter-builder)
+pip install -e ".[test,dev]"
+jlpm install
 # Rebuild extension Typescript source after making changes
 jlpm build
+# Link your development version of the extension with JupyterLab
+jupyter jupyter-builder develop . --overwrite
+# Server extension must be manually installed in develop mode
+jupyter server extension enable jupyter_fairly
 ```
 
 You can watch the source directory and run JupyterLab at the same time in different terminals to watch for changes in the extension's source and automatically rebuild the extension.
@@ -116,7 +121,7 @@ Install test dependencies (needed only once):
 ```sh
 pip install -e ".[test]"
 # Each time you install the Python package, you need to restore the front-end extension link
-jupyter labextension develop . --overwrite
+jupyter jupyter-builder develop . --overwrite
 ```
 
 To execute them, run:
