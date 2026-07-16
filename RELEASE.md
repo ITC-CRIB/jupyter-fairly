@@ -2,14 +2,28 @@
 
 The extension can be published to `PyPI` and `npm` manually or using the [Jupyter Releaser](https://github.com/jupyter-server/jupyter_releaser).
 
+> [!NOTE]
+> **Notes for this repository:**
+>
+> - The extension package lives in the `jupyter_fairly/` subdirectory, not the repository
+>   root. Run all the manual-release commands below from `jupyter_fairly/`.
+> - The automated "Step 1 / Step 2" workflows described below come with the current
+>   [extension template](https://github.com/jupyterlab/extension-template) as
+>   `prep-release.yml` and `publish-release.yml` — this repository does not have them yet.
+>   To use the automated path, copy them from the template into the repository root's
+>   `.github/workflows/` directory and configure them for the `jupyter_fairly/` subdirectory.
+> - GitHub Actions only executes workflows from the repository root's `.github/workflows/`.
+>   The workflow files currently under `jupyter_fairly/.github/workflows/` (build,
+>   check-release, binder-on-pr, update-integration-tests) are **not** being run by GitHub —
+>   move them to the repository root to activate them.
+
 ## Manual release
 
 ### Python package
 
-This extension can be distributed as Python
-packages. All of the Python
-packaging instructions in the `pyproject.toml` file to wrap your extension in a
-Python package. Before generating a package, we first need to install `build`.
+This extension can be distributed as Python packages. All of the Python
+packaging instructions are in the `pyproject.toml` file to wrap your extension in a
+Python package. Before generating a package, you first need to install some tools:
 
 ```bash
 pip install build twine hatch
@@ -20,6 +34,18 @@ See the docs on [hatch-nodejs-version](https://github.com/agoose77/hatch-nodejs-
 
 ```bash
 hatch version <new-version>
+```
+
+Make sure to clean up all the development files before building the package:
+
+```bash
+jlpm clean:all
+```
+
+You could also clean up the local git repository:
+
+```bash
+git clean -dfX
 ```
 
 To create a Python source package (`.tar.gz`) and the binary package (`.whl`) in the `dist/` directory, do:
@@ -47,19 +73,28 @@ npm publish --access public
 
 ## Automated releases with the Jupyter Releaser
 
-The extension repository should already be compatible with the Jupyter Releaser.
+The extension repository should already be compatible with the Jupyter Releaser. But
+the GitHub repository and the package managers need to be properly set up. Please
+follow the instructions of the Jupyter Releaser [checklist](https://jupyter-releaser.readthedocs.io/en/latest/how_to_guides/convert_repo_from_repo.html).
 
-Check out the [workflow documentation](https://github.com/jupyter-server/jupyter_releaser#typical-workflow) for more information.
+For the release workflows in this repository, make sure GitHub is configured with:
+
+- a `release` environment
+- an `APP_PRIVATE_KEY` secret
+- an `APP_ID` repository variable
+
+When using [npm trusted publishing](https://docs.npmjs.com/trusted-publishers), `NPM_TOKEN` is not required (and trusted publishing is recommended). Configure `NPM_TOKEN` only if you are publishing without trusted publishers.
 
 Here is a summary of the steps to cut a new release:
 
-- Fork the [`jupyter-releaser` repo](https://github.com/jupyter-server/jupyter_releaser)
-- Add `ADMIN_GITHUB_TOKEN`, `PYPI_TOKEN` and `NPM_TOKEN` to the Github Secrets in the fork
 - Go to the Actions panel
-- Run the "Draft Changelog" workflow
-- Merge the Changelog PR
-- Run the "Draft Release" workflow
-- Run the "Publish Release" workflow
+- Run the "Step 1: Prep Release" workflow
+- Check the draft changelog
+- Run the "Step 2: Publish Release" workflow
+
+> [!NOTE]
+> Check out the [workflow documentation](https://jupyter-releaser.readthedocs.io/en/latest/get_started/making_release_from_repo.html)
+> for more information.
 
 ## Publishing to `conda-forge`
 
