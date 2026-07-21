@@ -49,7 +49,9 @@ fields = ["description", "authors", "urls"]
 
 [tool.hatch.build.targets.sdist]
 artifacts = ["jupyter_fairly/labextension"]
-exclude = [".github", "binder"]
+# local package cache (.yarn/cache/*.zip, both here and in ui-tests/) must
+# be excluded explicitly or it balloons the sdist past PyPI's size limit.
+exclude = [".github", "binder", ".yarn", "**/.yarn"]
 
 [tool.hatch.build.targets.wheel.shared-data]
 "jupyter_fairly/labextension" = "share/jupyter/labextensions/jupyter-fairly"
