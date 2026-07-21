@@ -130,7 +130,7 @@ jobs:
       run: jlpm install
 
     - name: Set up browser cache
-      uses: actions/cache@v7
+      uses: actions/cache@v6
       with:
         path: |
           ${{ github.workspace }}/pw-browsers
