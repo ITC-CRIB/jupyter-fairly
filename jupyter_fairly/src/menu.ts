@@ -17,7 +17,7 @@ function registerToken(repository: string, newToken: string) {
    * @param newToken - access token for data repository
    */
 
-  var clientId;
+  let clientId;
 
   if (repository === '4TU.ResearchData') {
     clientId = '4tu';
@@ -44,9 +44,17 @@ function registerToken(repository: string, newToken: string) {
       });
     })
     .catch(reason => {
-      // show error when requestAPI fails
-      // TODO: show error message in notification, and add reason as callback()
-      showErrorMessage('Error when registering access token', reason);
+      // show error notification when requestAPI fails
+      Notification.error('Error when registering access token.', {
+        autoClose: 5000,
+        actions: [
+          {
+            label: 'Details',
+            callback: () =>
+              showErrorMessage('Error when registering access token', reason)
+          }
+        ]
+      });
     });
 }
 
