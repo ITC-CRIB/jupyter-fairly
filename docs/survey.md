@@ -156,7 +156,7 @@
 
   - [figshare](http://figshare.com/)
 		
-	- [Mendeley Data](https://api.data.mendeley.com/)
+	- [Mendeley Data](https://data.mendeley.com/)
 		
 	- [Dryad Digital Repository](http://datadryad.org/)
 	

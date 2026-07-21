@@ -164,3 +164,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - uses: jupyterlab/maintainer-tools/.github/actions/check-links@v1
+        with:
+          # These hosts block automated (non-browser) requests with a 403,
+          # including from GitHub-hosted runner IPs; the pages are live.
+          ignore_links: 'https://codeocean\.com/.* https://(www\.)?dataverse\.org(/.*)? https://(api\.)?data\.mendeley\.com(/.*)?'
