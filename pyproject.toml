@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling>=1.5.0", "hatch-nodejs-version>=0.3.2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jupyter-fairly-repo"
+dynamic = ["version"]
+
+# This root pyproject.toml exists only so tools that expect the package
+# version at the repository root (notably `jupyter-releaser`'s
+# `get_version()`, used by build-changelog/draft-changelog) can find it.
+# The actual extension package lives in jupyter_fairly/ (see
+# python_packages in .jupyter-releaser.toml) and is what actually gets
+# built and published; this file is never built itself.
+[tool.hatch.version]
+source = "nodejs"
+path = "jupyter_fairly/package.json"
