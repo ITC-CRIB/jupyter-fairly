@@ -34,7 +34,7 @@ function uploadDataset(directory: string, repository: string) {
    */
   const directoryPath = PathExt.join('.', directory);
 
-  var client;
+  let client: any;
 
   if (repository === '4TU.ResearchData') {
     client = '4tu';
@@ -44,7 +44,7 @@ function uploadDataset(directory: string, repository: string) {
     client = 'figshare';
   }
 
-  let payload = JSON.stringify({
+  const payload = JSON.stringify({
     directory: directoryPath,
     client: client
   });
@@ -88,7 +88,7 @@ function pushDataset(localDataset: string) {
    * at the jupyterlab root directory; joining with '.' yields a
    * relative path the server can resolve on any OS ('.' at the root)
    */
-  let payload = JSON.stringify({
+  const payload = JSON.stringify({
     localdataset: PathExt.join('.', localDataset)
   });
 
@@ -126,6 +126,7 @@ function pushDataset(localDataset: string) {
 
 export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyter-fairly:upload',
+  description: 'Upload dataset plugin',
   requires: [IDefaultFileBrowser],
   autoStart: true,
   activate: (app: JupyterFrontEnd, defaultFileBrowser: IDefaultFileBrowser) => {
@@ -143,7 +144,7 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
         // return relative path w.r.t. jupyterlab root path.
         // root-path = empty string.
 
-        let targetRepository = await InputDialog.getItem({
+        const targetRepository = await InputDialog.getItem({
           title: 'Select Data Repository',
           items: ['4TU.ResearchData', 'Zenodo', 'Figshare'],
           okLabel: 'Continue'
@@ -152,7 +153,7 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
         // initialize dataset when accept button is clicked and
         // vaule for teamplate is not null
         if (targetRepository.button.accept && targetRepository.value) {
-          let confirmAction = await InputDialog.getBoolean({
+          const confirmAction = await InputDialog.getBoolean({
             title: 'Do you want to upload the dataset?',
             label: `Yes, upload metadata and files to ${targetRepository.value}`
           });
@@ -179,7 +180,7 @@ export const uploadDatasetPlugin: JupyterFrontEndPlugin<void> = {
       isVisible: () => true, // activate only when current directory contains a manifest.yalm
       icon: redoIcon,
       execute: async () => {
-        let confirmAction = await showDialog({
+        const confirmAction = await showDialog({
           title: 'Push changes', // Can be text or a react element
           body: 'This will update the data repository using changes made here.',
           host: document.body, // Parent element for rendering the dialog
