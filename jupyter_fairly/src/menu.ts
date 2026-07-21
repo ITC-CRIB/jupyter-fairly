@@ -5,8 +5,6 @@ import {
 
 import { InputDialog, Notification } from '@jupyterlab/apputils';
 
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
-
 // Icons
 import { settingsIcon } from '@jupyterlab/ui-components';
 import { requestAPI } from './handler';
@@ -57,7 +55,6 @@ function registerToken(repository: string, newToken: string) {
  */
 export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyter-fairly:mainmenu',
-  requires: [IFileBrowserFactory],
   autoStart: true,
   activate: (app: JupyterFrontEnd) => {
     console.log('registerTokenPlugin activated!!');
