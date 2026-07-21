@@ -5,12 +5,12 @@ import {
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import { 
+import {
   createDatasetCommandPlugin,
-  cloneDatasetCommandPlugin, 
+  cloneDatasetCommandPlugin
 } from './dataset';
-import {editMetadataPlugin} from './metadata'
-import { uploadDatasetPlugin} from './upload';
+import { editMetadataPlugin } from './metadata';
+import { uploadDatasetPlugin } from './upload';
 import { FairlyMenuPlugin } from './menu';
 
 /**
@@ -19,21 +19,18 @@ import { FairlyMenuPlugin } from './menu';
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyter-fairly:plugin',
   autoStart: true,
-  requires : [],
+  requires: [],
   optional: [ISettingRegistry],
   activate: (app: JupyterFrontEnd) => {
     console.log('JupyterLab extension jupyter-fairly is activated!');
-      
-    }
+  }
 };
 
-
 export default [
-  plugin, 
-  createDatasetCommandPlugin, 
-  editMetadataPlugin, 
+  plugin,
+  createDatasetCommandPlugin,
+  editMetadataPlugin,
   uploadDatasetPlugin,
   cloneDatasetCommandPlugin,
-  FairlyMenuPlugin,
+  FairlyMenuPlugin
 ];
-

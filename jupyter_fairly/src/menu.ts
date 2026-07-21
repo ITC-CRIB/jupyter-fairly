@@ -1,26 +1,18 @@
 import {
   JupyterFrontEnd,
-  JupyterFrontEndPlugin,
+  JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-import {
-  InputDialog,
-  Notification
-} from '@jupyterlab/apputils';
+import { InputDialog, Notification } from '@jupyterlab/apputils';
 
-import { 
-  IFileBrowserFactory 
-} from '@jupyterlab/filebrowser';
+import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 // Icons
-import {
-  settingsIcon,
-} from '@jupyterlab/ui-components';
+import { settingsIcon } from '@jupyterlab/ui-components';
 import { requestAPI } from './handler';
 import { showErrorMessage } from '@jupyterlab/apputils';
 
-
-function registerToken(repository: string,  newToken: string) {
+function registerToken(repository: string, newToken: string) {
   /**
    * register token to fairly configuration file
    * @param repository- name of data repository
@@ -28,98 +20,91 @@ function registerToken(repository: string,  newToken: string) {
    */
 
   var clientId;
-  
-  if(repository === '4TU.ResearchData') {
+
+  if (repository === '4TU.ResearchData') {
     clientId = '4tu';
+  } else if (repository === 'Zenodo') {
+    clientId = 'zenodo';
+  } else if (repository === 'Figshare') {
+    clientId = 'figshare';
   }
-  else if (repository === 'Zenodo'){
-    clientId = 'zenodo'
-  }
-  else if (repository === 'Figshare'){
-    clientId = 'figshare'
-  };
 
   let payload = JSON.stringify({
-    client: clientId,  
+    client: clientId,
     token: newToken
   });
 
   requestAPI<any>('repo-token', {
-    method: 'POST', 
+    method: 'POST',
     body: payload
-  }) 
-  .then(data => {
-    console.log(data);
-    // show notification when requestAPI succeeds
-    Notification.success('Access Token registered successfully.', 
-      {autoClose: 3000});
   })
-  .catch(reason => {
-    // show error when requestAPI fails
-    // TODO: show error message in notification, and add reason as callback()
-    showErrorMessage("Error when registering access token", reason)
-  });
-};
-
+    .then(data => {
+      console.log(data);
+      // show notification when requestAPI succeeds
+      Notification.success('Access Token registered successfully.', {
+        autoClose: 3000
+      });
+    })
+    .catch(reason => {
+      // show error when requestAPI fails
+      // TODO: show error message in notification, and add reason as callback()
+      showErrorMessage('Error when registering access token', reason);
+    });
+}
 
 /**
-* Initialization data for the main menu example.
-*/
+ * Initialization data for the main menu example.
+ */
 export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyter-fairly:mainmenu',
   requires: [IFileBrowserFactory],
-autoStart: true,
-activate: (
-  app: JupyterFrontEnd,
-) => {
-  console.log("registerTokenPlugin activated!!");
+  autoStart: true,
+  activate: (app: JupyterFrontEnd) => {
+    console.log('registerTokenPlugin activated!!');
 
-  const registerTokenCommand = 'registerAccessToken'
-  app.commands.addCommand(registerTokenCommand, {
-    label: 'Add Repository Token',
-    isEnabled: () => true,
-    isVisible: () => true, 
-    icon: settingsIcon,
-    execute: async() => {
-
-      // Asks for the data repository
-      let targetRepository = await InputDialog.getItem({
-        title: 'Register Access Token. Select Data Repository',
-        items: ['4TU.ResearchData', 'Zenodo', 'Figshare'],
-        okLabel: 'Continue',
-      });
-      
-      if (targetRepository.button.accept && targetRepository.value) {
-        
-        // Asks for the access token
-        let accessToken = await InputDialog.getText({
-          title: 'Enter Access Token for: '.concat(targetRepository.value),
-          placeholder: 'Access Token',
-          okLabel: 'Add Token',
+    const registerTokenCommand = 'registerAccessToken';
+    app.commands.addCommand(registerTokenCommand, {
+      label: 'Add Repository Token',
+      isEnabled: () => true,
+      isVisible: () => true,
+      icon: settingsIcon,
+      execute: async () => {
+        // Asks for the data repository
+        let targetRepository = await InputDialog.getItem({
+          title: 'Register Access Token. Select Data Repository',
+          items: ['4TU.ResearchData', 'Zenodo', 'Figshare'],
+          okLabel: 'Continue'
         });
 
-        if (accessToken.button.accept && accessToken.value){
-          console.log ('registering token');
-          registerToken(targetRepository.value, accessToken.value)
-        }else {
-          console.log('operation was canceled by the user');
-          return
-        };
+        if (targetRepository.button.accept && targetRepository.value) {
+          // Asks for the access token
+          let accessToken = await InputDialog.getText({
+            title: 'Enter Access Token for: '.concat(targetRepository.value),
+            placeholder: 'Access Token',
+            okLabel: 'Add Token'
+          });
 
-      } else{
-        console.log('canceled')
-        return
-      };
-    }
-  });
+          if (accessToken.button.accept && accessToken.value) {
+            console.log('registering token');
+            registerToken(targetRepository.value, accessToken.value);
+          } else {
+            console.log('operation was canceled by the user');
+            return;
+          }
+        } else {
+          console.log('canceled');
+          return;
+        }
+      }
+    });
 
-  const openURLCommand = 'fairly:openURL'
-  app.commands.addCommand(openURLCommand, {
-    label: 'Fairly Documentation',
-    caption: 'Fairly Documentation',
-    execute: (args: any) => {
-      window.open(`${args['url']}`, '_blank');      
-    }
-  });  
-}
-}
+    const openURLCommand = 'fairly:openURL';
+    app.commands.addCommand(openURLCommand, {
+      label: 'Fairly Documentation',
+      caption: 'Fairly Documentation',
+      execute: (args: any) => {
+        window.open(`${args['url']}`, '_blank');
+      }
+    });
+  }
+};

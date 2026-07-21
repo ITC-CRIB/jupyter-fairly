@@ -18,8 +18,7 @@
           {
             "command": "registerAccessToken"
           },
-          { "type": "separator"
-          },
+          { "type": "separator" },
           {
             "command": "fairly:openURL",
             "args": {

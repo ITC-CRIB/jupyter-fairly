@@ -3,15 +3,12 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-import { 
-  addIcon,
-  downloadIcon
- } from '@jupyterlab/ui-components';
+import { addIcon, downloadIcon } from '@jupyterlab/ui-components';
 
-import { 
-  Dialog, 
-  showDialog, 
-  InputDialog, 
+import {
+  Dialog,
+  showDialog,
+  InputDialog,
   showErrorMessage,
   Notification
 } from '@jupyterlab/apputils';
@@ -20,7 +17,7 @@ import { PromiseDelegate, ReadonlyJSONValue } from '@lumino/coreutils';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
-import { IDefaultFileBrowser} from '@jupyterlab/filebrowser';
+import { IDefaultFileBrowser } from '@jupyterlab/filebrowser';
 import { requestAPI } from './handler';
 import { FairlyCloneForm } from './widgets/CloneForm';
 
@@ -34,21 +31,19 @@ function initDataset(path: string, template?: any) {
   // name of the template for manifest.yalm
   let templateMeta = '';
   /* file browser paths always use forward slashes and are empty
-  * at the jupyterlab root directory; joining with '.' yields a
-  * relative path the server can resolve on any OS ('.' at the root)
-  */
+   * at the jupyterlab root directory; joining with '.' yields a
+   * relative path the server can resolve on any OS ('.' at the root)
+   */
   const datasetPath = PathExt.join('.', path);
-  if(template === '4TU.Research' || template === 'Figshare') {
+  if (template === '4TU.Research' || template === 'Figshare') {
     templateMeta = 'figshare';
-  }
-  else if (template === 'Zenodo'){
-    templateMeta = 'zenodo'
-  }
-  else if (template == null || template === 'Default'){
-    templateMeta = 'default'
+  } else if (template === 'Zenodo') {
+    templateMeta = 'zenodo';
+  } else if (template == null || template === 'Default') {
+    templateMeta = 'default';
   }
 
-  console.log(datasetPath)
+  console.log(datasetPath);
   requestAPI<any>('newdataset', {
     method: 'POST',
     body: JSON.stringify({
@@ -56,19 +51,25 @@ function initDataset(path: string, template?: any) {
       template: templateMeta
     })
   })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(reason => {
-    console.error(
-      `${reason}`
-    );
-    // show error when manifest.yalm already exist in rootPath
-    showErrorMessage("Error: Has the dataset been initilized already?", reason)
-  });
+    .then(data => {
+      console.log(data);
+    })
+    .catch(reason => {
+      console.error(`${reason}`);
+      // show error when manifest.yalm already exist in rootPath
+      showErrorMessage(
+        'Error: Has the dataset been initilized already?',
+        reason
+      );
+    });
 }
 
-function cloneDataset(source: string, destination: string, extract: boolean = false, client?: any) {
+function cloneDataset(
+  source: string,
+  destination: string,
+  extract: boolean = false,
+  client?: any
+) {
   /**
    * clones a remote dataset to a directory
    * @param source - DOI or URL to the remote dataset
@@ -77,9 +78,9 @@ function cloneDataset(source: string, destination: string, extract: boolean = fa
    */
 
   /* file browser paths always use forward slashes and are empty
-  * at the jupyterlab root directory; joining with '.' yields a
-  * relative path the server can resolve on any OS ('.' at the root)
-  */
+   * at the jupyterlab root directory; joining with '.' yields a
+   * relative path the server can resolve on any OS ('.' at the root)
+   */
   const destinationPath = PathExt.join('.', destination);
   let _client = '4tu';
 
@@ -91,50 +92,45 @@ function cloneDataset(source: string, destination: string, extract: boolean = fa
   });
 
   console.log(destinationPath);
-  
+
   // notification
   const delegate = new PromiseDelegate<ReadonlyJSONValue>();
-  const complete = "complete";
-  const failed = "failed"
+  const complete = 'complete';
+  const failed = 'failed';
 
   requestAPI<any>('clone', {
-    method: 'POST', 
+    method: 'POST',
     body: payload
-  }) 
-  .then(data => {
-    console.log(data);
-    delegate.resolve({ complete });
   })
-  .catch(reason => {
-    delegate.reject({failed})
-    // show error when destination directory is not empty
-    showErrorMessage("Error when cloning dataset", reason)
-  });
+    .then(data => {
+      console.log(data);
+      delegate.resolve({ complete });
+    })
+    .catch(reason => {
+      delegate.reject({ failed });
+      // show error when destination directory is not empty
+      showErrorMessage('Error when cloning dataset', reason);
+    });
 
   Notification.promise(delegate.promise, {
     pending: { message: 'Cloning dataset...', options: { autoClose: false } },
     success: {
-      message: (result: any) =>
-      `Clonning ${result.complete}.`,
-      options: {autoClose: 3000}
+      message: (result: any) => `Clonning ${result.complete}.`,
+      options: { autoClose: 3000 }
     },
-    error: {message: () => `Cloning failed.`}
+    error: { message: () => `Cloning failed.` }
   });
-  
 }
 
 export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyter-fairly:clone',
   requires: [IDefaultFileBrowser],
   autoStart: true,
-  activate: (
-    app: JupyterFrontEnd,
-    defaultFileBrowser: IDefaultFileBrowser
-  ) => {
+  activate: (app: JupyterFrontEnd, defaultFileBrowser: IDefaultFileBrowser) => {
     const fileBrowserModel = defaultFileBrowser.model;
 
-    const cloneDatasetCommand = "cloneDataset";
-  
+    const cloneDatasetCommand = 'cloneDataset';
+
     app.commands.addCommand(cloneDatasetCommand, {
       label: 'Clone Dataset',
       isEnabled: () => true,
@@ -145,8 +141,8 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
           title: 'Clone Dataset',
           body: new FairlyCloneForm(),
           buttons: [
-            Dialog.cancelButton({ label: 'Cancel'}),
-            Dialog.okButton({ label: 'Clone'})
+            Dialog.cancelButton({ label: 'Cancel' }),
+            Dialog.okButton({ label: 'Clone' })
           ],
           checkbox: {
             label: 'Extract compressed files',
@@ -156,22 +152,24 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
         });
 
         if (result.button.accept && result.value) {
-
-          try {      
-            cloneDataset(result.value, fileBrowserModel.path, result.isChecked ?? false);
+          try {
+            cloneDataset(
+              result.value,
+              fileBrowserModel.path,
+              result.isChecked ?? false
+            );
             console.log('accepted');
             await fileBrowserModel.refresh();
           } catch (error) {
             console.error(
-              'Encontered an error when cloning the dataset: ', 
+              'Encontered an error when cloning the dataset: ',
               error
-            )
-          };
-
+            );
+          }
         } else {
-          console.log('rejected')
+          console.log('rejected');
         }
-      } 
+      }
     });
 
     app.contextMenu.addItem({
@@ -180,7 +178,6 @@ export const cloneDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
       selector: '.jp-DirListing-content',
       rank: 103
     });
-
   }
 };
 
@@ -188,13 +185,10 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyter-fairly:create-dataset',
   requires: [IDefaultFileBrowser],
   autoStart: true,
-  activate: (
-    app: JupyterFrontEnd,
-    defaultFileBrowser: IDefaultFileBrowser
-  ) => { 
+  activate: (app: JupyterFrontEnd, defaultFileBrowser: IDefaultFileBrowser) => {
     const fileBrowserModel = defaultFileBrowser.model;
 
-    const createDatasetCommand = "createDatasetCommand"
+    const createDatasetCommand = 'createDatasetCommand';
 
     app.commands.addCommand(createDatasetCommand, {
       label: 'Create Fairly Dataset',
@@ -202,28 +196,26 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
       isVisible: () => true,
       icon: addIcon,
       execute: async () => {
-
         // return relative path w.r.t. jupyter root path.
         // root-path = empty string.
-        console.log( `the path is: ${fileBrowserModel.path}` );
+        console.log(`the path is: ${fileBrowserModel.path}`);
 
         let metadataTemplate = await InputDialog.getItem({
-          title: 'Select template for dataset\'s metadata',
-          items: ['', 'Default', '4TU.Research',  'Zenodo', 'Figshare'],
-          okLabel: 'Create',
+          title: "Select template for dataset's metadata",
+          items: ['', 'Default', '4TU.Research', 'Zenodo', 'Figshare'],
+          okLabel: 'Create'
         });
-        
-        // initialize dataset when accept button is clicked and 
+
+        // initialize dataset when accept button is clicked and
         // vaule for teamplate is not null
         if (metadataTemplate.button.accept && metadataTemplate.value) {
-          console.log( `the path is: ${fileBrowserModel.path}` );
-          initDataset(fileBrowserModel.path , metadataTemplate.value);
+          console.log(`the path is: ${fileBrowserModel.path}`);
+          initDataset(fileBrowserModel.path, metadataTemplate.value);
           await fileBrowserModel.refresh();
-        } else{
-          console.log('rejected')
-          return
+        } else {
+          console.log('rejected');
+          return;
         }
-
       }
     });
 
@@ -235,4 +227,3 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
     });
   }
 };
-

@@ -1,7 +1,8 @@
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 # Jupyter Fairly
- A jupyterLab extension for the [fairly](https://github.com/ITC-CRIB/fairly) package, and the seamless integration of Jupyter-based research environments and research data repositories.
+
+A jupyterLab extension for the [fairly](https://github.com/ITC-CRIB/fairly) package, and the seamless integration of Jupyter-based research environments and research data repositories.
 
 This extension is composed of a Python package named `jupyter_fairly`
 for the server extension and a NPM package named `jupyter-fairly`
@@ -14,7 +15,7 @@ for the frontend extension.
 - fairly >= 2.0 (installed automatically)
 
 The extension also works with **Jupyter Notebook >= 7**: the dataset commands are
-available by right-clicking the file list on the tree page, and the *Fairly* menu
+available by right-clicking the file list on the tree page, and the _Fairly_ menu
 appears in the menu bar of notebook and editor pages.
 
 > Versions 0.4.x are the last ones that support JupyterLab 3.x. If you are on
@@ -28,12 +29,11 @@ To install the extension, execute:
 pip install jupyter_fairly
 ```
 
-Configurations are stored in  `.fairly/config.json`  in the user's home directory. This is where the extension stores access tokens for data repositories.
+Configurations are stored in `.fairly/config.json` in the user's home directory. This is where the extension stores access tokens for data repositories.
 
 To add an access tokens, use the **Fairly** menu in the JupyterLab main menu bar.
 
 <img src="../img/fairly_menu.png" alt="Fairly Menu" width="450"/>
-
 
 ## Uninstall
 
@@ -153,13 +153,11 @@ More information are provided within the [ui-tests](./ui-tests/README.md) README
 
 See [RELEASE](RELEASE.md)
 
-
 ## Citation
 
 Please cite this software using as follows:
 
-  *Garcia Alvarez, M.,  Girgin, S., & Urra Llanusa, J., Jupyter-fairly: a JupyterLab extension for the fairly pacakage [Computer software]*
-
+_Garcia Alvarez, M., Girgin, S., & Urra Llanusa, J., Jupyter-fairly: a JupyterLab extension for the fairly pacakage [Computer software]_
 
 ## Acknowledgements
 

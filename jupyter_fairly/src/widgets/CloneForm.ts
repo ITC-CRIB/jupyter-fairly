@@ -6,9 +6,9 @@ import { Widget } from '@lumino/widgets';
 export class FairlyCloneForm extends Widget {
   /**
    * Creates a form for cloning datasets
-   * 
+   *
    */
-   constructor() {
+  constructor() {
     super({ node: FairlyCloneForm.createFormNode() });
   }
 
