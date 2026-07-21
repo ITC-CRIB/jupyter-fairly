@@ -143,10 +143,10 @@ jlpm test
 
 #### Integration tests
 
-This extension uses [Playwright](https://playwright.dev/docs/intro/) for the integration tests (aka user level tests).
+This extension uses [Playwright](https://playwright.dev/docs/intro) for the integration tests (aka user level tests).
 More precisely, the JupyterLab helper [Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata) is used to handle testing the extension in JupyterLab.
 
-More information are provided within the [ui-tests](./ui-tests/README.md) README.
+More information are provided within the [ui-tests](./jupyter_fairly/ui-tests/README.md) README.
 
 ### Packaging the extension
 
