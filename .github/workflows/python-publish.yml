@@ -24,9 +24,9 @@ jobs:
       id-token: write
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v7
       with:
         python-version: '3.14'
     - name: Install dependencies
@@ -39,3 +39,5 @@ jobs:
         python -m build
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@v1.14.1
+      with:
+        packages-dir: jupyter_fairly/dist/
