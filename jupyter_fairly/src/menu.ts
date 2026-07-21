@@ -5,8 +5,6 @@ import {
 
 import { InputDialog, Notification } from '@jupyterlab/apputils';
 
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
-
 // Icons
 import { settingsIcon } from '@jupyterlab/ui-components';
 import { requestAPI } from './handler';
@@ -19,7 +17,7 @@ function registerToken(repository: string, newToken: string) {
    * @param newToken - access token for data repository
    */
 
-  var clientId;
+  let clientId;
 
   if (repository === '4TU.ResearchData') {
     clientId = '4tu';
@@ -29,7 +27,7 @@ function registerToken(repository: string, newToken: string) {
     clientId = 'figshare';
   }
 
-  let payload = JSON.stringify({
+  const payload = JSON.stringify({
     client: clientId,
     token: newToken
   });
@@ -46,9 +44,17 @@ function registerToken(repository: string, newToken: string) {
       });
     })
     .catch(reason => {
-      // show error when requestAPI fails
-      // TODO: show error message in notification, and add reason as callback()
-      showErrorMessage('Error when registering access token', reason);
+      // show error notification when requestAPI fails
+      Notification.error('Error when registering access token.', {
+        autoClose: 5000,
+        actions: [
+          {
+            label: 'Details',
+            callback: () =>
+              showErrorMessage('Error when registering access token', reason)
+          }
+        ]
+      });
     });
 }
 
@@ -57,7 +63,7 @@ function registerToken(repository: string, newToken: string) {
  */
 export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyter-fairly:mainmenu',
-  requires: [IFileBrowserFactory],
+  description: 'Fairly menu plugin',
   autoStart: true,
   activate: (app: JupyterFrontEnd) => {
     console.log('registerTokenPlugin activated!!');
@@ -70,7 +76,7 @@ export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
       icon: settingsIcon,
       execute: async () => {
         // Asks for the data repository
-        let targetRepository = await InputDialog.getItem({
+        const targetRepository = await InputDialog.getItem({
           title: 'Register Access Token. Select Data Repository',
           items: ['4TU.ResearchData', 'Zenodo', 'Figshare'],
           okLabel: 'Continue'
@@ -78,7 +84,7 @@ export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
 
         if (targetRepository.button.accept && targetRepository.value) {
           // Asks for the access token
-          let accessToken = await InputDialog.getText({
+          const accessToken = await InputDialog.getText({
             title: 'Enter Access Token for: '.concat(targetRepository.value),
             placeholder: 'Access Token',
             okLabel: 'Add Token'

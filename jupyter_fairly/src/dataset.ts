@@ -39,7 +39,7 @@ function initDataset(path: string, template?: any) {
     templateMeta = 'figshare';
   } else if (template === 'Zenodo') {
     templateMeta = 'zenodo';
-  } else if (template == null || template === 'Default') {
+  } else if (template === null || template === 'Default') {
     templateMeta = 'default';
   }
 
@@ -82,9 +82,9 @@ function cloneDataset(
    * relative path the server can resolve on any OS ('.' at the root)
    */
   const destinationPath = PathExt.join('.', destination);
-  let _client = '4tu';
+  const _client = '4tu';
 
-  let payload = JSON.stringify({
+  const payload = JSON.stringify({
     source: source,
     destination: destinationPath,
     extract: extract,
@@ -200,7 +200,7 @@ export const createDatasetCommandPlugin: JupyterFrontEndPlugin<void> = {
         // root-path = empty string.
         console.log(`the path is: ${fileBrowserModel.path}`);
 
-        let metadataTemplate = await InputDialog.getItem({
+        const metadataTemplate = await InputDialog.getItem({
           title: "Select template for dataset's metadata",
           items: ['', 'Default', '4TU.Research', 'Zenodo', 'Figshare'],
           okLabel: 'Create'

@@ -13,3 +13,7 @@ skip = ["build-npm", "check-npm"]
 version_cmd = "hatch version"
 # "path_to_package:name_of_package" — the extension lives in jupyter_fairly/
 python_packages = ["jupyter_fairly:jupyter_fairly"]
+# build-changelog/draft-changelog read/write this path relative to the repo
+# root (they don't chdir into python_packages like bump-version does), and
+# the real CHANGELOG.md lives in jupyter_fairly/, not at the root.
+changelog_path = "jupyter_fairly/CHANGELOG.md"

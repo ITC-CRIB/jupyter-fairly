@@ -3,8 +3,6 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-import { ISettingRegistry } from '@jupyterlab/settingregistry';
-
 import {
   createDatasetCommandPlugin,
   cloneDatasetCommandPlugin
@@ -19,8 +17,6 @@ import { FairlyMenuPlugin } from './menu';
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyter-fairly:plugin',
   autoStart: true,
-  requires: [],
-  optional: [ISettingRegistry],
   activate: (app: JupyterFrontEnd) => {
     console.log('JupyterLab extension jupyter-fairly is activated!');
   }

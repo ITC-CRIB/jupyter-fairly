@@ -126,7 +126,7 @@
 
 	- Zenodo
 
-	- [Code Ocean](https://codeocean.com/)*
+	- [Code Ocean](https://codeocean.com/)
 		
 ### [University of Utrecht Data Repository Finder](https://tools.uu.nl/repository-decision-tool/)
 
@@ -208,7 +208,7 @@
 
     [Documentation](https://waterbutler.readthedocs.io/en/latest/)
 
-### [Mendeley Data](https://data.mendeley.com/about)
+### [Mendeley Data](https://data.mendeley.com/api/docs/)
 
 - [File formats](https://data.mendeley.com/file-formats)
 
