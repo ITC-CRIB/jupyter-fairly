@@ -27,7 +27,7 @@ function registerToken(repository: string, newToken: string) {
     clientId = 'figshare';
   }
 
-  let payload = JSON.stringify({
+  const payload = JSON.stringify({
     client: clientId,
     token: newToken
   });
@@ -63,6 +63,7 @@ function registerToken(repository: string, newToken: string) {
  */
 export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyter-fairly:mainmenu',
+  description: 'Fairly menu plugin',
   autoStart: true,
   activate: (app: JupyterFrontEnd) => {
     console.log('registerTokenPlugin activated!!');
@@ -75,7 +76,7 @@ export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
       icon: settingsIcon,
       execute: async () => {
         // Asks for the data repository
-        let targetRepository = await InputDialog.getItem({
+        const targetRepository = await InputDialog.getItem({
           title: 'Register Access Token. Select Data Repository',
           items: ['4TU.ResearchData', 'Zenodo', 'Figshare'],
           okLabel: 'Continue'
@@ -83,7 +84,7 @@ export const FairlyMenuPlugin: JupyterFrontEndPlugin<void> = {
 
         if (targetRepository.button.accept && targetRepository.value) {
           // Asks for the access token
-          let accessToken = await InputDialog.getText({
+          const accessToken = await InputDialog.getText({
             title: 'Enter Access Token for: '.concat(targetRepository.value),
             placeholder: 'Access Token',
             okLabel: 'Add Token'
